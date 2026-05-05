@@ -1,5 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminParceirosPage() {
   const supabase = await createAdminClient()
   const { data: partners } = await supabase

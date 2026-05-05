@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import TestimonialsActions from './TestimonialsActions'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDepoimentosPage() {
   const supabase = await createAdminClient()
   const { data: testimonials } = await supabase

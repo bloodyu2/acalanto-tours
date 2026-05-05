@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { formatCents } from '@/lib/booking/pricing'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminReservasPage() {
   const supabase = await createAdminClient()
   const { data: bookings } = await supabase
