@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
   title: 'Galeria',
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 }
 
 export default async function GaleriaPage() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: gallery } = await supabase
     .from('gallery')
     .select('*, boats(name), services(name)')

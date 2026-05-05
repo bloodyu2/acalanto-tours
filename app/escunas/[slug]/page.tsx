@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import BookingWidget from '@/components/booking/BookingWidget'
 import { formatCents } from '@/lib/booking/pricing'
 import { FEATURE_LABELS } from '@/lib/constants'
@@ -12,7 +12,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data } = await supabase.from('boats').select('name,tagline,description').eq('slug', slug).single()
   if (!data) return { title: 'Passeio não encontrado' }
   return {
@@ -22,14 +22,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data } = await supabase.from('boats').select('slug').eq('active', true)
   return (data || []).map(b => ({ slug: b.slug }))
 }
 
 export default async function TourPage({ params }: Props) {
   const { slug } = await params
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: boat } = await supabase.from('boats').select('*').eq('slug', slug).eq('active', true).single()
   if (!boat) notFound()
 
@@ -77,7 +77,7 @@ export default async function TourPage({ params }: Props) {
       {/* Main content */}
       <section style={{ padding: '3rem 0 5rem' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '3rem', alignItems: 'start' }}>
+          <div className="tour-detail-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '3rem', alignItems: 'start' }}>
             {/* Left: details */}
             <div>
               {/* Quick info */}
@@ -193,23 +193,13 @@ export default async function TourPage({ params }: Props) {
             </div>
 
             {/* Right: booking widget */}
-            <div style={{ position: 'sticky', top: '90px' }}>
+            <div className="tour-detail-sticky" style={{ position: 'sticky', top: '90px' }}>
               <BookingWidget boat={boat} />
             </div>
           </div>
         </div>
       </section>
 
-      <style jsx>{`
-        @media (max-width: 900px) {
-          div[style*="gridTemplateColumns: 1fr 380px"] {
-            grid-template-columns: 1fr !important;
-          }
-          div[style*="position: sticky"] {
-            position: static !important;
-          }
-        }
-      `}</style>
     </>
   )
 }

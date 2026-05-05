@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 export const metadata: Metadata = {
   title: 'Serviços',
@@ -12,7 +12,7 @@ const icons: Record<string, string> = {
 }
 
 export default async function ServicosPage() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: services } = await supabase.from('services').select('*').eq('active', true).order('display_order')
 
   return (

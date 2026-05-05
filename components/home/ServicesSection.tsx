@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 const serviceIcons: Record<string, string> = {
   'lancha-privativa': '🚤',
@@ -9,7 +9,7 @@ const serviceIcons: Record<string, string> = {
 }
 
 export default async function ServicesSection() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: services } = await supabase
     .from('services')
     .select('*')

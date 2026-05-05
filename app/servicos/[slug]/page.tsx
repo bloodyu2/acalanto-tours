@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 interface Props { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data } = await supabase.from('services').select('name,description').eq('slug', slug).single()
   if (!data) return { title: 'Serviço não encontrado' }
   return { title: data.name, description: data.description || undefined }
@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ServicoPage({ params }: Props) {
   const { slug } = await params
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: svc } = await supabase.from('services').select('*').eq('slug', slug).eq('active', true).single()
   if (!svc) notFound()
 

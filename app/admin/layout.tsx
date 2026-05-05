@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { createBrowserClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
@@ -17,7 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [authed, setAuthed] = useState<boolean | null>(null)
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = createBrowserClient()
+  const supabase = createClient()
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {

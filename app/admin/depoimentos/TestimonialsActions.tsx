@@ -1,12 +1,12 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { createBrowserClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props { id: string; approved: boolean }
 
 export default function TestimonialsActions({ id, approved }: Props) {
   const router = useRouter()
-  const supabase = createBrowserClient()
+  const supabase = createClient()
 
   const toggle = async () => {
     await supabase.from('testimonials').update({ approved: !approved }).eq('id', id)

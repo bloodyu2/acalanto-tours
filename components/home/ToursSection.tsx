@@ -1,8 +1,8 @@
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import TourCard from '@/components/tours/TourCard'
 
 export default async function ToursSection() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data: boats } = await supabase
     .from('boats')
     .select('*')

@@ -1,4 +1,4 @@
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 const fallback = [
   { author_name: 'Família Rodrigues', author_city: 'São Paulo, SP', content: 'Passeio incrível! Os filhos adoraram o escorregador da Ilha Rasa V. A equipe foi muito atenciosa e o roteiro passou por praias que jamais esquecemos. Voltaremos com certeza!', rating: 5 },
@@ -7,7 +7,7 @@ const fallback = [
 ]
 
 export default async function TestimonialsSection() {
-  const supabase = await createServerClient()
+  const supabase = await createClient()
   const { data } = await supabase
     .from('testimonials')
     .select('*')
