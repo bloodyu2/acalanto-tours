@@ -1,10 +1,13 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import BookingWidget from '@/components/booking/BookingWidget'
 import { formatCents } from '@/lib/booking/pricing'
 import { FEATURE_LABELS } from '@/lib/constants'
+
+// Force dynamic rendering — Supabase env vars may not be present at build time
+export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -12,6 +15,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return { title: 'Passeio de Escuna em Paraty — Acalanto Tours' }
+  }
   const supabase = await createClient()
   const { data } = await supabase.from('boats').select('name,tagline,description').eq('slug', slug).single()
   if (!data) return { title: 'Passeio não encontrado' }
@@ -19,13 +25,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${data.name} — Passeio de Escuna em Paraty`,
     description: data.description || data.tagline || `Passeio ${data.name} em Paraty`,
   }
-}
-
-export async function generateStaticParams() {
-  // Must use cookie-free client — generateStaticParams runs at build time without HTTP context
-  const supabase = await createAdminClient()
-  const { data } = await supabase.from('boats').select('slug').eq('active', true)
-  return (data || []).map(b => ({ slug: b.slug }))
 }
 
 export default async function TourPage({ params }: Props) {

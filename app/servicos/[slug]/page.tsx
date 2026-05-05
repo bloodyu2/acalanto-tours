@@ -5,8 +5,14 @@ import { createClient } from '@/lib/supabase/server'
 
 interface Props { params: Promise<{ slug: string }> }
 
+// Force dynamic rendering — Supabase env vars may not be present at build time
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    return { title: 'Serviço — Acalanto Tours' }
+  }
   const supabase = await createClient()
   const { data } = await supabase.from('services').select('name,description').eq('slug', slug).single()
   if (!data) return { title: 'Serviço não encontrado' }
