@@ -18,7 +18,7 @@ export default function Footer() {
               Acalanto Tours
             </div>
             <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'rgba(255,255,255,0.65)' }}>
-              Passeios de escuna inesquecíveis nas águas de Paraty. Sua aventura caiçara começa aqui.
+              Passeios de escuna pela Baía de Paraty. Saídas diárias, quatro embarcações, reserva pelo WhatsApp.
             </p>
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
               <a href="https://instagram.com" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.7)', transition: 'color 0.2s' }} aria-label="Instagram">

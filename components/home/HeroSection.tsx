@@ -24,7 +24,7 @@ export default function HeroSection() {
             marginBottom: '1.75rem',
           }}>
             <span style={{ display: 'inline-block', width: '20px', height: '1px', background: 'rgba(255,255,255,0.35)' }} />
-            Paraty · Rio de Janeiro · Costa Verde
+            Paraty, Rio de Janeiro
           </div>
 
           <h1 style={{
@@ -36,9 +36,8 @@ export default function HeroSection() {
             letterSpacing: '-0.035em',
             marginBottom: '1.5rem',
           }}>
-            Navegue pelas{' '}
-            <span className="text-gradient">águas paradisíacas</span>{' '}
-            de Paraty
+            Passeios de escuna{' '}
+            <span className="text-gradient">pela Baía de Paraty</span>
           </h1>
 
           <p style={{
@@ -49,7 +48,7 @@ export default function HeroSection() {
             maxWidth: '520px',
             fontWeight: 400,
           }}>
-            Passeios de escuna inesquecíveis pelas ilhas e praias da Costa Verde. Quatro embarcações, roteiros únicos e a hospitalidade caiçara que só a Acalanto oferece.
+            Saídas diárias pelas ilhas e praias da Costa Verde. Quatro escunas, cada uma com um jeito diferente de navegar. A tranquila, a familiar com escorregador, a premium com ofurô, e a mais contemplativa. Você escolhe.
           </p>
 
           <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
@@ -67,10 +66,10 @@ export default function HeroSection() {
             borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.75rem',
           }}>
             {[
-              { label: '4', sub: 'embarcações' },
-              { label: '+6', sub: 'praias visitadas' },
-              { label: '100%', sub: 'pet friendly' },
-              { label: '5★', sub: 'avaliações' },
+              { label: '4', sub: 'escunas' },
+              { label: '5h', sub: 'de passeio' },
+              { label: 'R$100', sub: 'por pessoa' },
+              { label: 'diário', sub: 'saídas' },
             ].map(({ label, sub }, i) => (
               <div key={sub} style={{
                 flex: '1', minWidth: '80px',

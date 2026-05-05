@@ -26,9 +26,9 @@ export default function Header() {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
         transition: 'background 0.3s, box-shadow 0.3s, backdrop-filter 0.3s',
-        background: scrolled ? 'rgba(255,255,255,0.88)' : 'transparent',
-        backdropFilter: scrolled ? 'saturate(180%) blur(14px)' : 'none',
-        boxShadow: scrolled ? '0 1px 0 rgba(0,0,0,0.08)' : 'none',
+        background: 'rgba(255,255,255,0.92)',
+        backdropFilter: 'saturate(180%) blur(14px)',
+        boxShadow: scrolled ? '0 1px 0 rgba(0,0,0,0.1)' : '0 1px 0 rgba(0,0,0,0.06)',
       }}
     >
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '70px' }}>
@@ -38,8 +38,7 @@ export default function Header() {
             fontFamily: 'var(--font-playfair)',
             fontSize: '1.375rem',
             fontWeight: 700,
-            color: scrolled ? 'var(--text-primary)' : 'white',
-            transition: 'color 0.3s',
+            color: 'var(--text-primary)',
           }}>
             Acalanto
           </span>
@@ -47,7 +46,7 @@ export default function Header() {
             fontFamily: 'var(--font-mono)',
             fontSize: '0.68rem',
             fontWeight: 500,
-            color: scrolled ? 'var(--ocean-mid)' : 'rgba(255,255,255,0.7)',
+            color: 'var(--ocean-mid)',
             textTransform: 'uppercase',
             letterSpacing: '0.12em',
             transition: 'color 0.3s',
@@ -67,7 +66,7 @@ export default function Header() {
                 borderRadius: '0.5rem',
                 fontSize: '0.9rem',
                 fontWeight: 500,
-                color: scrolled ? 'var(--text-primary)' : 'rgba(255,255,255,0.9)',
+                color: 'var(--text-primary)',
                 textDecoration: 'none',
                 transition: 'color 0.2s, background 0.2s',
               }}
@@ -93,7 +92,7 @@ export default function Header() {
             border: 'none',
             cursor: 'pointer',
             padding: '0.5rem',
-            color: scrolled ? 'var(--text-primary)' : 'white',
+            color: 'var(--text-primary)',
           }}
           aria-label="Menu"
         >

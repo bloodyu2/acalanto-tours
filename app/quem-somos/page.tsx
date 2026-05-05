@@ -39,13 +39,13 @@ export default function QuemSomosPage() {
             <span className="section-tag">Nossa História</span>
             <h2 className="section-title">De fotógrafos a plataforma</h2>
             <p style={{ fontSize: '1.0625rem', color: 'var(--text-muted)', lineHeight: 1.75, marginBottom: '1.25rem' }}>
-              A Acalanto nasceu do trabalho fotográfico em Paraty. Ao longo do tempo, a equipe foi crescendo, assumindo a gestão de pessoas, criando parcerias e formando o <strong>GFP — Grupo de Fotógrafos de Paraty</strong>, uma associação de profissionais que registram a beleza da cidade e de seus passeios.
+              A Acalanto começou com fotografia. A equipe foi crescendo, assumindo a gestão de fotógrafos locais e criando o <strong>GFP (Grupo de Fotógrafos de Paraty)</strong>, uma associação de profissionais que trabalham nos passeios e pontos turísticos da cidade.
             </p>
             <p style={{ fontSize: '1.0625rem', color: 'var(--text-muted)', lineHeight: 1.75, marginBottom: '1.25rem' }}>
-              Ao perceber que as embarcações menores não tinham visibilidade digital e que os turistas chegavam sem saber quais passeios escolher, a Acalanto deu um passo além: <strong>tornar-se a plataforma central de turismo de Paraty</strong>. Reunir em um só lugar as melhores escunas, lanchas, jeeps, guias e fotógrafos da cidade — com venda centralizada, gestão de qualidade e experiência garantida.
+              Com o tempo, ficou claro que faltava algo em Paraty: as embarcações menores não tinham presença digital, e o turista que chegava na cidade precisava ligar para vários barcos antes de conseguir uma vaga. A Acalanto passou a centralizar isso, reunindo escunas, lanchas, jeeps, guias e fotógrafos num único canal de vendas.
             </p>
             <p style={{ fontSize: '1.0625rem', color: 'var(--text-muted)', lineHeight: 1.75 }}>
-              Nosso nome carrega um significado especial: <em>acalanto</em> é uma canção de ninar, um abraço suave. É exatamente o que queremos que Paraty seja para cada visitante — um destino que acolhe, encanta e fica na memória.
+              <em>Acalanto</em> é uma canção de ninar, um aconchego. O nome foi escolhido para isso: que Paraty seja um lugar de descanso de verdade para quem vem visitar.
             </p>
           </div>
 
@@ -54,7 +54,7 @@ export default function QuemSomosPage() {
             <span className="section-tag">O que fazemos</span>
             <h2 className="section-title">Uma plataforma para toda Paraty</h2>
             <p style={{ fontSize: '1.0625rem', color: 'var(--text-muted)', lineHeight: 1.75, marginBottom: '2rem' }}>
-              A Acalanto atua como gestora e canal de vendas para os melhores fornecedores de turismo da cidade. Cuidamos da divulgação, das reservas e da qualidade — para que o turista tenha uma experiência garantida e o parceiro possa focar no que faz de melhor.
+              A Acalanto cuida da divulgação e das vendas. Os parceiros cuidam do serviço. O turista reserva tudo em um lugar só, sem precisar pesquisar em seis canais diferentes.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
               {[
@@ -80,10 +80,10 @@ export default function QuemSomosPage() {
             <h2 className="section-title">Por que a Acalanto</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
               {[
-                { icon: '✅', title: 'Curadoria de qualidade', desc: 'Selecionamos e avaliamos cada parceiro para garantir que sua experiência seja sempre de alto nível.' },
-                { icon: '💬', title: 'Venda centralizada', desc: 'Chega de ligar para vários barcos. Aqui você encontra tudo, compara e reserva em um só lugar.' },
-                { icon: '🤝', title: 'Parceiros locais', desc: 'Trabalhamos com empresas e profissionais de Paraty — o dinheiro fica na cidade e fortalece a economia local.' },
-                { icon: '📱', title: 'Reserva fácil', desc: 'Pelo site ou pelo WhatsApp, sem burocracia. Confirmação rápida e atendimento humano.' },
+                { icon: '✅', title: 'Curadoria dos parceiros', desc: 'A Acalanto seleciona e acompanha cada parceiro. Feedback ruim chega antes para nós do que para o Google.' },
+                { icon: '💬', title: 'Tudo em um lugar', desc: 'Sem precisar ligar para cinco barcos diferentes. Você vê os passeios, compara e reserva aqui.' },
+                { icon: '🤝', title: 'Parceiros locais', desc: 'Trabalhamos com quem é de Paraty. O dinheiro do turismo fica circulando na cidade.' },
+                { icon: '📱', title: 'Reserva pelo WhatsApp', desc: 'Sem formulário longo nem cadastro obrigatório. Manda mensagem e a gente resolve.' },
               ].map(({ icon, title, desc }) => (
                 <div key={title} style={{ padding: '1.5rem 0', borderTop: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
@@ -101,10 +101,10 @@ export default function QuemSomosPage() {
           {/* CTA */}
           <div style={{ textAlign: 'center', padding: '2.5rem', background: 'var(--ocean-deep)', borderRadius: '1.25rem' }}>
             <h3 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.625rem', color: 'white', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
-              Pronto para explorar Paraty?
+              Quer reservar um passeio?
             </h3>
             <p style={{ color: 'rgba(255,255,255,0.65)', marginBottom: '1.5rem', fontSize: '1rem' }}>
-              Escolha seu passeio e reserve com facilidade.
+              Veja as opções e fale com a gente pelo WhatsApp.
             </p>
             <Link href="/#escunas" className="btn-primary">
               Ver Passeios

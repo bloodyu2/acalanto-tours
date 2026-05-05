@@ -75,8 +75,8 @@ export default async function ServicoPage({ params }: Props) {
               {/* Note */}
               <div style={{ background: 'var(--sand)', borderRadius: '12px', padding: '1.25rem 1.5rem', border: '1px solid var(--border)' }}>
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>
-                  <strong style={{ color: 'var(--text-primary)' }}>💬 Como funciona?</strong>{' '}
-                  Entre em contato pelo WhatsApp — nossa equipe responde rapidamente com disponibilidade, valores e todos os detalhes para você fechar sua reserva com tranquilidade.
+                  <strong style={{ color: 'var(--text-primary)' }}>Como funciona?</strong>{' '}
+                  Manda mensagem no WhatsApp e a gente te responde com disponibilidade, valores e detalhes. Sem formulário, sem espera.
                 </p>
               </div>
             </div>

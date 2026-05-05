@@ -30,7 +30,7 @@ export default async function ServicesSection() {
           <span className="section-tag">Mais que escunas</span>
           <h2 className="section-title">Serviços exclusivos</h2>
           <p className="section-subtitle">
-            Monte seu itinerário completo em Paraty. Combine passeios de escuna com lancha privativa, jeep, fotografia e transfer.
+            Além das escunas, a Acalanto reúne os melhores serviços de Paraty num só lugar: lancha privativa, jeep, fotografia profissional e transfer.
           </p>
         </div>
 
