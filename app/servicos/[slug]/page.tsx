@@ -44,13 +44,88 @@ export default async function ServicoPage({ params }: Props) {
       </section>
 
       <section style={{ padding: '4rem 0 5rem' }}>
-        <div className="container" style={{ maxWidth: '720px' }}>
-          {svc.description && <p style={{ fontSize: '1.125rem', color: 'var(--text-muted)', lineHeight: 1.75, marginBottom: '2.5rem' }}>{svc.description}</p>}
-          <a href={`https://wa.me/${phone}?text=${waMsg}`} target="_blank" rel="noreferrer" className="btn-primary" style={{ fontSize: '1rem' }}>
-            Solicitar Orçamento pelo WhatsApp
-          </a>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '4rem', alignItems: 'start', maxWidth: '1000px' }}>
+
+            {/* Left — description */}
+            <div>
+              {svc.description && (
+                <p style={{ fontSize: '1.125rem', color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: '2rem' }}>
+                  {svc.description}
+                </p>
+              )}
+
+              {/* Highlights from features field if present */}
+              {svc.features && svc.features.length > 0 && (
+                <div style={{ marginBottom: '2rem' }}>
+                  <h3 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+                    O que está incluído
+                  </h3>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {svc.features.map((f: string) => (
+                      <li key={f} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', padding: '0.625rem 0', borderBottom: '1px solid var(--border)', fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
+                        <span style={{ color: 'var(--ocean-mid)', fontWeight: 700 }}>✓</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Note */}
+              <div style={{ background: 'var(--sand)', borderRadius: '12px', padding: '1.25rem 1.5rem', border: '1px solid var(--border)' }}>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>
+                  <strong style={{ color: 'var(--text-primary)' }}>💬 Como funciona?</strong>{' '}
+                  Entre em contato pelo WhatsApp — nossa equipe responde rapidamente com disponibilidade, valores e todos os detalhes para você fechar sua reserva com tranquilidade.
+                </p>
+              </div>
+            </div>
+
+            {/* Right — CTA card */}
+            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', position: 'sticky', top: '90px' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
+                  Valor
+                </p>
+                <p style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                  {svc.price_label || 'Sob consulta'}
+                </p>
+              </div>
+
+              <a
+                href={`https://wa.me/${phone}?text=${waMsg}`}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary"
+                style={{ width: '100%', justifyContent: 'center', fontSize: '1rem', marginBottom: '1rem' }}
+              >
+                Solicitar pelo WhatsApp
+              </a>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginTop: '1.25rem' }}>
+                {[
+                  '✅ Resposta rápida',
+                  '✅ Sem compromisso',
+                  '✅ Equipe local em Paraty',
+                ].map(item => (
+                  <p key={item} style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>{item}</p>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          div[style*="gridTemplateColumns: 1fr 380px"] {
+            grid-template-columns: 1fr !important;
+          }
+          div[style*="position: sticky"] {
+            position: static !important;
+          }
+        }
+      `}</style>
     </>
   )
 }

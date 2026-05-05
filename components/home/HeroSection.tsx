@@ -5,77 +5,89 @@ import Link from 'next/link'
 export default function HeroSection() {
   return (
     <section className="hero-section" style={{ paddingTop: '3rem' }}>
-      {/* Background pattern */}
+      {/* Radial glow — wine undertones */}
       <div style={{
-        position: 'absolute', inset: 0,
-        backgroundImage: 'radial-gradient(circle at 25% 60%, rgba(42,157,191,0.3) 0%, transparent 50%), radial-gradient(circle at 75% 30%, rgba(244,166,35,0.15) 0%, transparent 50%)',
-      }} />
-
-      {/* Wave pattern */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        opacity: 0.08,
-        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(255,255,255,0.5) 30px, rgba(255,255,255,0.5) 32px)',
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: 'radial-gradient(ellipse at 20% 70%, rgba(146,23,77,0.28) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(224,11,65,0.14) 0%, transparent 50%)',
+        pointerEvents: 'none',
       }} />
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-        <div style={{ maxWidth: '680px' }}>
+        <div style={{ maxWidth: '700px' }}>
+
+          {/* Monospace location label */}
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
-            background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)',
-            color: 'rgba(255,255,255,0.9)', fontSize: '0.8rem', fontWeight: 600,
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-            padding: '0.375rem 0.875rem', borderRadius: '999px',
-            border: '1px solid rgba(255,255,255,0.2)',
-            marginBottom: '1.5rem',
+            fontFamily: 'var(--font-mono)',
+            color: 'rgba(255,255,255,0.55)', fontSize: '0.72rem', fontWeight: 500,
+            letterSpacing: '0.18em', textTransform: 'uppercase',
+            marginBottom: '1.75rem',
           }}>
-            ⚓ Paraty, Rio de Janeiro
+            <span style={{ display: 'inline-block', width: '20px', height: '1px', background: 'rgba(255,255,255,0.35)' }} />
+            Paraty · Rio de Janeiro · Costa Verde
           </div>
 
           <h1 style={{
             fontFamily: 'var(--font-playfair)',
-            fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+            fontSize: 'clamp(2.75rem, 6.5vw, 4.5rem)',
             fontWeight: 700,
             color: 'white',
-            lineHeight: 1.12,
-            marginBottom: '1.25rem',
+            lineHeight: 1.02,
+            letterSpacing: '-0.035em',
+            marginBottom: '1.5rem',
           }}>
-            Navegue pelas <span className="text-gradient">águas paradisíacas</span>{' '}
+            Navegue pelas{' '}
+            <span className="text-gradient">águas paradisíacas</span>{' '}
             de Paraty
           </h1>
 
           <p style={{
-            fontSize: 'clamp(1rem, 2vw, 1.2rem)',
-            color: 'rgba(255,255,255,0.82)',
-            lineHeight: 1.65,
-            marginBottom: '2rem',
-            maxWidth: '540px',
+            fontSize: 'clamp(1rem, 1.8vw, 1.175rem)',
+            color: 'rgba(255,255,255,0.68)',
+            lineHeight: 1.7,
+            marginBottom: '2.25rem',
+            maxWidth: '520px',
+            fontWeight: 400,
           }}>
             Passeios de escuna inesquecíveis pelas ilhas e praias da Costa Verde. Quatro embarcações, roteiros únicos e a hospitalidade caiçara que só a Acalanto oferece.
           </p>
 
-          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Link href="/#escunas" className="btn-primary" style={{ fontSize: '1rem', padding: '1rem 2rem' }}>
+          <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
+            <Link href="/#escunas" className="btn-primary" style={{ fontSize: '0.9375rem', padding: '0.9375rem 2rem' }}>
               Escolher Passeio
             </Link>
-            <Link href="/quem-somos" className="btn-white" style={{ fontSize: '1rem', padding: '1rem 2rem' }}>
+            <Link href="/quem-somos" className="btn-white" style={{ fontSize: '0.9375rem', padding: '0.9375rem 2rem' }}>
               Conheça a Acalanto
             </Link>
           </div>
 
-          {/* Trust badges */}
-          <div style={{ display: 'flex', gap: '2rem', marginTop: '2.5rem', flexWrap: 'wrap' }}>
+          {/* Trust row */}
+          <div style={{
+            display: 'flex', gap: '0', marginTop: '3rem', flexWrap: 'wrap',
+            borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.75rem',
+          }}>
             {[
-              { icon: '⭐', text: '4 embarcações' },
-              { icon: '🏖️', text: '+6 praias visitadas' },
-              { icon: '🐾', text: 'Pet friendly' },
-              { icon: '✅', text: 'Cancelamento grátis' },
-            ].map(({ icon, text }) => (
-              <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem', fontWeight: 500 }}>
-                <span>{icon}</span> {text}
+              { label: '4', sub: 'embarcações' },
+              { label: '+6', sub: 'praias visitadas' },
+              { label: '100%', sub: 'pet friendly' },
+              { label: '5★', sub: 'avaliações' },
+            ].map(({ label, sub }, i) => (
+              <div key={sub} style={{
+                flex: '1', minWidth: '80px',
+                paddingRight: '1.5rem',
+                paddingLeft: i === 0 ? 0 : '1.5rem',
+                borderLeft: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.1)',
+              }}>
+                <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.625rem', fontWeight: 700, color: 'white', letterSpacing: '-0.03em' }}>
+                  {label}
+                </div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: '0.15rem' }}>
+                  {sub}
+                </div>
               </div>
             ))}
           </div>
+
         </div>
       </div>
 

@@ -51,7 +51,7 @@ export default async function TestimonialsSection() {
               borderRadius: '1.25rem', padding: '1.5rem',
             }}>
               {/* Stars */}
-              <div style={{ marginBottom: '0.875rem', color: 'var(--sunset)', fontSize: '0.875rem' }}>
+              <div style={{ marginBottom: '0.875rem', color: '#e00b41', fontSize: '0.875rem', letterSpacing: '0.05em' }}>
                 {'★'.repeat(t.rating || 5)}
               </div>
               <p style={{ fontSize: '0.9375rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.65, marginBottom: '1.25rem', fontStyle: 'italic' }}>
