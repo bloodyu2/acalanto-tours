@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acalanto Tours — Design System & Wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─────────────────────────────────────────────────────────
+     DESIGN TOKENS
+  ───────────────────────────────────────────────────────── */
+  :root {
+    /* Cores principais */
+    --ocean-deep:     #0A3D5C;
+    --ocean-mid:      #1A6B8A;
+    --ocean-light:    #2E9CBF;
+    --ocean-pale:     #D6EEF5;
+    --sand-warm:      #F5EDD8;
+    --sand-mid:       #E8D9B8;
+    --sand-dark:      #C9B78A;
+    --sunset-gold:    #F4A623;
+    --sunset-coral:   #E8673A;
+    --white:          #FFFFFF;
+    --gray-50:        #F9FAFB;
+    --gray-100:       #F3F4F6;
+    --gray-200:       #E5E7EB;
+    --gray-400:       #9CA3AF;
+    --gray-600:       #4B5563;
+    --gray-800:       #1F2937;
+    --text-primary:   #0A3D5C;
+    --text-body:      #374151;
+    --text-muted:     #6B7280;
+
+    /* Tipografia */
+    --font-display:   'Playfair Display', Georgia, serif;
+    --font-sans:      'Plus Jakarta Sans', system-ui, sans-serif;
+
+    /* Espaçamento */
+    --space-xs:  4px;
+    --space-sm:  8px;
+    --space-md:  16px;
+    --space-lg:  24px;
+    --space-xl:  32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+    --space-4xl: 96px;
+
+    /* Bordas */
+    --radius-sm:  6px;
+    --radius-md:  12px;
+    --radius-lg:  20px;
+    --radius-xl:  32px;
+    --radius-full: 9999px;
+
+    /* Sombras */
+    --shadow-sm:  0 1px 3px rgba(10,61,92,.08), 0 1px 2px rgba(10,61,92,.04);
+    --shadow-md:  0 4px 16px rgba(10,61,92,.12), 0 2px 6px rgba(10,61,92,.06);
+    --shadow-lg:  0 8px 32px rgba(10,61,92,.16), 0 4px 12px rgba(10,61,92,.08);
+    --shadow-xl:  0 20px 60px rgba(10,61,92,.20), 0 8px 24px rgba(10,61,92,.10);
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     RESET & BASE
+  ───────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: #F8F6F2;
+    color: var(--text-body);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     DOC LAYOUT
+  ───────────────────────────────────────────────────────── */
+  .doc-header {
+    background: var(--ocean-deep);
+    color: white;
+    padding: 48px 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231A6B8A' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+  .doc-header-inner { position: relative; z-index: 1; max-width: 1200px; }
+  .doc-header small { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--ocean-pale); opacity: .7; }
+  .doc-header h1 { font-family: var(--font-display); font-size: 48px; margin-top: 8px; margin-bottom: 4px; }
+  .doc-header p { color: rgba(255,255,255,.7); font-size: 15px; }
+
+  .doc-nav {
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 64px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  .doc-nav a {
+    padding: 14px 20px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+  .doc-nav a:hover { color: var(--ocean-mid); border-bottom-color: var(--ocean-light); }
+
+  .doc-body { max-width: 1200px; margin: 0 auto; padding: 48px 64px; }
+
+  section { margin-bottom: 72px; }
+  section > h2 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--ocean-deep);
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ocean-pale);
+  }
+  section > p.section-desc {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+
+  /* ─────────────────────────────────────────────────────────
+     1 · PALETA DE CORES
+  ───────────────────────────────────────────────────────── */
+  .swatch-group h3 {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .swatch {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .swatch-color {
+    height: 80px;
+    width: 100%;
+  }
+  .swatch-meta {
+    background: white;
+    padding: 10px 12px;
+  }
+  .swatch-name { font-weight: 600; font-size: 13px; color: var(--text-primary); }
+  .swatch-hex  { font-size: 12px; color: var(--text-muted); font-family: monospace; }
+  .swatch-usage { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ─────────────────────────────────────────────────────────
+     2 · TIPOGRAFIA
+  ───────────────────────────────────────────────────────── */
+  .type-specimen {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+  }
+  .type-specimen .label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .t-h1 { font-family: var(--font-display); font-size: 64px; line-height: 1.1; color: var(--ocean-deep); font-weight: 700; }
+  .t-h2 { font-family: var(--font-display); font-size: 48px; line-height: 1.2; color: var(--ocean-deep); font-weight: 600; }
+  .t-h3 { font-family: var(--font-display); font-size: 36px; line-height: 1.3; color: var(--ocean-deep); font-weight: 600; }
+  .t-h4 { font-family: var(--font-display); font-size: 24px; line-height: 1.4; color: var(--ocean-deep); font-weight: 600; }
+  .t-h5 { font-family: var(--font-sans); font-size: 18px; font-weight: 600; color: var(--ocean-deep); }
+  .t-body { font-family: var(--font-sans); font-size: 16px; color: var(--text-body); line-height: 1.7; }
+  .t-small { font-family: var(--font-sans); font-size: 14px; color: var(--text-muted); }
+  .t-caption { font-family: var(--font-sans); font-size: 12px; color: var(--text-muted); letter-spacing: .5px; }
+  .t-overline { font-family: var(--font-sans); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--sunset-gold); }
+
+  /* ─────────────────────────────────────────────────────────
+     3 · COMPONENTES
+  ───────────────────────────────────────────────────────── */
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: var(--radius-full);
+    font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none; transition: all .25s; letter-spacing: .3px;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--sunset-gold); color: var(--ocean-deep);
+    box-shadow: 0 4px 16px rgba(244,166,35,.4);
+  }
+  .btn-primary:hover { background: #e09618; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(244,166,35,.5); }
+  .btn-ocean {
+    background: var(--ocean-mid); color: white;
+    box-shadow: 0 4px 16px rgba(26,107,138,.3);
+  }
+  .btn-ocean:hover { background: var(--ocean-deep); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent; color: var(--ocean-mid);
+    border: 2px solid var(--ocean-mid);
+  }
+  .btn-outline:hover { background: var(--ocean-pale); }
+  .btn-ghost { background: transparent; color: var(--text-muted); }
+  .btn-ghost:hover { background: var(--gray-100); color: var(--text-body); }
+  .btn-whatsapp {
+    background: #25D366; color: white;
+    box-shadow: 0 4px 16px rgba(37,211,102,.35);
+  }
+  .btn-whatsapp:hover { background: #1da851; transform: translateY(-1px); }
+  .btn-sm { padding: 8px 18px; font-size: 13px; }
+  .btn-lg { padding: 16px 36px; font-size: 16px; }
+
+  .btn-group { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  /* Badge */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 12px; border-radius: var(--radius-full);
+    font-size: 12px; font-weight: 600; letter-spacing: .5px;
+  }
+  .badge-gold { background: rgba(244,166,35,.15); color: #B8790F; }
+  .badge-ocean { background: var(--ocean-pale); color: var(--ocean-deep); }
+  .badge-green { background: #DCF5E7; color: #1A7A40; }
+  .badge-coral { background: #FDE8E0; color: #C04020; }
+
+  /* Tour Card */
+  .tour-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all .3s;
+    cursor: pointer;
+  }
+  .tour-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-xl);
+  }
+  .tour-card-img {
+    position: relative;
+    height: 220px;
+    background: linear-gradient(135deg, var(--ocean-mid), var(--ocean-deep));
+    overflow: hidden;
+  }
+  .tour-card-img-inner {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px; opacity: .35;
+    position: absolute; inset: 0;
+  }
+  .tour-card-img-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(10,61,92,.8), transparent);
+  }
+  .tour-card-duration {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: rgba(255,255,255,.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: var(--radius-full);
+    padding: 4px 12px;
+    font-size: 12px; color: white; font-weight: 600;
+  }
+  .tour-card-body { padding: 20px; }
+  .tour-card-overline {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--ocean-light);
+    margin-bottom: 6px;
+  }
+  .tour-card-title {
+    font-family: var(--font-display);
+    font-size: 20px; font-weight: 600;
+    color: var(--ocean-deep);
+    margin-bottom: 8px; line-height: 1.3;
+  }
+  .tour-card-desc {
+    font-size: 13px; color: var(--text-muted);
+    line-height: 1.6; margin-bottom: 16px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .tour-card-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 16px; border-top: 1px solid var(--gray-100);
+  }
+  .tour-price-label { font-size: 11px; color: var(--text-muted); }
+  .tour-price-value { font-size: 22px; font-weight: 700; color: var(--ocean-deep); font-family: var(--font-display); }
+  .tour-price-unit { font-size: 12px; color: var(--text-muted); }
+
+  /* Feature Badge Strip */
+  .tour-features {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .feat-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--ocean-pale); color: var(--ocean-deep);
+    border-radius: var(--radius-full);
+    padding: 3px 10px; font-size: 11px; font-weight: 500;
+  }
+
+  /* Booking Widget */
+  .booking-widget {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    padding: 28px;
+    border: 1px solid var(--gray-100);
+  }
+  .booking-widget-title {
+    font-family: var(--font-display);
+    font-size: 20px; color: var(--ocean-deep);
+    margin-bottom: 20px;
+  }
+  .booking-field { margin-bottom: 16px; }
+  .booking-label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .booking-input {
+    width: 100%;
+    padding: 11px 16px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans); font-size: 14px; color: var(--text-body);
+    background: var(--gray-50);
+    transition: border-color .2s;
+    outline: none;
+  }
+  .booking-input:focus { border-color: var(--ocean-mid); background: white; }
+  .booking-counter {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    background: var(--gray-50);
+  }
+  .booking-counter-label { font-size: 14px; color: var(--text-body); }
+  .booking-counter-sub { font-size: 12px; color: var(--text-muted); }
+  .counter-controls { display: flex; align-items: center; gap: 12px; }
+  .counter-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1.5px solid var(--ocean-mid);
+    background: transparent; color: var(--ocean-mid);
+    font-size: 18px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .counter-btn:hover { background: var(--ocean-mid); color: white; }
+  .counter-val { font-size: 16px; font-weight: 600; color: var(--ocean-deep); min-width: 20px; text-align: center; }
+  .booking-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-top: 1px solid var(--gray-200);
+    margin-top: 4px;
+  }
+  .booking-total-label { font-size: 13px; color: var(--text-muted); }
+  .booking-total-value { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--ocean-deep); }
+  .booking-total-sub { font-size: 12px; color: var(--text-muted); text-align: right; }
+
+  /* Nav */
+  .nav-mockup {
+    background: rgba(10,61,92,.95);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    padding: 0 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    box-shadow: var(--shadow-lg);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px; color: white; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .nav-logo-icon {
+    width: 36px; height: 36px;
+    background: var(--sunset-gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-link {
+    padding: 8px 14px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 500; color: rgba(255,255,255,.75);
+    text-decoration: none; transition: all .2s;
+  }
+  .nav-link:hover, .nav-link.active { background: rgba(255,255,255,.1); color: white; }
+
+  /* ─────────────────────────────────────────────────────────
+     4 · SPACING SCALE
+  ───────────────────────────────────────────────────────── */
+  .spacing-item {
+    display: flex; align-items: center; gap: 16px;
+    padding: 8px 0; border-bottom: 1px solid var(--gray-100);
+  }
+  .spacing-bar {
+    background: var(--ocean-mid);
+    height: 16px; border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .spacing-label { font-size: 13px; font-weight: 600; color: var(--text-body); min-width: 60px; }
+  .spacing-px { font-size: 13px; color: var(--text-muted); font-family: monospace; }
+  .spacing-use { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+  /* ─────────────────────────────────────────────────────────
+     5 · WIREFRAMES
+  ───────────────────────────────────────────────────────── */
+  .wireframe-frame {
+    background: white;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    margin-bottom: 40px;
+  }
+  .wireframe-label {
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 12px 20px;
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    letter-spacing: 1px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .wireframe-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Hero Section */
+  .hero-mockup {
+    min-height: 540px;
+    background: linear-gradient(165deg, var(--ocean-deep) 0%, #0E5278 50%, #1A6B8A 100%);
+    padding: 32px;
+    position: relative;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .hero-mockup::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3CradialGradient id='a' cx='50%25' cy='50%25' r='70%25'%3E%3Cstop offset='0' stop-color='%2321849E' stop-opacity='.4'/%3E%3Cstop offset='100%25' stop-color='transparent'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23a)'/%3E%3C/svg%3E");
+  }
+  /* Waves */
+  .hero-waves {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 120px; opacity: .15;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120'%3E%3Cpath fill='%23ffffff' d='M0,64L60,58.7C120,53,240,43,360,48C480,53,600,75,720,80C840,85,960,75,1080,64C1200,53,1320,43,1380,37.3L1440,32L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z'/%3E%3C/svg%3E") no-repeat bottom;
+    background-size: cover;
+  }
+  .hero-nav { position: relative; z-index: 2; margin-bottom: auto; }
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 620px; padding-top: 64px; padding-bottom: 80px;
+  }
+  .hero-overline {
+    font-size: 12px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--sunset-gold);
+    margin-bottom: 16px; display: block;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 52px; line-height: 1.1;
+    color: white; font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .hero-title em { color: var(--sunset-gold); font-style: italic; }
+  .hero-subtitle {
+    font-size: 16px; color: rgba(255,255,255,.75);
+    line-height: 1.7; margin-bottom: 36px;
+    max-width: 480px;
+  }
+  .hero-cta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .hero-trust {
+    position: absolute; bottom: 28px; right: 32px; z-index: 2;
+    display: flex; gap: 8px;
+  }
+  .trust-pill {
+    background: rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: var(--radius-full);
+    padding: 6px 14px;
+    font-size: 12px; color: rgba(255,255,255,.9); font-weight: 500;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* Tours Section */
+  .tours-section {
+    background: var(--sand-warm);
+    padding: 48px 32px;
+  }
+  .section-header {
+    text-align: center; margin-bottom: 36px;
+  }
+  .section-header .overline {
+    font-size: 11px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--ocean-light);
+    margin-bottom: 10px; display: block;
+  }
+  .section-header h2 {
+    font-family: var(--font-display);
+    font-size: 36px; color: var(--ocean-deep);
+    border-bottom: none; margin-bottom: 8px;
+  }
+  .section-header p { font-size: 15px; color: var(--text-muted); max-width: 480px; margin: 0 auto; }
+  .tours-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+
+  /* Booking Page */
+  .booking-page {
+    background: var(--gray-50);
+    padding: 36px 32px;
+    display: grid; grid-template-columns: 1fr 380px; gap: 28px;
+  }
+  .booking-main h1 {
+    font-family: var(--font-display);
+    font-size: 36px; color: var(--ocean-deep);
+    margin-bottom: 6px;
+  }
+  .booking-main .meta {
+    display: flex; gap: 12px; align-items: center;
+    margin-bottom: 20px;
+  }
+  .booking-img {
+    height: 240px;
+    background: linear-gradient(135deg, var(--ocean-mid), var(--ocean-deep));
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px; opacity: .4;
+  }
+  .booking-desc {
+    font-size: 14px; color: var(--text-body); line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .itinerary h3 {
+    font-family: var(--font-sans);
+    font-size: 15px; font-weight: 600;
+    color: var(--ocean-deep); margin-bottom: 12px;
+  }
+  .itinerary-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid var(--gray-100);
+    font-size: 13px; color: var(--text-body);
+  }
+  .itinerary-bullet {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--ocean-pale); color: var(--ocean-mid);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; margin-top: 1px;
+  }
+
+  /* ─────────────────────────────────────────────────────────
+     ICON SYSTEM DEMO
+  ───────────────────────────────────────────────────────── */
+  .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+  .icon-item {
+    background: white; border-radius: var(--radius-md);
+    padding: 16px 8px; text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .icon-item .ico { font-size: 28px; margin-bottom: 6px; display: block; }
+  .icon-item .name { font-size: 11px; color: var(--text-muted); }
+
+  /* ─────────────────────────────────────────────────────────
+     FOOTER
+  ───────────────────────────────────────────────────────── */
+  .doc-footer {
+    background: var(--ocean-deep);
+    color: rgba(255,255,255,.5);
+    padding: 24px 64px;
+    text-align: center; font-size: 13px;
+  }
+  .doc-footer strong { color: white; }
+
+  /* ─────────────────────────────────────────────────────────
+     UTILITY
+  ───────────────────────────────────────────────────────── */
+  .comp-box {
+    background: white; border-radius: var(--radius-lg);
+    padding: 28px; box-shadow: var(--shadow-sm);
+  }
+  .comp-title {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 20px; font-weight: 600;
+  }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════════ -->
+<header class="doc-header">
+  <div class="doc-header-inner">
+    <small>Design System — v1.0 — 2026-05-04</small>
+    <h1>Acalanto Tours</h1>
+    <p>Visual identity, component library e wireframes de página — referência para implementação Next.js 16</p>
+  </div>
+</header>
+
+<nav class="doc-nav">
+  <a href="#cores">Cores</a>
+  <a href="#tipografia">Tipografia</a>
+  <a href="#espacamento">Espaçamento</a>
+  <a href="#botoes">Botões</a>
+  <a href="#badges">Badges</a>
+  <a href="#cards">Tour Cards</a>
+  <a href="#booking">Booking Widget</a>
+  <a href="#wireframes">Wireframes</a>
+  <a href="#icones">Ícones</a>
+</nav>
+
+<div class="doc-body">
+
+  <!-- ═══════════════════════════════════════════════════
+       1 · PALETA DE CORES
+  ════════════════════════════════════════════════════ -->
+  <section id="cores">
+    <h2>Paleta de Cores</h2>
+    <p class="section-desc">Sistema cromático baseado no oceano de Paraty — profundidade e calor do litoral carioca.</p>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;">
+
+      <div class="swatch-group">
+        <h3>Ocean — Primário</h3>
+        <div class="stack">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#0A3D5C"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Ocean Deep</div>
+              <div class="swatch-hex">#0A3D5C</div>
+              <div class="swatch-usage">Texto principal, fundos escuros, nav</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#1A6B8A"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Ocean Mid</div>
+              <div class="swatch-hex">#1A6B8A</div>
+              <div class="swatch-usage">CTAs secundários, ícones, links</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#2E9CBF"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Ocean Light</div>
+              <div class="swatch-hex">#2E9CBF</div>
+              <div class="swatch-usage">Hover states, overlines, highlights</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#D6EEF5"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Ocean Pale</div>
+              <div class="swatch-hex">#D6EEF5</div>
+              <div class="swatch-usage">Backgrounds de seção, pills, chips</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swatch-group">
+        <h3>Sand & Warmth — Secundário</h3>
+        <div class="stack">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#F5EDD8"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Sand Warm</div>
+              <div class="swatch-hex">#F5EDD8</div>
+              <div class="swatch-usage">Background de seções, cards claros</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#E8D9B8"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Sand Mid</div>
+              <div class="swatch-hex">#E8D9B8</div>
+              <div class="swatch-usage">Bordas em fundo areia, hover states</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#F4A623"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Sunset Gold</div>
+              <div class="swatch-hex">#F4A623</div>
+              <div class="swatch-usage">CTA principal, preços, destaques</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#E8673A"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Sunset Coral</div>
+              <div class="swatch-hex">#E8673A</div>
+              <div class="swatch-usage">Urgência, promoções, limited spots</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="swatch-group">
+        <h3>Neutral — Sistema</h3>
+        <div class="stack">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#FFFFFF; border: 1px solid #E5E7EB"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">White</div>
+              <div class="swatch-hex">#FFFFFF</div>
+              <div class="swatch-usage">Cards, modais, formulários</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#F9FAFB"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Gray 50</div>
+              <div class="swatch-hex">#F9FAFB</div>
+              <div class="swatch-usage">Inputs, backgrounds secundários</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#374151"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Gray 700</div>
+              <div class="swatch-hex">#374151</div>
+              <div class="swatch-usage">Corpo de texto, descrições</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#6B7280"></div>
+            <div class="swatch-meta">
+              <div class="swatch-name">Gray 500</div>
+              <div class="swatch-hex">#6B7280</div>
+              <div class="swatch-usage">Texto secundário, meta, labels</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       2 · TIPOGRAFIA
+  ════════════════════════════════════════════════════ -->
+  <section id="tipografia">
+    <h2>Tipografia</h2>
+    <p class="section-desc">Playfair Display para headings com personalidade editorial; Plus Jakarta Sans para corpo limpo e legível.</p>
+
+    <div class="type-specimen">
+      <span class="label">Display — Playfair Display 700</span>
+      <div class="t-h1">Paraty de Barco</div>
+      <div style="margin-top:8px; color: var(--text-muted); font-size:13px;">64px / line-height 1.1 / font-weight 700</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="type-specimen">
+        <span class="label">H2 — Playfair Display 600</span>
+        <div class="t-h2">Nossas Escunas</div>
+        <div style="margin-top:8px; color: var(--text-muted); font-size:13px;">48px / line-height 1.2</div>
+      </div>
+      <div class="type-specimen">
+        <span class="label">H3 — Playfair Display 600</span>
+        <div class="t-h3">Escuna Brisa Mar</div>
+        <div style="margin-top:8px; color: var(--text-muted); font-size:13px;">36px / line-height 1.3</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="type-specimen">
+        <span class="label">H4 — Playfair Display</span>
+        <div class="t-h4">Roteiro Completo</div>
+      </div>
+      <div class="type-specimen">
+        <span class="label">H5 — Plus Jakarta Sans 600</span>
+        <div class="t-h5">Informações de Embarque</div>
+      </div>
+    </div>
+
+    <div class="type-specimen">
+      <span class="label">Body — Plus Jakarta Sans 400</span>
+      <div class="t-body">Descubra as belezas naturais de Paraty navegando pelas águas cristalinas da Baía de Paraty. Nossa escuna passa pelos pontos mais belos da costa, incluindo praias isoladas, trilhas e pontos de mergulho exclusivos que só podem ser acessados pelo mar.</div>
+    </div>
+
+    <div class="grid-3">
+      <div class="type-specimen">
+        <span class="label">Overline</span>
+        <div class="t-overline">Passeio de Escuna</div>
+      </div>
+      <div class="type-specimen">
+        <span class="label">Small / Meta</span>
+        <div class="t-small">Saída: 9h00 · Retorno: 17h00 · 8 horas</div>
+      </div>
+      <div class="type-specimen">
+        <span class="label">Caption</span>
+        <div class="t-caption">*Inclui almoço, bebidas e snorkeling</div>
+      </div>
+    </div>
+
+    <div class="comp-box" style="background: var(--ocean-deep); color: white;">
+      <div class="comp-title" style="color: rgba(255,255,255,.5);">Tipografia em Dark Background</div>
+      <div style="font-family: var(--font-display); font-size: 48px; font-weight: 600; margin-bottom: 12px; font-style: italic;">Acalanto Tours</div>
+      <div style="font-size: 16px; color: rgba(255,255,255,.75); line-height: 1.7; max-width: 500px;">Desde 2010 levando famílias e aventureiros para explorar o paraíso marinho de Paraty — um dos destinos mais bonitos do litoral brasileiro.</div>
+      <div style="margin-top: 20px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--sunset-gold);">Paraty · Rio de Janeiro · Brasil</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       3 · ESPAÇAMENTO
+  ════════════════════════════════════════════════════ -->
+  <section id="espacamento">
+    <h2>Escala de Espaçamento</h2>
+    <p class="section-desc">Sistema de 8px — todos os valores são múltiplos de 4 ou 8px para consistência visual.</p>
+
+    <div class="comp-box">
+      <div class="spacing-item">
+        <span class="spacing-label">xs</span>
+        <div class="spacing-bar" style="width: 4px;"></div>
+        <span class="spacing-px">4px · 0.25rem</span>
+        <span class="spacing-use">Gaps mínimos, gaps de ícone</span>
+      </div>
+      <div class="spacing-item">
+        <span class="spacing-label">sm</span>
+        <div class="spacing-bar" style="width: 8px;"></div>
+        <span class="spacing-px">8px · 0.5rem</span>
+        <span class="spacing-use">Entre labels e inputs, dentro de pills</span>
+      </div>
+      <div class="spacing-item">
+        <span class="spacing-label">md</span>
+        <div class="spacing-bar" style="width: 16px;"></div>
+        <span class="spacing-px">16px · 1rem</span>
+        <span class="spacing-use">Padding de componentes, gaps de formulário</span>
+      </div>
+      <div class="spacing-item">
+        <span class="spacing-label">lg</span>
+        <div class="spacing-bar" style="width: 24px;"></div>
+        <span class="spacing-px">24px · 1.5rem</span>
+        <span class="spacing-use">Padding de cards, gaps de grid</span>
+      </div>
+      <div class="spacing-item">
+        <span class="spacing-label">xl</span>
+        <div class="spacing-bar" style="width: 32px;"></div>
+        <span class="spacing-px">32px · 2rem</span>
+        <span class="spacing-use">Margem entre componentes, padding lateral mobile</span>
+      </div>
+      <div class="spacing-item">
+        <span class="spacing-label">2xl</span>
+        <div class="spacing-bar" style="width: 48px;"></div>
+        <span class="spacing-px">48px · 3rem</span>
+        <span class="spacing-use">Margin entre seções menores</span>
+      </div>
+      <div class="spacing-item">
+        <span class="spacing-label">3xl</span>
+        <div class="spacing-bar" style="width: 64px;"></div>
+        <span class="spacing-px">64px · 4rem</span>
+        <span class="spacing-use">Padding interno de seções</span>
+      </div>
+      <div class="spacing-item">
+        <span class="spacing-label">4xl</span>
+        <div class="spacing-bar" style="width: 96px;"></div>
+        <span class="spacing-px">96px · 6rem</span>
+        <span class="spacing-use">Hero padding, seções principais desktop</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       4 · BOTÕES
+  ════════════════════════════════════════════════════ -->
+  <section id="botoes">
+    <h2>Botões</h2>
+    <p class="section-desc">Sistema de botões com hierarquia visual clara — gold para CTA primário, ocean para secundário.</p>
+
+    <div class="grid-2">
+      <div class="comp-box">
+        <div class="comp-title">Variantes Principais</div>
+        <div class="stack">
+          <div class="row">
+            <a href="#" class="btn btn-primary">⛵ Reservar Agora</a>
+            <a href="#" class="btn btn-primary btn-lg">⛵ Reservar — R$190</a>
+          </div>
+          <div class="row">
+            <a href="#" class="btn btn-ocean">Ver Passeios</a>
+            <a href="#" class="btn btn-ocean btn-sm">Saber Mais</a>
+          </div>
+          <div class="row">
+            <a href="#" class="btn btn-whatsapp">💬 Falar via WhatsApp</a>
+          </div>
+          <div class="row">
+            <a href="#" class="btn btn-outline">Ver Itinerário</a>
+            <a href="#" class="btn btn-ghost">Cancelar</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-box" style="background: var(--ocean-deep);">
+        <div class="comp-title" style="color: rgba(255,255,255,.5);">Em Dark Background</div>
+        <div class="stack">
+          <div class="row">
+            <a href="#" class="btn btn-primary">⛵ Reservar Agora</a>
+          </div>
+          <div class="row">
+            <a href="#" class="btn btn-whatsapp">💬 WhatsApp</a>
+          </div>
+          <div class="row">
+            <a href="#" class="btn" style="background: rgba(255,255,255,.15); color: white; border: 1px solid rgba(255,255,255,.25);">Ver Mais Passeios</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       5 · BADGES & CHIPS
+  ════════════════════════════════════════════════════ -->
+  <section id="badges">
+    <h2>Badges & Status</h2>
+    <p class="section-desc">Indicadores visuais para status de disponibilidade, categorias e atributos de passeio.</p>
+
+    <div class="comp-box">
+      <div class="comp-title">Badges de Status</div>
+      <div class="row" style="margin-bottom: 20px;">
+        <span class="badge badge-green">✓ Disponível</span>
+        <span class="badge badge-gold">⭐ Mais Vendido</span>
+        <span class="badge badge-coral">🔥 Últimas Vagas</span>
+        <span class="badge badge-ocean">🌊 Passeio Marítimo</span>
+        <span class="badge" style="background: var(--sand-mid); color: var(--ocean-deep);">📷 Inclui Fotos</span>
+      </div>
+
+      <div class="comp-title">Feature Pills em Cards</div>
+      <div class="tour-features">
+        <span class="feat-pill">🐠 Snorkeling</span>
+        <span class="feat-pill">🍽️ Almoço</span>
+        <span class="feat-pill">🍺 Open Bar</span>
+        <span class="feat-pill">⏱️ 8 horas</span>
+        <span class="feat-pill">👨‍👩‍👧 Família</span>
+        <span class="feat-pill">⚓ Trilha Cachoeira</span>
+        <span class="feat-pill">🌅 Pôr do Sol</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       6 · TOUR CARDS
+  ════════════════════════════════════════════════════ -->
+  <section id="cards">
+    <h2>Tour Cards</h2>
+    <p class="section-desc">Card principal para listagem de passeios — suporta imagem, badge de destaque, features e preço.</p>
+
+    <div class="grid-3">
+
+      <!-- Card 1 -->
+      <div class="tour-card">
+        <div class="tour-card-img">
+          <div class="tour-card-img-inner">⛵</div>
+          <div class="tour-card-img-overlay"></div>
+          <div class="tour-card-duration">⏱️ 8 horas</div>
+          <div style="position:absolute; top:14px; left:14px;">
+            <span class="badge badge-gold" style="font-size: 11px;">⭐ Mais Vendido</span>
+          </div>
+        </div>
+        <div class="tour-card-body">
+          <div class="tour-card-overline">Escuna Completa</div>
+          <div class="tour-card-title">Escuna Brisa Mar com Almoço</div>
+          <div class="tour-card-desc">Navegue pela Baía de Paraty visitando praias paradisíacas, trilhas e pontos de snorkeling com almoço a bordo.</div>
+          <div class="tour-features">
+            <span class="feat-pill">🍽️ Almoço</span>
+            <span class="feat-pill">🐠 Snorkel</span>
+            <span class="feat-pill">🍺 Open Bar</span>
+          </div>
+          <div class="tour-card-footer">
+            <div>
+              <div class="tour-price-label">A partir de</div>
+              <div>
+                <span class="tour-price-value">R$190</span>
+                <span class="tour-price-unit">/adulto</span>
+              </div>
+            </div>
+            <a href="#" class="btn btn-primary btn-sm">Reservar</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="tour-card">
+        <div class="tour-card-img" style="background: linear-gradient(135deg, #1A5C3A, #0A3D5C);">
+          <div class="tour-card-img-inner">🌿</div>
+          <div class="tour-card-img-overlay"></div>
+          <div class="tour-card-duration">⏱️ 6 horas</div>
+        </div>
+        <div class="tour-card-body">
+          <div class="tour-card-overline">Eco-Aventura</div>
+          <div class="tour-card-title">Escuna com Cachoeiras e Trilha</div>
+          <div class="tour-card-desc">Combine o passeio de escuna com trilha em mata atlântica e banho em cachoeiras exclusivas no coração da Reserva.</div>
+          <div class="tour-features">
+            <span class="feat-pill">🥾 Trilha</span>
+            <span class="feat-pill">💧 Cachoeira</span>
+            <span class="feat-pill">🌿 Mata Atlântica</span>
+          </div>
+          <div class="tour-card-footer">
+            <div>
+              <div class="tour-price-label">A partir de</div>
+              <div>
+                <span class="tour-price-value">R$170</span>
+                <span class="tour-price-unit">/adulto</span>
+              </div>
+            </div>
+            <a href="#" class="btn btn-ocean btn-sm">Reservar</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="tour-card">
+        <div class="tour-card-img" style="background: linear-gradient(135deg, #7B3F00, #E8673A);">
+          <div class="tour-card-img-inner">🌅</div>
+          <div class="tour-card-img-overlay"></div>
+          <div class="tour-card-duration">⏱️ 3 horas</div>
+          <div style="position:absolute; top:14px; left:14px;">
+            <span class="badge badge-coral" style="font-size: 11px;">🔥 Últimas Vagas</span>
+          </div>
+        </div>
+        <div class="tour-card-body">
+          <div class="tour-card-overline">Passeio Especial</div>
+          <div class="tour-card-title">Escuna Pôr do Sol</div>
+          <div class="tour-card-desc">A melhor forma de terminar o dia: navegação ao entardecer, com petiscos e bebidas a bordo enquanto o sol se põe no horizonte.</div>
+          <div class="tour-features">
+            <span class="feat-pill">🌅 Sunset</span>
+            <span class="feat-pill">🍷 Bebidas</span>
+            <span class="feat-pill">🎵 Música</span>
+          </div>
+          <div class="tour-card-footer">
+            <div>
+              <div class="tour-price-label">A partir de</div>
+              <div>
+                <span class="tour-price-value">R$120</span>
+                <span class="tour-price-unit">/adulto</span>
+              </div>
+            </div>
+            <a href="#" class="btn btn-primary btn-sm">Reservar</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       7 · BOOKING WIDGET
+  ════════════════════════════════════════════════════ -->
+  <section id="booking">
+    <h2>Booking Widget</h2>
+    <p class="section-desc">Componente de reserva lateral — aparece na página do passeio. Fase 1: envia para WhatsApp.</p>
+
+    <div class="grid-2">
+      <div>
+        <div class="booking-widget">
+          <div class="booking-widget-title">Fazer Reserva</div>
+
+          <div class="booking-field">
+            <label class="booking-label">Data do Passeio</label>
+            <input class="booking-input" type="text" placeholder="Selecione uma data" value="Sábado, 17 de maio de 2026" readonly>
+          </div>
+
+          <div class="booking-field">
+            <label class="booking-label">Passageiros</label>
+            <div class="stack" style="gap: 8px;">
+              <div class="booking-counter">
+                <div>
+                  <div class="booking-counter-label">Adultos</div>
+                  <div class="booking-counter-sub">acima de 12 anos</div>
+                </div>
+                <div class="counter-controls">
+                  <button class="counter-btn">−</button>
+                  <span class="counter-val">2</span>
+                  <button class="counter-btn">+</button>
+                </div>
+              </div>
+              <div class="booking-counter">
+                <div>
+                  <div class="booking-counter-label">Crianças</div>
+                  <div class="booking-counter-sub">5 a 12 anos</div>
+                </div>
+                <div class="counter-controls">
+                  <button class="counter-btn">−</button>
+                  <span class="counter-val">1</span>
+                  <button class="counter-btn">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="booking-total">
+            <div>
+              <div class="booking-total-label">Total estimado</div>
+              <div class="booking-total-value">R$475</div>
+            </div>
+            <div class="booking-total-sub">
+              2 adultos × R$190<br>
+              1 criança × R$95
+            </div>
+          </div>
+
+          <div class="stack" style="gap: 10px; margin-top: 8px;">
+            <a href="#" class="btn btn-whatsapp" style="width:100%; justify-content: center;">💬 Reservar via WhatsApp</a>
+            <div style="font-size: 12px; color: var(--text-muted); text-align:center;">Confirmação imediata · Cancelamento flexível</div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; padding: 14px 16px; background: var(--ocean-pale); border-radius: var(--radius-md); font-size: 13px; color: var(--ocean-deep);">
+          <strong>Fase 2 (Stripe)</strong> — Pagamento online com cartão de crédito/débito via integração Stripe, mantendo o mesmo layout.
+        </div>
+      </div>
+
+      <div class="comp-box">
+        <div class="comp-title">Lógica do Componente</div>
+        <div style="font-size: 13px; color: var(--text-body); line-height: 1.8;">
+          <p style="margin-bottom: 12px;"><strong style="color: var(--ocean-deep);">Estado do componente:</strong></p>
+          <ul style="padding-left: 20px; margin-bottom: 20px;">
+            <li>selectedDate: Date | null</li>
+            <li>adults: number (min 1, max 20)</li>
+            <li>children: number (min 0, max 20)</li>
+            <li>total: computed (adults × priceAdult + children × priceChild)</li>
+          </ul>
+
+          <p style="margin-bottom: 12px;"><strong style="color: var(--ocean-deep);">Geração da mensagem WhatsApp:</strong></p>
+          <div style="background: var(--gray-50); padding: 12px; border-radius: var(--radius-md); font-family: monospace; font-size: 12px; color: var(--text-muted);">
+            Olá! Gostaria de reservar:<br><br>
+            🛥️ Escuna Brisa Mar com Almoço<br>
+            📅 17/05/2026<br>
+            👥 2 adultos + 1 criança<br>
+            💰 Total: R$475<br><br>
+            Meu nome: [solicitado antes de abrir]
+          </div>
+
+          <p style="margin-top: 16px; margin-bottom: 12px;"><strong style="color: var(--ocean-deep);">Disponibilidade:</strong></p>
+          <div style="background: var(--gray-50); padding: 12px; border-radius: var(--radius-md); font-size: 12px; color: var(--text-muted);">
+            Tabela <code>brisatours_availability</code> no Supabase.<br>
+            Admin define: data, vagas_total, vagas_restantes, ativo.<br>
+            Datas sem registro = não disponível (calendário cinza).
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       8 · WIREFRAMES DE PÁGINA
+  ════════════════════════════════════════════════════ -->
+  <section id="wireframes">
+    <h2>Wireframes de Página</h2>
+    <p class="section-desc">Composição visual das páginas principais — homepage e página de passeio individual.</p>
+
+    <!-- Wireframe 1: Homepage -->
+    <div class="wireframe-frame">
+      <div class="wireframe-label">
+        <div class="wireframe-dot" style="background: #FF6058;"></div>
+        <div class="wireframe-dot" style="background: #FFC130;"></div>
+        <div class="wireframe-dot" style="background: #27C840;"></div>
+        &nbsp; Homepage — / &nbsp;·&nbsp; brisatours.com.br
+      </div>
+
+      <!-- Hero -->
+      <div class="hero-mockup">
+        <div class="hero-waves"></div>
+
+        <div class="hero-nav">
+          <div class="nav-mockup" style="background: transparent; box-shadow: none; padding: 0;">
+            <a href="#" class="nav-logo">
+              <div class="nav-logo-icon">⛵</div>
+              Acalanto Tours
+            </a>
+            <div class="nav-links">
+              <a href="#" class="nav-link active">Início</a>
+              <a href="#" class="nav-link">Passeios</a>
+              <a href="#" class="nav-link">Roteiros</a>
+              <a href="#" class="nav-link">Galeria</a>
+              <a href="#" class="nav-link">Contato</a>
+            </div>
+            <a href="#" class="btn btn-primary btn-sm">💬 WhatsApp</a>
+          </div>
+        </div>
+
+        <div class="hero-content">
+          <span class="hero-overline">Paraty · Rio de Janeiro · Brasil</span>
+          <h1 class="hero-title">Explore o paraíso de <em>Paraty</em> pelo mar</h1>
+          <p class="hero-subtitle">Passeios de escuna por praias cristalinas, trilhas em mata atlântica e mergulho em pontos exclusivos. Experiências que ficam na memória.</p>
+          <div class="hero-cta">
+            <a href="#" class="btn btn-primary btn-lg">⛵ Ver Passeios</a>
+            <a href="#" class="btn" style="background: rgba(255,255,255,.15); color: white; border: 1px solid rgba(255,255,255,.25); padding: 14px 28px; font-size: 15px;">▶ Como Funciona</a>
+          </div>
+        </div>
+
+        <div class="hero-trust">
+          <div class="trust-pill">⭐ 4.9/5 no Google</div>
+          <div class="trust-pill">👥 +5.000 turistas</div>
+          <div class="trust-pill">✓ Operação desde 2010</div>
+        </div>
+      </div>
+
+      <!-- Tours Section -->
+      <div class="tours-section">
+        <div class="section-header">
+          <span class="overline">Nossos Passeios</span>
+          <h2>Escolha sua aventura</h2>
+          <p>Quatro experiências únicas para todos os gostos e idades. Partindo do cais histórico de Paraty.</p>
+        </div>
+
+        <div class="tours-grid">
+          <div class="tour-card">
+            <div class="tour-card-img">
+              <div class="tour-card-img-inner">⛵</div>
+              <div class="tour-card-img-overlay"></div>
+              <div class="tour-card-duration">⏱️ 8 horas</div>
+              <div style="position:absolute; top:14px; left:14px;"><span class="badge badge-gold" style="font-size:11px;">⭐ Mais Vendido</span></div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-card-overline">Passeio Completo</div>
+              <div class="tour-card-title">Escuna com Almoço</div>
+              <div class="tour-features">
+                <span class="feat-pill">🍽️ Almoço</span>
+                <span class="feat-pill">🐠 Snorkel</span>
+                <span class="feat-pill">🍺 Open Bar</span>
+              </div>
+              <div class="tour-card-footer">
+                <div><div class="tour-price-label">A partir de</div><span class="tour-price-value">R$190</span></div>
+                <a href="#" class="btn btn-primary btn-sm">Reservar</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="tour-card">
+            <div class="tour-card-img" style="background: linear-gradient(135deg, #1A5C3A, #0A3D5C);">
+              <div class="tour-card-img-inner">🌿</div>
+              <div class="tour-card-img-overlay"></div>
+              <div class="tour-card-duration">⏱️ 6 horas</div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-card-overline">Eco-Aventura</div>
+              <div class="tour-card-title">Escuna com Cachoeiras</div>
+              <div class="tour-features">
+                <span class="feat-pill">🥾 Trilha</span>
+                <span class="feat-pill">💧 Cachoeira</span>
+                <span class="feat-pill">🌿 Natureza</span>
+              </div>
+              <div class="tour-card-footer">
+                <div><div class="tour-price-label">A partir de</div><span class="tour-price-value">R$170</span></div>
+                <a href="#" class="btn btn-ocean btn-sm">Reservar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top: 24px;">
+          <a href="#" class="btn btn-outline">Ver Todos os Passeios →</a>
+        </div>
+      </div>
+
+      <!-- Trust Section -->
+      <div style="background: var(--ocean-deep); padding: 40px 32px;">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 800px; margin: 0 auto; text-align: center;">
+          <div>
+            <div style="font-family: var(--font-display); font-size: 36px; color: var(--sunset-gold); font-weight: 700;">+5k</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px;">Turistas atendidos</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-display); font-size: 36px; color: var(--sunset-gold); font-weight: 700;">4.9★</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px;">Google Reviews</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-display); font-size: 36px; color: var(--sunset-gold); font-weight: 700;">15+</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px;">Anos de experiência</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-display); font-size: 36px; color: var(--sunset-gold); font-weight: 700;">4</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px;">Passeios exclusivos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wireframe 2: Página do Passeio -->
+    <div class="wireframe-frame">
+      <div class="wireframe-label">
+        <div class="wireframe-dot" style="background: #FF6058;"></div>
+        <div class="wireframe-dot" style="background: #FFC130;"></div>
+        <div class="wireframe-dot" style="background: #27C840;"></div>
+        &nbsp; Página do Passeio — /passeios/[slug]
+      </div>
+
+      <div class="booking-page">
+        <div class="booking-main">
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+            <a href="#" style="color: var(--ocean-mid); text-decoration: none;">← Todos os passeios</a>
+          </div>
+          <h1>Escuna Brisa Mar com Almoço</h1>
+          <div class="meta">
+            <span class="badge badge-gold">⭐ Mais Vendido</span>
+            <span class="badge badge-ocean">🌊 Passeio Marítimo</span>
+            <span style="font-size: 13px; color: var(--text-muted);">⏱️ 8 horas · Saída 9h00</span>
+          </div>
+
+          <div class="booking-img">⛵</div>
+
+          <p class="booking-desc">
+            Embarque numa jornada inesquecível pelas águas azul-turquesa da Baía de Paraty. Nossa escuna parte do cais histórico do centro colonial e navega por praias de areias brancas inacessíveis por terra, pontos de mergulho com fauna marinha exuberante e enseadas protegidas cobertas pela Mata Atlântica. O almoço é servido a bordo com pratos típicos da culinária caiçara, acompanhados de bebidas no estilo open bar.
+          </p>
+
+          <div class="itinerary">
+            <h3>Roteiro do dia</h3>
+            <div class="itinerary-item">
+              <div class="itinerary-bullet">1</div>
+              <div><strong>9h00</strong> — Embarque no Cais Turístico de Paraty, apresentação da tripulação e briefing de segurança</div>
+            </div>
+            <div class="itinerary-item">
+              <div class="itinerary-bullet">2</div>
+              <div><strong>10h00</strong> — Primeira parada: Praia do Sono — banho de mar, snorkeling e descanso na areia (1h30)</div>
+            </div>
+            <div class="itinerary-item">
+              <div class="itinerary-bullet">3</div>
+              <div><strong>12h00</strong> — Almoço a bordo: arroz de camarão, frutos do mar e saladas. Open bar de caipirinhas e refrigerantes</div>
+            </div>
+            <div class="itinerary-item">
+              <div class="itinerary-bullet">4</div>
+              <div><strong>13h30</strong> — Segunda parada: Ilha do Araújo — trilha de 20 minutos e piscina natural (2h)</div>
+            </div>
+            <div class="itinerary-item">
+              <div class="itinerary-bullet">5</div>
+              <div><strong>16h30</strong> — Retorno ao cais. Chegada estimada 17h00</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="booking-widget">
+            <div class="booking-widget-title">Fazer Reserva</div>
+            <div class="booking-field">
+              <label class="booking-label">Data</label>
+              <input class="booking-input" type="text" placeholder="Selecione uma data" value="Sábado, 17/05/2026" readonly>
+            </div>
+            <div class="booking-field">
+              <label class="booking-label">Passageiros</label>
+              <div class="stack" style="gap: 8px;">
+                <div class="booking-counter">
+                  <div>
+                    <div class="booking-counter-label">Adultos</div>
+                    <div class="booking-counter-sub">R$190/pessoa</div>
+                  </div>
+                  <div class="counter-controls">
+                    <button class="counter-btn">−</button>
+                    <span class="counter-val">2</span>
+                    <button class="counter-btn">+</button>
+                  </div>
+                </div>
+                <div class="booking-counter">
+                  <div>
+                    <div class="booking-counter-label">Crianças</div>
+                    <div class="booking-counter-sub">R$95/criança</div>
+                  </div>
+                  <div class="counter-controls">
+                    <button class="counter-btn">−</button>
+                    <span class="counter-val">1</span>
+                    <button class="counter-btn">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="booking-total">
+              <div>
+                <div class="booking-total-label">Total</div>
+                <div class="booking-total-value">R$475</div>
+              </div>
+              <div class="booking-total-sub">2 × R$190<br>1 × R$95</div>
+            </div>
+            <div class="stack" style="gap: 8px; margin-top: 8px;">
+              <a href="#" class="btn btn-whatsapp" style="width:100%; justify-content:center;">💬 Reservar via WhatsApp</a>
+              <div style="font-size: 11px; color: var(--text-muted); text-align:center; line-height: 1.5;">
+                Confirmação em até 2 horas<br>
+                Cancelamento gratuito até 48h antes
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; padding: 16px; background: var(--sand-warm); border-radius: var(--radius-md);">
+            <div style="font-size: 13px; font-weight: 600; color: var(--ocean-deep); margin-bottom: 8px;">✓ O que está incluído</div>
+            <ul style="font-size: 13px; color: var(--text-body); line-height: 1.8; padding-left: 16px;">
+              <li>Almoço a bordo</li>
+              <li>Open bar (caipirinhas, água, refrigerante)</li>
+              <li>Equipamento de snorkeling</li>
+              <li>Guia especializado</li>
+              <li>Colete salva-vidas</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       9 · ÍCONES
+  ════════════════════════════════════════════════════ -->
+  <section id="icones">
+    <h2>Ícones do Sistema</h2>
+    <p class="section-desc">Uso de emojis nativos como ícones em componentes. Para a implementação React, usar Lucide React com stroke-width 1.5.</p>
+
+    <div class="comp-box">
+      <div class="icon-grid">
+        <div class="icon-item"><span class="ico">⛵</span><div class="name">Escuna</div></div>
+        <div class="icon-item"><span class="ico">🌊</span><div class="name">Mar</div></div>
+        <div class="icon-item"><span class="ico">🐠</span><div class="name">Snorkel</div></div>
+        <div class="icon-item"><span class="ico">🌿</span><div class="name">Natureza</div></div>
+        <div class="icon-item"><span class="ico">🥾</span><div class="name">Trilha</div></div>
+        <div class="icon-item"><span class="ico">💧</span><div class="name">Cachoeira</div></div>
+        <div class="icon-item"><span class="ico">🍽️</span><div class="name">Almoço</div></div>
+        <div class="icon-item"><span class="ico">🍺</span><div class="name">Open Bar</div></div>
+        <div class="icon-item"><span class="ico">🌅</span><div class="name">Pôr do Sol</div></div>
+        <div class="icon-item"><span class="ico">📸</span><div class="name">Fotos</div></div>
+        <div class="icon-item"><span class="ico">👨‍👩‍👧</span><div class="name">Família</div></div>
+        <div class="icon-item"><span class="ico">⏱️</span><div class="name">Duração</div></div>
+        <div class="icon-item"><span class="ico">📅</span><div class="name">Data</div></div>
+        <div class="icon-item"><span class="ico">⭐</span><div class="name">Destaque</div></div>
+        <div class="icon-item"><span class="ico">💬</span><div class="name">WhatsApp</div></div>
+        <div class="icon-item"><span class="ico">✓</span><div class="name">Confirmado</div></div>
+        <div class="icon-item"><span class="ico">🔥</span><div class="name">Urgência</div></div>
+        <div class="icon-item"><span class="ico">⚓</span><div class="name">Embarque</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+       TOKENS CSS — REFERÊNCIA
+  ════════════════════════════════════════════════════ -->
+  <section>
+    <h2>CSS Variables — Referência</h2>
+    <p class="section-desc">Tokens para copiar em <code>globals.css</code> do projeto Next.js.</p>
+
+    <div class="comp-box" style="background: #1E293B;">
+      <pre style="color: #E2E8F0; font-size: 13px; line-height: 1.8; font-family: 'Fira Code', monospace; overflow-x: auto;"><code>/* globals.css — Acalanto Tours Design Tokens */
+:root {
+  /* Colors */
+  --ocean-deep:    #0A3D5C;
+  --ocean-mid:     #1A6B8A;
+  --ocean-light:   #2E9CBF;
+  --ocean-pale:    #D6EEF5;
+  --sand-warm:     #F5EDD8;
+  --sand-mid:      #E8D9B8;
+  --sunset-gold:   #F4A623;
+  --sunset-coral:  #E8673A;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans:    'Plus Jakarta Sans', system-ui, sans-serif;
+
+  /* Spacing */
+  --space-xs:   4px;   --space-sm:   8px;
+  --space-md:  16px;   --space-lg:  24px;
+  --space-xl:  32px;   --space-2xl: 48px;
+  --space-3xl: 64px;   --space-4xl: 96px;
+
+  /* Border Radius */
+  --radius-sm:   6px;  --radius-md:  12px;
+  --radius-lg:  20px;  --radius-xl:  32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(10,61,92,.08), 0 1px 2px rgba(10,61,92,.04);
+  --shadow-md: 0 4px 16px rgba(10,61,92,.12), 0 2px 6px rgba(10,61,92,.06);
+  --shadow-lg: 0 8px 32px rgba(10,61,92,.16), 0 4px 12px rgba(10,61,92,.08);
+  --shadow-xl: 0 20px 60px rgba(10,61,92,.20), 0 8px 24px rgba(10,61,92,.10);
+}</code></pre>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="doc-footer">
+  <strong>Acalanto Tours Design System v1.0</strong> — Produzido pela <strong>Balaio Digital</strong> · 2026-05-04 ·
+  Referência para implementação em <strong>Next.js 16 + TypeScript + Tailwind CSS v4</strong>
+</footer>
+
+</body>
+</html>

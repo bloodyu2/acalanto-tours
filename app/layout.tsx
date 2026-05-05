@@ -1,10 +1,24 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
 import CookieBanner from '@/components/layout/CookieBanner'
 import './globals.css'
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  display: 'swap',
+})
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
+})
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
@@ -50,7 +64,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className="h-full">
+    <html lang="pt-BR" className={`h-full ${playfair.variable} ${jakarta.variable}`}>
       <head>
         <script
           type="application/ld+json"
