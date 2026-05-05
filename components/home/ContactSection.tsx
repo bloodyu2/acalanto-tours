@@ -40,8 +40,8 @@ export default function ContactSection() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {[
-                { icon: '📍', title: 'Localização', desc: 'Paraty, Rio de Janeiro — Costa Verde' },
-                { icon: '💬', title: 'WhatsApp', desc: 'Resposta rápida — seg a sáb' },
+                { icon: '📍', title: 'Localização', desc: 'Paraty, Rio de Janeiro. Costa Verde.' },
+                { icon: '💬', title: 'WhatsApp', desc: 'Resposta rápida, seg a sáb.' },
                 { icon: '✉️', title: 'E-mail', desc: 'contato@acalantotours.com.br' },
               ].map(({ icon, title, desc }) => (
                 <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>

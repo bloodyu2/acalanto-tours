@@ -16,13 +16,13 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return { title: 'Passeio de Escuna em Paraty — Acalanto Tours' }
+    return { title: 'Passeio de Escuna em Paraty | Acalanto Tours' }
   }
   const supabase = await createClient()
   const { data } = await supabase.from('boats').select('name,tagline,description').eq('slug', slug).single()
   if (!data) return { title: 'Passeio não encontrado' }
   return {
-    title: `${data.name} — Passeio de Escuna em Paraty`,
+    title: `${data.name} | Passeio de Escuna em Paraty`,
     description: data.description || data.tagline || `Passeio ${data.name} em Paraty`,
   }
 }

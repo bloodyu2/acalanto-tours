@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Galeria',
-  description: 'Veja as fotos dos passeios de escuna em Paraty — baías, ilhas, praias e muito azul.',
+  description: 'Fotos dos passeios de escuna em Paraty. Baías, ilhas, praias e muito azul.',
 }
 
 export default async function GaleriaPage() {

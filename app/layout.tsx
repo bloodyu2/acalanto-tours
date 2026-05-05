@@ -26,7 +26,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TouristAttraction',
   name: 'Acalanto Tours',
-  description: 'Passeios de escuna em Paraty — baías, ilhas e praias da Costa Verde.',
+  description: 'Passeios de escuna em Paraty. Baías, ilhas e praias da Costa Verde.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://acalantotours.com.br',
   address: {
     '@type': 'PostalAddress',
@@ -41,23 +41,23 @@ const jsonLd = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Acalanto Tours — Passeios de Escuna em Paraty',
+    default: 'Acalanto Tours | Passeios de Escuna em Paraty',
     template: '%s | Acalanto Tours',
   },
-  description: 'Passeios inesquecíveis de escuna em Paraty. Conheça as baías e ilhas da Costa Verde a bordo das nossas embarcações. Reserve pelo WhatsApp!',
+  description: 'Passeios de escuna em Paraty. Quatro embarcações pelas baías e ilhas da Costa Verde. Reserve pelo WhatsApp.',
   keywords: ['escuna Paraty', 'passeio barco Paraty', 'turismo náutico Paraty', 'passeio de escuna', 'Paraty tours', 'Costa Verde'],
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
     siteName: 'Acalanto Tours',
-    title: 'Acalanto Tours — Passeios de Escuna em Paraty',
-    description: 'Passeios inesquecíveis de escuna em Paraty. Conheça as baías e ilhas da Costa Verde.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Acalanto Tours — Escunas em Paraty' }],
+    title: 'Acalanto Tours | Passeios de Escuna em Paraty',
+    description: 'Quatro escunas, saídas diárias pelas ilhas e praias da Costa Verde.',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Acalanto Tours | Escunas em Paraty' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Acalanto Tours — Passeios de Escuna em Paraty',
-    description: 'Passeios inesquecíveis de escuna em Paraty.',
+    title: 'Acalanto Tours | Passeios de Escuna em Paraty',
+    description: 'Quatro escunas, saídas diárias pelas ilhas e praias da Costa Verde.',
   },
   robots: { index: true, follow: true },
 }

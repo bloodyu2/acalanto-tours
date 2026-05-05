@@ -5,7 +5,7 @@ import TourCard from '@/components/tours/TourCard'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Nossas Escunas — Passeios em Paraty',
+  title: 'Nossas Escunas | Passeios em Paraty',
   description: 'Escolha entre 4 escunas com personalidades únicas: gastronomia caiçara, familiar, premium com ofurô ou contemplativa. Passeios saindo de Paraty pela Costa Verde.',
 }
 
@@ -91,7 +91,7 @@ export default async function EscunasPage() {
               </strong>
               Adultos pagam valor cheio por pessoa. Crianças de 6 a 10 anos pagam meia entrada.
               Crianças até 5 anos <strong style={{ color: 'var(--ocean-deep)' }}>não pagam</strong>.
-              O pagamento é confirmado diretamente com nossa equipe pelo WhatsApp — sem cobrança antecipada online.
+              O pagamento é confirmado diretamente com nossa equipe pelo WhatsApp. Sem cobrança antecipada online.
             </div>
           </div>
 

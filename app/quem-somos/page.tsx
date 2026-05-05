@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Quem Somos',
-  description: 'Conheça a Acalanto Tours — empresa de turismo náutico em Paraty dedicada a criar experiências inesquecíveis nas águas da Costa Verde.',
+  description: 'Conheça a Acalanto Tours, plataforma de turismo náutico em Paraty que reúne escunas, lanchas, jeep, fotografia e guias num só canal de reservas.',
 }
 
 export default function QuemSomosPage() {
@@ -25,7 +25,7 @@ export default function QuemSomosPage() {
             Quem Somos
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.125rem', maxWidth: '600px' }}>
-            Da fotografia à plataforma de turismo — a história de como a Acalanto surgiu em Paraty.
+            Da fotografia à plataforma de turismo. A história de como a Acalanto surgiu em Paraty.
           </p>
         </div>
       </section>
@@ -58,8 +58,8 @@ export default function QuemSomosPage() {
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
               {[
-                { icon: '⛵', title: 'Escunas', desc: 'Passeios em grupos pelas ilhas e praias da Baía de Paraty — com gastronomia, roteiros e perfis variados.' },
-                { icon: '🚤', title: 'Lanchas Privadas', desc: 'Barcos privativos para até 6 pessoas. O roteiro é seu — vá onde quiser, no seu tempo.' },
+                { icon: '⛵', title: 'Escunas', desc: 'Passeios em grupos pelas ilhas e praias da Baía de Paraty, com gastronomia, roteiros e perfis variados.' },
+                { icon: '🚤', title: 'Lanchas Privadas', desc: 'Barcos privativos para até 6 pessoas. O roteiro é seu: vá onde quiser, no seu tempo.' },
                 { icon: '🚙', title: 'Jeep e City Tour', desc: 'Percorra a Mata Atlântica, cachoeiras e o centro histórico tombado de Paraty.' },
                 { icon: '📸', title: 'Fotografia', desc: 'Serviços fotográficos profissionais para passeios, ensaios e eventos em Paraty.' },
                 { icon: '🧭', title: 'Guias', desc: 'Guias locais credenciados que conhecem cada canto da cidade e da natureza ao redor.' },

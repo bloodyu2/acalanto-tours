@@ -46,7 +46,7 @@ export default async function ToursSection() {
           <span style={{ fontSize: '1.25rem' }}>ℹ️</span>
           <span>
             <strong style={{ color: 'var(--ocean-deep)' }}>Tabela de preços:</strong>{' '}
-            Adultos — valor fixo por pessoa. Crianças de 6 a 10 anos — meia entrada. Crianças até 5 anos — <strong>gratuito</strong>.
+            Adultos: valor fixo por pessoa. Crianças de 6 a 10 anos: meia entrada. Crianças até 5 anos: <strong>gratuito</strong>.
           </span>
         </div>
       </div>
