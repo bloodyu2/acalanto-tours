@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import BookingWidget from '@/components/booking/BookingWidget'
 import { formatCents } from '@/lib/booking/pricing'
 import { FEATURE_LABELS } from '@/lib/constants'
@@ -22,7 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const supabase = await createClient()
+  // Must use cookie-free client — generateStaticParams runs at build time without HTTP context
+  const supabase = await createAdminClient()
   const { data } = await supabase.from('boats').select('slug').eq('active', true)
   return (data || []).map(b => ({ slug: b.slug }))
 }
