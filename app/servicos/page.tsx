@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Serviços',
   description: 'Além das escunas: lancha privativa, fotografia profissional, passeio de jeep e transfer em Paraty.',

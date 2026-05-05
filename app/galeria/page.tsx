@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Galeria',
   description: 'Veja as fotos dos passeios de escuna em Paraty — baías, ilhas, praias e muito azul.',
