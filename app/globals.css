@@ -327,3 +327,20 @@ h1, h2, h3, h4, h5, h6 {
     position: static !important;
   }
 }
+
+.service-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 4rem;
+  align-items: start;
+  max-width: 1000px;
+}
+@media (max-width: 768px) {
+  .service-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .service-detail-grid .service-cta-sticky {
+    position: static !important;
+  }
+}

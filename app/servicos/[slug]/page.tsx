@@ -45,7 +45,7 @@ export default async function ServicoPage({ params }: Props) {
 
       <section style={{ padding: '4rem 0 5rem' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '4rem', alignItems: 'start', maxWidth: '1000px' }}>
+          <div className="service-detail-grid">
 
             {/* Left — description */}
             <div>
@@ -82,7 +82,7 @@ export default async function ServicoPage({ params }: Props) {
             </div>
 
             {/* Right — CTA card */}
-            <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', position: 'sticky', top: '90px' }}>
+            <div className="service-cta-sticky" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', position: 'sticky', top: '90px' }}>
               <div style={{ marginBottom: '1.5rem' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
                   Valor
@@ -116,16 +116,6 @@ export default async function ServicoPage({ params }: Props) {
         </div>
       </section>
 
-      <style jsx>{`
-        @media (max-width: 768px) {
-          div[style*="gridTemplateColumns: 1fr 380px"] {
-            grid-template-columns: 1fr !important;
-          }
-          div[style*="position: sticky"] {
-            position: static !important;
-          }
-        }
-      `}</style>
     </>
   )
 }
