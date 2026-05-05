@@ -2,7 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { formatCents } from '@/lib/booking/pricing'
 
 export default async function AdminReservasPage() {
-  const supabase = createAdminClient()
+  const supabase = await createAdminClient()
   const { data: bookings } = await supabase
     .from('bookings')
     .select('*, boats(name)')

@@ -1,7 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 
 export default async function AdminDashboard() {
-  const supabase = createAdminClient()
+  const supabase = await createAdminClient()
   const [
     { count: bookings },
     { count: contacts },

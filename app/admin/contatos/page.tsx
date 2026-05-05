@@ -1,7 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 
 export default async function AdminContatosPage() {
-  const supabase = createAdminClient()
+  const supabase = await createAdminClient()
   const { data: contacts } = await supabase
     .from('contacts')
     .select('*')

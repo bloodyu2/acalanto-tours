@@ -2,7 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import TestimonialsActions from './TestimonialsActions'
 
 export default async function AdminDepoimentosPage() {
-  const supabase = createAdminClient()
+  const supabase = await createAdminClient()
   const { data: testimonials } = await supabase
     .from('testimonials')
     .select('*')
