@@ -1,35 +1,67 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 
 interface Props { params: Promise<{ slug: string }> }
 
-// Force dynamic rendering — Supabase env vars may not be present at build time
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return { title: 'Serviço | Acalanto Tours' }
-  }
+  if (slug === 'fotografia') return { title: 'Fotografia Profissional | Acalanto Tours' }
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return { title: 'Serviço | Acalanto Tours' }
   const supabase = await createClient()
   const { data } = await supabase.from('services').select('name,description').eq('slug', slug).single()
   if (!data) return { title: 'Serviço não encontrado' }
   return { title: data.name, description: data.description || undefined }
 }
 
+// Per-service catalog highlights shown as feature list
+const serviceHighlights: Record<string, string[]> = {
+  'lancha-privativa': [
+    'Embarcação exclusiva para o seu grupo (até 6 pessoas)',
+    'Roteiro personalizado — você escolhe as paradas',
+    'Saída no horário combinado com você',
+    'Inclui combustível e equipamentos de segurança',
+    'Condutor experiente com conhecimento local',
+    'Possibilidade de snorkel e banho nas praias',
+  ],
+  'passeio-de-jeep': [
+    'Percurso pela Mata Atlântica com guia local',
+    'Visita a cachoeiras e mirantes exclusivos',
+    'Vista panorâmica para a Baía de Paraty',
+    'Trilhas que não aparecem nos roteiros comuns',
+    'Combinável com passeio de escuna no mesmo dia',
+    'Veículo 4x4 apto para terrenos irregulares',
+  ],
+  'transfer': [
+    'Transfer para aeroportos do Rio e São Paulo',
+    'Atende rodoviárias e cidades da Costa Verde',
+    'Veículos confortáveis e climatizados',
+    'Motoristas bilíngues (inglês disponível)',
+    'Horário fixo acordado previamente',
+    'Ideal para grupos, famílias e crianças pequenas',
+  ],
+}
+
 export default async function ServicoPage({ params }: Props) {
   const { slug } = await params
+
+  // Fotografia tem página dedicada com catálogo completo
+  if (slug === 'fotografia') redirect('/fotografia')
+
   const supabase = await createClient()
   const { data: svc } = await supabase.from('services').select('*').eq('slug', slug).eq('active', true).single()
   if (!svc) notFound()
 
   const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999627968'
-  const waMsg = encodeURIComponent(`Olá! Tenho interesse no serviço "${svc.name}". Poderia me dar mais informações?`)
+  const waMsg = encodeURIComponent(`Olá! Tenho interesse no serviço de ${svc.name}. Poderia me dar mais informações sobre disponibilidade e valores?`)
+  const highlights = serviceHighlights[slug] ?? []
 
   return (
     <>
+      {/* Hero */}
       <section style={{ background: 'linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-mid) 100%)', padding: '5rem 0 3rem', position: 'relative' }}>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0 }}>
           <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: '60px' }}>
@@ -37,34 +69,43 @@ export default async function ServicoPage({ params }: Props) {
           </svg>
         </div>
         <div className="container" style={{ position: 'relative' }}>
-          <Link href="/servicos" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem', textDecoration: 'none', display: 'block', marginBottom: '1rem' }}>← Todos os serviços</Link>
-          <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'white', marginBottom: '0.5rem' }}>{svc.name}</h1>
-          {svc.price_label && <p style={{ color: 'var(--sunset)', fontWeight: 700, fontSize: '1.25rem' }}>{svc.price_label}</p>}
+          <Link href="/servicos" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.875rem', textDecoration: 'none', display: 'block', marginBottom: '1rem' }}>
+            ← Todos os serviços
+          </Link>
+          <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(2rem, 5vw, 3rem)', color: 'white', marginBottom: '0.5rem' }}>
+            {svc.name}
+          </h1>
+          {svc.price_label && (
+            <p style={{ color: 'var(--sunset)', fontWeight: 700, fontSize: '1.25rem' }}>{svc.price_label}</p>
+          )}
         </div>
       </section>
 
+      {/* Content */}
       <section style={{ padding: '4rem 0 5rem' }}>
         <div className="container">
           <div className="service-detail-grid">
 
-            {/* Left — description */}
+            {/* Left — catalog content */}
             <div>
               {svc.description && (
-                <p style={{ fontSize: '1.125rem', color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: '2rem' }}>
+                <p style={{ fontSize: '1.125rem', color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: '2.5rem' }}>
                   {svc.description}
                 </p>
               )}
 
-              {/* Highlights from features field if present */}
-              {svc.features && svc.features.length > 0 && (
-                <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '1rem' }}>
+              {highlights.length > 0 && (
+                <div style={{ marginBottom: '2.5rem' }}>
+                  <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.375rem', color: 'var(--ocean-deep)', marginBottom: '1.25rem' }}>
                     O que está incluído
-                  </h3>
+                  </h2>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {svc.features.map((f: string) => (
-                      <li key={f} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', padding: '0.625rem 0', borderBottom: '1px solid var(--border)', fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
-                        <span style={{ color: 'var(--ocean-mid)', fontWeight: 700 }}>✓</span>
+                    {highlights.map(f => (
+                      <li key={f} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', padding: '0.75rem 0', borderBottom: '1px solid var(--border)', fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ocean-mid)', flexShrink: 0, marginTop: '2px' }}>
+                          <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                          <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
                         {f}
                       </li>
                     ))}
@@ -72,16 +113,18 @@ export default async function ServicoPage({ params }: Props) {
                 </div>
               )}
 
-              {/* Note */}
-              <div style={{ background: 'var(--sand)', borderRadius: '12px', padding: '1.25rem 1.5rem', border: '1px solid var(--border)' }}>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>
-                  <strong style={{ color: 'var(--text-primary)' }}>Como funciona?</strong>{' '}
-                  Manda mensagem no WhatsApp e a gente te responde com disponibilidade, valores e detalhes. Sem formulário, sem espera.
+              {/* How it works */}
+              <div style={{ background: 'var(--sand)', borderRadius: '16px', padding: '1.75rem', border: '1px solid var(--border)' }}>
+                <h3 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.125rem', color: 'var(--ocean-deep)', marginBottom: '0.75rem' }}>
+                  Como contratar
+                </h3>
+                <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', lineHeight: 1.7, margin: 0 }}>
+                  Manda uma mensagem no WhatsApp com a data desejada e o tamanho do grupo. Nossa equipe responde com disponibilidade e valores em minutos. Sem formulário, sem espera.
                 </p>
               </div>
             </div>
 
-            {/* Right — CTA card */}
+            {/* Right — sticky CTA */}
             <div className="service-cta-sticky" style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 24px rgba(0,0,0,0.06)', position: 'sticky', top: '90px' }}>
               <div style={{ marginBottom: '1.5rem' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
@@ -90,6 +133,9 @@ export default async function ServicoPage({ params }: Props) {
                 <p style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
                   {svc.price_label || 'Sob consulta'}
                 </p>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                  Valor confirmado no WhatsApp conforme data e grupo
+                </p>
               </div>
 
               <a
@@ -97,19 +143,25 @@ export default async function ServicoPage({ params }: Props) {
                 target="_blank"
                 rel="noreferrer"
                 className="btn-primary"
-                style={{ width: '100%', justifyContent: 'center', fontSize: '1rem', marginBottom: '1rem' }}
+                style={{ width: '100%', justifyContent: 'center', fontSize: '1rem', marginBottom: '0.875rem' }}
               >
                 Solicitar pelo WhatsApp
               </a>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginTop: '1.25rem' }}>
-                {[
-                  'Resposta rápida',
-                  'Sem compromisso',
-                  'Equipe local em Paraty',
-                ].map(item => (
-                  <p key={item} style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{color:'var(--ocean-mid)',flexShrink:0}}><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <Link
+                href="/contato"
+                style={{ display: 'block', textAlign: 'center', fontSize: '0.875rem', color: 'var(--ocean-mid)', padding: '0.625rem', textDecoration: 'none', borderRadius: '8px', border: '1px solid var(--border)' }}
+              >
+                Ou envie uma mensagem
+              </Link>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border)' }}>
+                {['Resposta em minutos', 'Sem compromisso', 'Equipe local em Paraty'].map(item => (
+                  <p key={item} style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ocean-mid)', flexShrink: 0 }}>
+                      <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                      <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
                     {item}
                   </p>
                 ))}
@@ -118,7 +170,6 @@ export default async function ServicoPage({ params }: Props) {
           </div>
         </div>
       </section>
-
     </>
   )
 }

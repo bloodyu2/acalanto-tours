@@ -68,7 +68,7 @@ export default async function ServicosPage() {
         <div className="container">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
             {services?.map(svc => (
-              <Link key={svc.id} href={`/servicos/${svc.slug}`} style={{ textDecoration: 'none' }}>
+              <Link key={svc.id} href={svc.slug === 'fotografia' ? '/fotografia' : `/servicos/${svc.slug}`} style={{ textDecoration: 'none' }}>
                 <div className="card" style={{ padding: '2rem', height: '100%' }}>
                   <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)' }}>{icons[svc.slug] || <AnchorSvg />}</div>
                   <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: 'var(--ocean-deep)', marginBottom: '0.625rem' }}>{svc.name}</h2>
