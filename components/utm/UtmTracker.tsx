@@ -24,7 +24,14 @@ export default function UtmTracker() {
       document.cookie = `utm_campaign=${utm_campaign}; max-age=604800; path=/`
     }
 
-    const session_id = crypto.randomUUID()
+    // Reuse stable session ID for consistent funnel attribution
+    let session_id: string
+    try {
+      session_id = sessionStorage.getItem('utm_session_id') ?? crypto.randomUUID()
+      sessionStorage.setItem('utm_session_id', session_id)
+    } catch {
+      session_id = crypto.randomUUID()
+    }
 
     fetch('/api/utm', {
       method: 'POST',
