@@ -5,11 +5,10 @@ import { useState, useEffect } from 'react'
 import CartIcon from '@/components/cart/CartIcon'
 
 const nav = [
-  { href: '/#escunas',  label: 'Escunas' },
-  { href: '/servicos',  label: 'Serviços' },
-  { href: '/galeria',   label: 'Galeria' },
+  { href: '/',           label: 'Início' },
+  { href: '/passeios',   label: 'Passeios' },
+  { href: '/fotografia', label: 'Fotografia' },
   { href: '/quem-somos', label: 'Quem Somos' },
-  { href: '/#contato',  label: 'Contato' },
 ]
 
 export default function Header() {
@@ -77,11 +76,11 @@ export default function Header() {
           ))}
           <CartIcon />
           <Link
-            href="/#escunas"
+            href="/passeios"
             className="btn-primary"
             style={{ marginLeft: '0.75rem', padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}
           >
-            Reservar Agora
+            Reservar
           </Link>
         </nav>
 
@@ -135,12 +134,12 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="/#escunas"
+            href="/passeios"
             className="btn-primary"
             onClick={() => setOpen(false)}
             style={{ marginTop: '1rem', width: '100%', justifyContent: 'center' }}
           >
-            Reservar Agora
+            Reservar
           </Link>
         </div>
       )}
