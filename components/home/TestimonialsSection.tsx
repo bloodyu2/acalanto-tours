@@ -1,11 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 
-const fallback = [
-  { author_name: 'Família Rodrigues', author_city: 'São Paulo, SP', content: 'Passeio incrível! Os filhos adoraram o escorregador da Ilha Rasa V. A equipe foi muito atenciosa e o roteiro passou por praias que jamais esquecemos. Voltaremos com certeza!', rating: 5 },
-  { author_name: 'Mariana Souza', author_city: 'Rio de Janeiro, RJ', content: 'Fiz o passeio na Tânia e foi uma experiência premium de verdade. O ofurô panorâmico no meio do mar foi algo único. Recomendo muito para casais!', rating: 5 },
-  { author_name: 'João e Ana Lima', author_city: 'Belo Horizonte, MG', content: 'Escolhemos o Soberano pela tranquilidade e não nos arrependemos. 40 minutos em cada praia permite curtir de verdade sem pressa. Ótimo custo-benefício.', rating: 5 },
-]
-
 export default async function TestimonialsSection() {
   const supabase = await createClient()
   const { data } = await supabase
@@ -15,7 +9,9 @@ export default async function TestimonialsSection() {
     .order('created_at', { ascending: false })
     .limit(6)
 
-  const testimonials = (data && data.length > 0) ? data : fallback
+  if (!data || data.length === 0) return null
+
+  const testimonials = data
 
   return (
     <section style={{ padding: '5rem 0', background: 'var(--ocean-deep)' }}>
