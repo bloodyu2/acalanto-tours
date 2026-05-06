@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { createAdminClient } from '@/lib/supabase/server'
+import { sendEmail } from '@/lib/resend'
+import { confirmationEmailHtml, confirmationEmailText } from '@/lib/emails/confirmation'
 
 export async function POST(req: NextRequest) {
   try {
@@ -48,10 +50,47 @@ export async function POST(req: NextRequest) {
 
       // Update booking
       if (paymentData?.booking_id) {
+        const bookingId = paymentData.booking_id
         await supabase
           .from('acalanto_bookings')
           .update({ status: 'confirmed', paid_at: now })
-          .eq('id', paymentData.booking_id)
+          .eq('id', bookingId)
+
+        // Fetch booking for confirmation email
+        const { data: booking } = await supabase
+          .from('acalanto_bookings')
+          .select('customer_name, customer_email, tour_date, adults, children, acalanto_boats(name), acalanto_payments(amount_cents)')
+          .eq('id', bookingId)
+          .single()
+
+        if (booking?.customer_email) {
+          const boatName = (booking.acalanto_boats as { name: string } | null)?.name ?? 'escuna'
+          const totalCents = (booking.acalanto_payments as { amount_cents: number }[] | null)?.[0]?.amount_cents ?? 0
+          const tourDateFormatted = booking.tour_date
+            ? new Date(booking.tour_date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })
+            : 'a confirmar'
+
+          await sendEmail({
+            to: booking.customer_email,
+            subject: 'Reserva confirmada - Acalanto Tours',
+            html: confirmationEmailHtml({
+              customerName: booking.customer_name ?? 'Cliente',
+              tourDate: tourDateFormatted,
+              boatName,
+              adults: booking.adults ?? 0,
+              children: booking.children ?? 0,
+              totalCents,
+            }),
+            text: confirmationEmailText({
+              customerName: booking.customer_name ?? 'Cliente',
+              tourDate: tourDateFormatted,
+              boatName,
+              adults: booking.adults ?? 0,
+              children: booking.children ?? 0,
+              totalCents,
+            }),
+          }).catch(err => console.error('[webhook] confirmation email error:', err))
+        }
       }
     }
 

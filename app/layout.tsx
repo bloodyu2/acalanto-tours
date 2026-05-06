@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
 import CookieBanner from '@/components/layout/CookieBanner'
+import ServiceWorkerRegister from '@/components/layout/ServiceWorkerRegister'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -116,6 +117,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <WhatsAppFloat />
         <CookieBanner />
+        <ServiceWorkerRegister />
       </body>
     </html>
   )
