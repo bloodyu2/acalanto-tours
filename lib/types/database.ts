@@ -64,6 +64,7 @@ export interface Database {
           name: string
           description: string | null
           price_label: string | null
+          features: string[] | null
           cover_image: string | null
           partner_id: string | null
           active: boolean
@@ -126,6 +127,11 @@ export interface Database {
           customer_email: string | null
           status: string
           notes: string | null
+          vertical: string
+          photographer_package_id: string | null
+          utm_campaign: string | null
+          commission_rate: number
+          paid_at: string | null
           created_at: string
         }
         Insert: Omit<Database['public']['Tables']['bookings']['Row'], 'id' | 'created_at'>
@@ -144,10 +150,135 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['contacts']['Row'], 'id' | 'created_at'>
         Update: Partial<Database['public']['Tables']['contacts']['Insert']>
       }
+      capacity_overrides: {
+        Row: {
+          id: string
+          boat_id: string
+          tour_date: string
+          capacity: number
+          notes: string | null
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['capacity_overrides']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['capacity_overrides']['Insert']>
+      }
+      utm_events: {
+        Row: {
+          id: string
+          partner_slug: string | null
+          utm_source: string | null
+          utm_medium: string | null
+          utm_campaign: string | null
+          session_id: string | null
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['utm_events']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['utm_events']['Insert']>
+      }
+      payments: {
+        Row: {
+          id: string
+          booking_id: string | null
+          infinity_pay_id: string | null
+          amount_cents: number
+          status: 'pending' | 'paid' | 'failed' | 'refunded'
+          pix_code: string | null
+          pix_expiry: string | null
+          commission_rate: number
+          utm_campaign: string | null
+          paid_at: string | null
+          raw_webhook: Json | null
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['payments']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['payments']['Insert']>
+      }
+      photographer_packages: {
+        Row: {
+          id: string
+          partner_id: string
+          name: string
+          slug: string
+          description: string | null
+          price_label: string | null
+          price_cents: number | null
+          duration_label: string | null
+          includes: string[]
+          cover_image: string | null
+          active: boolean
+          display_order: number
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['photographer_packages']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['photographer_packages']['Insert']>
+      }
+      partner_pages: {
+        Row: {
+          id: string
+          partner_id: string
+          slug: string
+          headline: string | null
+          bio: string | null
+          cover_image: string | null
+          instagram_url: string | null
+          whatsapp_number: string | null
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['partner_pages']['Row'], 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Database['public']['Tables']['partner_pages']['Insert']>
+      }
+      nps_surveys: {
+        Row: {
+          id: string
+          booking_id: string
+          token: string
+          token_expires: string
+          score: number | null
+          comment: string | null
+          submitted_at: string | null
+          sent_at: string | null
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['nps_surveys']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['nps_surveys']['Insert']>
+      }
+      payouts: {
+        Row: {
+          id: string
+          partner_id: string
+          period_month: string
+          gross_cents: number
+          commission_cents: number
+          net_cents: number
+          status: 'pending' | 'paid'
+          paid_at: string | null
+          notes: string | null
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['payouts']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['payouts']['Insert']>
+      }
+      evolution_tasks: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          status: 'backlog' | 'doing' | 'done' | 'cancelled'
+          priority: 'low' | 'medium' | 'high' | 'urgent'
+          category: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['evolution_tasks']['Row'], 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Database['public']['Tables']['evolution_tasks']['Insert']>
+      }
     }
   }
 }
 
+// Existing aliases
 export type Profile = Database['public']['Tables']['profiles']['Row']
 export type Partner = Database['public']['Tables']['partners']['Row']
 export type Boat = Database['public']['Tables']['boats']['Row']
@@ -158,3 +289,13 @@ export type Testimonial = Database['public']['Tables']['testimonials']['Row']
 export type Booking = Database['public']['Tables']['bookings']['Row']
 export type Contact = Database['public']['Tables']['contacts']['Row']
 export type ItineraryStop = { stop: string; minutes: number }
+
+// New marketplace aliases
+export type CapacityOverride = Database['public']['Tables']['capacity_overrides']['Row']
+export type UtmEvent = Database['public']['Tables']['utm_events']['Row']
+export type Payment = Database['public']['Tables']['payments']['Row']
+export type PhotographerPackage = Database['public']['Tables']['photographer_packages']['Row']
+export type PartnerPage = Database['public']['Tables']['partner_pages']['Row']
+export type NpsSurvey = Database['public']['Tables']['nps_surveys']['Row']
+export type Payout = Database['public']['Tables']['payouts']['Row']
+export type EvolutionTask = Database['public']['Tables']['evolution_tasks']['Row']
