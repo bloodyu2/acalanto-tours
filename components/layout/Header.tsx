@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import CartIcon from '@/components/cart/CartIcon'
 
 const nav = [
   { href: '/#escunas',  label: 'Escunas' },
@@ -74,6 +75,7 @@ export default function Header() {
               {label}
             </Link>
           ))}
+          <CartIcon />
           <Link
             href="/#escunas"
             className="btn-primary"

@@ -60,6 +60,8 @@ export const metadata: Metadata = {
     description: 'Quatro escunas, saídas diárias pelas ilhas e praias da Costa Verde.',
   },
   robots: { index: true, follow: true },
+  manifest: '/manifest.json',
+  themeColor: '#92174d',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
