@@ -20,6 +20,11 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    fetch(e.request)
+      .then(response => {
+        if (!response || response.status === 0) return caches.match(e.request)
+        return response
+      })
+      .catch(() => caches.match(e.request).then(cached => cached || new Response('', { status: 503 })))
   )
 })
