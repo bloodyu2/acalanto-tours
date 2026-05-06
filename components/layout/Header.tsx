@@ -77,7 +77,7 @@ export default function Header() {
           ))}
           <CartIcon />
           <Link
-            href="/passeios"
+            href="/reservar"
             className="btn-primary"
             style={{ marginLeft: '0.75rem', padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}
           >
@@ -135,7 +135,7 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="/passeios"
+            href="/reservar"
             className="btn-primary"
             onClick={() => setOpen(false)}
             style={{ marginTop: '1rem', width: '100%', justifyContent: 'center' }}
