@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { ItineraryStop } from '@/lib/types/database'
 import { FEATURE_LABELS, CANCELLATION_POLICY } from '@/lib/constants'
-import BookingWidgetWrapper from '@/components/booking/BookingWidgetWrapper'
+import BookingWidget from '@/components/booking/BookingWidget'
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -123,7 +123,7 @@ export default async function PasseioDetailPage({ params }: Props) {
 
             {/* Right - booking widget */}
             <div className="service-cta-sticky">
-              <BookingWidgetWrapper boat={boat} />
+              <BookingWidget boat={boat} />
             </div>
           </div>
         </div>

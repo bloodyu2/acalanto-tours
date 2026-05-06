@@ -6,6 +6,8 @@ import Footer from '@/components/layout/Footer'
 import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
 import CookieBanner from '@/components/layout/CookieBanner'
 import ServiceWorkerRegister from '@/components/layout/ServiceWorkerRegister'
+import CartProvider from '@/components/cart/CartProvider'
+import CartDrawer from '@/components/cart/CartDrawer'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -110,14 +112,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
           </noscript>
         )}
-        <Header />
-        <main style={{ flex: 1, paddingTop: '70px' }}>
-          {children}
-        </main>
-        <Footer />
-        <WhatsAppFloat />
-        <CookieBanner />
-        <ServiceWorkerRegister />
+        <CartProvider>
+          <Header />
+          <CartDrawer />
+          <main style={{ flex: 1, paddingTop: '70px' }}>
+            {children}
+          </main>
+          <Footer />
+          <WhatsAppFloat />
+          <CookieBanner />
+          <ServiceWorkerRegister />
+        </CartProvider>
       </body>
     </html>
   )
