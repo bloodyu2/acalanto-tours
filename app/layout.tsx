@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google'
 import Header from '@/components/layout/Header'
@@ -61,6 +61,9 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   manifest: '/manifest.json',
+}
+
+export const viewport: Viewport = {
   themeColor: '#92174d',
 }
 
