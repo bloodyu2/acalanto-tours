@@ -2,25 +2,70 @@ import { createAdminClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
 
+function formatCents(cents: number) {
+  return (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+}
+
 export default async function AdminDashboard() {
   const supabase = await createAdminClient()
+
+  const now = new Date()
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+
   const [
-    { count: bookings },
+    { count: totalBookings },
+    { count: monthBookings },
+    { count: pendingBookings },
     { count: contacts },
     { count: testimonials },
     { count: partners },
+    { data: monthPayments },
+    { data: npsData },
+    { data: recentBookings },
+    { data: recentContacts },
   ] = await Promise.all([
     supabase.from('bookings').select('*', { count: 'exact', head: true }),
+    supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('created_at', monthStart),
+    supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'whatsapp_initiated'),
     supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('read', false),
     supabase.from('testimonials').select('*', { count: 'exact', head: true }).eq('approved', false),
     supabase.from('partners').select('*', { count: 'exact', head: true }).eq('active', true),
+    supabase.from('payments').select('amount_cents').eq('status', 'paid').gte('created_at', monthStart),
+    supabase.from('nps_surveys').select('score').not('score', 'is', null),
+    supabase.from('bookings').select('*, boats(name)').order('created_at', { ascending: false }).limit(5),
+    supabase.from('contacts').select('*').order('created_at', { ascending: false }).limit(5),
   ])
 
-  const stats = [
-    { icon: '📅', label: 'Reservas totais', value: bookings ?? 0, color: 'var(--ocean-mid)' },
-    { icon: '📧', label: 'Contatos não lidos', value: contacts ?? 0, color: '#e53e3e' },
-    { icon: '💬', label: 'Depoimentos pendentes', value: testimonials ?? 0, color: 'var(--sunset)' },
-    { icon: '🤝', label: 'Parceiros ativos', value: partners ?? 0, color: '#38a169' },
+  const revenueMonth = (monthPayments ?? []).reduce((sum, p) => sum + (p.amount_cents ?? 0), 0)
+
+  const scores = (npsData ?? []).map(s => s.score as number)
+  const promoters = scores.filter(s => s >= 9).length
+  const detractors = scores.filter(s => s <= 6).length
+  const npsScore = scores.length > 0 ? Math.round(((promoters - detractors) / scores.length) * 100) : null
+
+  const statusColors: Record<string, string> = {
+    whatsapp_initiated: '#d69e2e',
+    confirmed: '#38a169',
+    cancelled: '#e53e3e',
+    no_show: '#a0aec0',
+    paid: '#3182ce',
+  }
+  const statusLabels: Record<string, string> = {
+    whatsapp_initiated: 'Iniciada WA',
+    confirmed: 'Confirmada',
+    cancelled: 'Cancelada',
+    no_show: 'No-show',
+    paid: 'Paga',
+  }
+
+  const kpis = [
+    { icon: '📅', label: 'Reservas totais', value: totalBookings ?? 0, sub: `${monthBookings ?? 0} este mes`, color: 'var(--ocean-mid)' },
+    { icon: '💳', label: 'Receita este mes', value: formatCents(revenueMonth), sub: 'pagamentos confirmados', color: '#38a169' },
+    { icon: '⏳', label: 'Reservas pendentes', value: pendingBookings ?? 0, sub: 'aguardando confirmacao', color: '#d69e2e' },
+    { icon: '⭐', label: 'NPS medio', value: npsScore !== null ? npsScore : '-', sub: `${scores.length} respostas`, color: npsScore !== null && npsScore >= 50 ? '#38a169' : '#d69e2e' },
+    { icon: '📧', label: 'Contatos nao lidos', value: contacts ?? 0, sub: 'mensagens novas', color: '#e53e3e' },
+    { icon: '💬', label: 'Depoimentos pendentes', value: testimonials ?? 0, sub: 'aguardando moderacao', color: 'var(--sunset)' },
+    { icon: '🤝', label: 'Parceiros ativos', value: partners ?? 0, sub: '', color: 'var(--ocean-deep)' },
   ]
 
   return (
@@ -29,26 +74,87 @@ export default async function AdminDashboard() {
         Dashboard
       </h1>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem' }}>
-        Bem-vindo ao painel de administração Acalanto Tours.
+        Bem-vindo ao painel de administracao Acalanto Tours.
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
-        {stats.map(({ icon, label, value, color }) => (
+      {/* KPI cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
+        {kpis.map(({ icon, label, value, sub, color }) => (
           <div key={label} style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{icon}</div>
-            <div style={{ fontSize: '2rem', fontWeight: 800, color, marginBottom: '0.25rem' }}>{value}</div>
-            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{label}</div>
+            <div style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>{icon}</div>
+            <div style={{ fontSize: '1.75rem', fontWeight: 800, color, marginBottom: '0.2rem' }}>{value}</div>
+            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ocean-deep)', marginBottom: '0.15rem' }}>{label}</div>
+            {sub && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{sub}</div>}
           </div>
         ))}
       </div>
 
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+        {/* Recent bookings */}
+        <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
+            Ultimas reservas
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+            {(recentBookings ?? []).map(b => {
+              const boat = b.boats as { name: string } | null
+              return (
+                <div key={b.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem 0', borderBottom: '1px solid var(--border)' }}>
+                  <div>
+                    <p style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--ocean-deep)' }}>{boat?.name || 'Embarcacao'}</p>
+                    <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{b.customer_name || 'Cliente'} - {b.tour_date}</p>
+                  </div>
+                  <span style={{ background: `${statusColors[b.status]}20`, color: statusColors[b.status], fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.55rem', borderRadius: '999px', whiteSpace: 'nowrap' }}>
+                    {statusLabels[b.status] || b.status}
+                  </span>
+                </div>
+              )
+            })}
+            {(!recentBookings || recentBookings.length === 0) && (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Nenhuma reserva ainda.</p>
+            )}
+          </div>
+          <a href="/admin/reservas" style={{ display: 'inline-block', marginTop: '1rem', fontSize: '0.8rem', color: 'var(--ocean-mid)', textDecoration: 'none', fontWeight: 600 }}>
+            Ver todas as reservas
+          </a>
+        </div>
+
+        {/* Recent contacts */}
+        <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
+            Ultimas mensagens
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+            {(recentContacts ?? []).map(c => (
+              <div key={c.id} style={{ padding: '0.5rem 0', borderBottom: '1px solid var(--border)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem' }}>
+                  <p style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--ocean-deep)' }}>{c.name}</p>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{new Date(c.created_at!).toLocaleDateString('pt-BR')}</span>
+                </div>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{c.message}</p>
+              </div>
+            ))}
+            {(!recentContacts || recentContacts.length === 0) && (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Nenhuma mensagem ainda.</p>
+            )}
+          </div>
+          <a href="/admin/contatos" style={{ display: 'inline-block', marginTop: '1rem', fontSize: '0.8rem', color: 'var(--ocean-mid)', textDecoration: 'none', fontWeight: 600 }}>
+            Ver todas as mensagens
+          </a>
+        </div>
+      </div>
+
+      {/* Quick actions */}
       <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-        <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
-          Ações rápidas
+        <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
+          Acoes rapidas
         </h2>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           {[
             { href: '/admin/reservas', label: 'Ver reservas' },
+            { href: '/admin/capacidade', label: 'Gerenciar capacidade' },
+            { href: '/admin/repasses', label: 'Repasses' },
+            { href: '/admin/nps', label: 'Ver NPS' },
             { href: '/admin/depoimentos', label: 'Moderar depoimentos' },
             { href: '/admin/parceiros', label: 'Gerenciar parceiros' },
             { href: '/admin/contatos', label: 'Ver mensagens' },

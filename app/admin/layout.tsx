@@ -8,9 +8,12 @@ import { createClient } from '@/lib/supabase/client'
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/reservas', label: 'Reservas', icon: '📅' },
+  { href: '/admin/capacidade', label: 'Capacidade', icon: '⚓' },
+  { href: '/admin/repasses', label: 'Repasses', icon: '💰' },
+  { href: '/admin/contatos', label: 'Contatos', icon: '📧' },
+  { href: '/admin/nps', label: 'NPS', icon: '⭐' },
   { href: '/admin/parceiros', label: 'Parceiros', icon: '🤝' },
   { href: '/admin/depoimentos', label: 'Depoimentos', icon: '💬' },
-  { href: '/admin/contatos', label: 'Contatos', icon: '📧' },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
