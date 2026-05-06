@@ -1,12 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
-import type { CartItem } from '@/components/cart/CartProvider'
+
+interface CartItemInput {
+  boatId?: string | null
+  serviceId?: string | null
+  name: string
+  date: string
+  adults: number
+  children: number
+  type: 'passeio' | 'fotografia' | 'servico' | 'hospedagem'
+}
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const { items, customerName, customerEmail, customerPhone, utmCampaign } = body as {
-      items: CartItem[]
+      items: CartItemInput[]
       customerName: string
       customerEmail: string
       customerPhone: string
@@ -17,15 +26,40 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Campos obrigatorios ausentes.' }, { status: 400 })
     }
 
-    // Calculate total
-    const totalAmountCents = items.reduce((sum, item) => {
-      return sum + item.adults * item.priceAdultCents + item.children * item.priceChildCents
-    }, 0)
+    const supabase = await createAdminClient()
+
+    // Fetch authoritative prices from DB for each item
+    let totalAmountCents = 0
+    for (const item of items) {
+      if (item.boatId) {
+        const { data: boat } = await supabase
+          .from('boats')
+          .select('price_adult, price_child')
+          .eq('id', item.boatId)
+          .single()
+        if (!boat) return NextResponse.json({ error: 'Produto não encontrado.' }, { status: 400 })
+        totalAmountCents += item.adults * boat.price_adult + item.children * boat.price_child
+      } else if (item.serviceId) {
+        const { data: service } = await supabase
+          .from('services')
+          .select('pricing_type, price_cents_per_person, price_cents_group')
+          .eq('id', item.serviceId)
+          .single()
+        if (!service) return NextResponse.json({ error: 'Produto não encontrado.' }, { status: 400 })
+        if (service.pricing_type === 'per_person' && service.price_cents_per_person) {
+          totalAmountCents += (item.adults + item.children) * service.price_cents_per_person
+        } else if (service.pricing_type === 'per_group' && service.price_cents_group) {
+          totalAmountCents += service.price_cents_group
+        }
+      }
+    }
+
+    if (totalAmountCents <= 0) {
+      return NextResponse.json({ error: 'Valor inválido.' }, { status: 400 })
+    }
 
     // Commission rate based on UTM
     const commissionRate = utmCampaign ? 15 : 30
-
-    const supabase = await createAdminClient()
 
     // Use first item for booking record
     const firstItem = items[0]

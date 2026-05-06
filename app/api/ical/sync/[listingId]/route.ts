@@ -39,7 +39,12 @@ function parseICalDates(icalText: string): string[] {
   return dates
 }
 
-export async function POST(_req: NextRequest, { params }: Params) {
+export async function POST(req: NextRequest, { params }: Params) {
+  const authHeader = req.headers.get('authorization')
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { listingId } = await params
   const supabase = await createClient()
 

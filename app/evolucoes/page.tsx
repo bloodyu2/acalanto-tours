@@ -45,11 +45,11 @@ const CATEGORY_LABELS: Record<Category, string> = {
   content: 'Conteudo',
 }
 
-const PASSWORD = process.env.NEXT_PUBLIC_EVOLUCOES_PASSWORD ?? 'acalanto2026'
-const AUTH_KEY = 'evolucoes_auth'
+const AUTH_KEY = 'evolucoes_token'
 
 export default function EvolucoesDashboard() {
   const [authed, setAuthed] = useState(false)
+  const [token, setToken] = useState('')
   const [passwordInput, setPasswordInput] = useState('')
   const [passwordError, setPasswordError] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
@@ -64,20 +64,25 @@ export default function EvolucoesDashboard() {
 
   useEffect(() => {
     const stored = sessionStorage.getItem(AUTH_KEY)
-    if (stored === PASSWORD) {
+    if (stored) {
+      setToken(stored)
       setAuthed(true)
     }
   }, [])
 
-  const fetchTasks = useCallback(async () => {
+  const fetchTasks = useCallback(async (authToken: string) => {
     setLoading(true)
     try {
       const res = await fetch('/api/evolucoes', {
-        headers: { 'x-evolucoes-auth': PASSWORD },
+        headers: { 'x-evolucoes-auth': authToken },
       })
       if (res.ok) {
         const data = await res.json()
         setTasks(data.tasks ?? [])
+      } else if (res.status === 401) {
+        sessionStorage.removeItem(AUTH_KEY)
+        setAuthed(false)
+        setToken('')
       }
     } finally {
       setLoading(false)
@@ -85,22 +90,30 @@ export default function EvolucoesDashboard() {
   }, [])
 
   useEffect(() => {
-    if (authed) fetchTasks()
-  }, [authed, fetchTasks])
+    if (authed && token) fetchTasks(token)
+  }, [authed, token, fetchTasks])
 
-  function handleLogin() {
-    if (passwordInput === PASSWORD) {
-      sessionStorage.setItem(AUTH_KEY, PASSWORD)
+  async function handleLogin() {
+    const res = await fetch('/api/evolucoes', {
+      headers: { 'x-evolucoes-auth': passwordInput },
+    })
+    if (res.ok) {
+      sessionStorage.setItem(AUTH_KEY, passwordInput)
+      setToken(passwordInput)
       setAuthed(true)
       setPasswordError(false)
+      const data = await res.json()
+      setTasks(data.tasks ?? [])
     } else {
       setPasswordError(true)
     }
+    setPasswordInput('')
   }
 
   function handleLogout() {
     sessionStorage.removeItem(AUTH_KEY)
     setAuthed(false)
+    setToken('')
     setPasswordInput('')
   }
 
@@ -112,13 +125,13 @@ export default function EvolucoesDashboard() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-evolucoes-auth': PASSWORD,
+          'x-evolucoes-auth': token,
         },
         body: JSON.stringify({ title, status }),
       })
       if (res.ok) {
         setNewTaskTitles((prev) => ({ ...prev, [status]: '' }))
-        fetchTasks()
+        fetchTasks(token)
       }
     } catch {}
   }
@@ -130,7 +143,7 @@ export default function EvolucoesDashboard() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'x-evolucoes-auth': PASSWORD,
+          'x-evolucoes-auth': token,
         },
         body: JSON.stringify({ id, status: newStatus }),
       })
@@ -193,7 +206,7 @@ export default function EvolucoesDashboard() {
             placeholder="Senha"
             value={passwordInput}
             onChange={(e) => setPasswordInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleLogin() }}
             style={{
               width: '100%',
               padding: '12px 16px',

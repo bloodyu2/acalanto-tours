@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const PASSWORD = process.env.NEXT_PUBLIC_EVOLUCOES_PASSWORD ?? 'acalanto2026'
+const PASSWORD = process.env.EVOLUCOES_PASSWORD
 
 function getSupabase() {
   return createClient(
@@ -11,6 +11,7 @@ function getSupabase() {
 }
 
 function checkAuth(req: NextRequest): boolean {
+  if (!PASSWORD) return false
   return req.headers.get('x-evolucoes-auth') === PASSWORD
 }
 
