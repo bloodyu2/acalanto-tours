@@ -208,7 +208,7 @@ export default async function ReservarPage() {
                     </div>
                   </Link>
                 )
-              }) : null
+              }) : null}
             </div>
             <div style={{ marginTop: '1rem' }}>
               <Link href="/servicos" style={{ fontSize: '0.875rem', color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
