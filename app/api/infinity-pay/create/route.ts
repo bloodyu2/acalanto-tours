@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/rate-limit'
 
 interface CartItemInput {
   boatId?: string | null
@@ -13,6 +14,11 @@ interface CartItemInput {
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+    if (!rateLimit(`checkout:${ip}`, 10, 60_000)) {
+      return NextResponse.json({ error: 'Muitas tentativas. Tente novamente em breve.' }, { status: 429 })
+    }
+
     const body = await req.json()
     const { items, customerName, customerEmail, customerPhone, utmCampaign } = body as {
       items: CartItemInput[]
