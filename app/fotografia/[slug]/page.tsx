@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { PhotographerPackage, PartnerPage, Partner } from '@/lib/types/database'
+import PhotographyBookingWidget from '@/components/photography/PhotographyBookingWidget'
+import type { PhotographyPackageForWidget } from '@/components/photography/PhotographyBookingWidget'
 
 export const dynamic = 'force-dynamic'
 
@@ -56,6 +58,24 @@ export default async function FotografiaDetailPage({ params }: Props) {
 
   const typedPkg = pkg as PackageWithPartner
 
+  // Fetch unavailable dates for this photography package
+  const { data: unavailRows } = await supabase
+    .from('service_availability')
+    .select('date')
+    .eq('service_id', typedPkg.id)
+    .eq('available', false)
+  const unavailableDates = (unavailRows ?? []).map((r: { date: string }) => r.date)
+
+  const pkgForWidget: PhotographyPackageForWidget = {
+    id: typedPkg.id,
+    slug: typedPkg.slug,
+    name: typedPkg.name,
+    price_cents: (typedPkg as unknown as { price_cents?: number | null }).price_cents ?? null,
+    price_label: typedPkg.price_label ?? null,
+    duration_label: typedPkg.duration_label ?? null,
+    includes: typedPkg.includes ?? [],
+  }
+
   // Fetch partner page if partner exists
   let partnerPage: PartnerPage | null = null
   if (typedPkg.partners?.id) {
@@ -71,12 +91,6 @@ export default async function FotografiaDetailPage({ params }: Props) {
     }
     partnerPage = pp ?? null
   }
-
-  const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '5524999627968'
-  const waMessage = encodeURIComponent(
-    `Ola! Tenho interesse no pacote de fotografia "${typedPkg.name}" para o passeio de escuna. Poderia me informar disponibilidade?`
-  )
-  const waLink = `https://wa.me/${waNumber}?text=${waMessage}`
 
   return (
     <div style={{ background: 'var(--sand-warm)', minHeight: '100vh' }}>
@@ -261,96 +275,24 @@ export default async function FotografiaDetailPage({ params }: Props) {
 
           </div>
 
-          {/* Right: Sticky CTA */}
+          {/* Right: Booking widget */}
           <div>
-            <div className="service-cta-sticky card" style={{ padding: '1.75rem' }}>
-              <p style={{ margin: '0 0 0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                Preco do pacote
-              </p>
-              <p style={{
-                fontFamily: 'var(--font-playfair)',
-                fontSize: '2rem',
-                fontWeight: 700,
-                color: 'var(--ocean-deep)',
-                margin: '0 0 1.5rem',
-              }}>
-                {typedPkg.price_label ?? 'Consultar'}
-              </p>
-
+            <PhotographyBookingWidget pkg={pkgForWidget} unavailableDates={unavailableDates} />
+            {partnerPage?.instagram_url && (
               <a
-                href={waLink}
+                href={partnerPage.instagram_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.625rem',
-                  width: '100%',
-                  background: '#25D366',
-                  color: 'white',
-                  padding: '0.875rem 1.25rem',
-                  borderRadius: '0.75rem',
-                  textDecoration: 'none',
-                  fontWeight: 700,
-                  fontSize: '1rem',
-                  marginBottom: '1rem',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                  marginTop: '1rem', color: 'var(--text-muted)', textDecoration: 'none',
+                  fontSize: '0.875rem', fontWeight: 500, padding: '0.625rem',
+                  border: '1px solid var(--border)', borderRadius: '0.625rem', background: 'white',
                 }}
               >
-                <span style={{ fontSize: '1.25rem' }}>💬</span>
-                Contratar pelo WhatsApp
+                📷 Ver portfolio no Instagram
               </a>
-
-              <div style={{
-                background: 'rgba(245, 158, 11, 0.08)',
-                border: '1px solid rgba(245, 158, 11, 0.2)',
-                borderRadius: '0.625rem',
-                padding: '0.875rem',
-                fontSize: '0.8rem',
-                color: 'var(--text-muted)',
-                lineHeight: 1.6,
-              }}>
-                <strong style={{ color: 'var(--text-primary)' }}>Comissao reduzida:</strong> Se voce chegou aqui pelo link do fotografo, a comissao e automaticamente reduzida.
-              </div>
-
-              {partnerPage?.instagram_url && (
-                <a
-                  href={partnerPage.instagram_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    marginTop: '1rem',
-                    color: 'var(--text-muted)',
-                    textDecoration: 'none',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    padding: '0.625rem',
-                    border: '1px solid var(--border)',
-                    borderRadius: '0.625rem',
-                  }}
-                >
-                  📷 Ver portfolio no Instagram
-                </a>
-              )}
-
-              <div style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border)' }}>
-                <p style={{ margin: '0 0 0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                  Entrega garantida
-                </p>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  {['Fotos editadas profissionalmente', 'Entrega em ate 48 horas', 'Link privado de download'].map(item => (
-                    <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                      <span style={{ color: 'var(--vertical-fotografia)' }}>✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            )}
           </div>
 
         </div>

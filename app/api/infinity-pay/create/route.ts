@@ -6,6 +6,7 @@ interface CartItemInput {
   boatId?: string | null
   serviceId?: string | null
   accommodationListingId?: string | null
+  photographerPackageId?: string | null
   name: string
   date: string
   adults: number
@@ -76,6 +77,16 @@ export async function POST(req: NextRequest) {
         const extraGuests = Math.max(0, (item.guests ?? 1) - baseGuests)
         const extraCost = extraGuests * nights * (listing.price_cents_extra_guest ?? 0)
         totalAmountCents += nights * listing.price_cents_per_night + extraCost
+      } else if (item.photographerPackageId) {
+        const { data: photoPkg } = await supabase
+          .from('photographer_packages')
+          .select('price_cents')
+          .eq('id', item.photographerPackageId)
+          .single()
+        if (!photoPkg || !photoPkg.price_cents) {
+          return NextResponse.json({ error: 'Produto não encontrado.' }, { status: 400 })
+        }
+        totalAmountCents += photoPkg.price_cents
       }
     }
 
@@ -100,6 +111,7 @@ export async function POST(req: NextRequest) {
         boat_id: firstItem.boatId ?? null,
         service_id: firstItem.serviceId ?? null,
         accommodation_listing_id: firstItem.accommodationListingId ?? null,
+        photographer_package_id: firstItem.photographerPackageId ?? null,
         tour_date: tourDate || null,
         adults: firstItem.type === 'hospedagem' ? (firstItem.guests ?? firstItem.adults) : firstItem.adults,
         children: firstItem.children,

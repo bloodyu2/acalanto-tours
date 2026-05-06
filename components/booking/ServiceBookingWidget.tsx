@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useCart } from '@/components/cart/CartProvider'
+import DatePickerCalendar from '@/components/ui/DatePickerCalendar'
 
 export type ServiceForWidget = {
   id: string
@@ -26,7 +27,7 @@ function getTodayISO() {
 }
 
 function addDays(iso: string, n: number) {
-  const d = new Date(iso)
+  const d = new Date(iso + 'T12:00:00')
   d.setDate(d.getDate() + n)
   return d.toISOString().split('T')[0]
 }
@@ -86,32 +87,16 @@ export default function ServiceBookingWidget({ service, unavailableDates = [] }:
         )}
       </div>
 
-      {/* Date */}
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-          Data
+      {/* Visual calendar */}
+      <div style={{ marginBottom: '1.25rem' }}>
+        <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.625rem' }}>
+          Escolha a data
         </label>
-        <input
-          type="date"
+        <DatePickerCalendar
           value={date}
-          min={addDays(getTodayISO(), 1)}
-          onChange={e => setDate(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '0.625rem 0.875rem',
-            border: `1px solid ${isUnavailable ? '#ef4444' : 'var(--border)'}`,
-            borderRadius: '8px',
-            fontSize: '0.9375rem',
-            background: 'white',
-            outline: 'none',
-            boxSizing: 'border-box',
-          }}
+          onChange={setDate}
+          unavailableDates={unavailableDates}
         />
-        {isUnavailable && (
-          <p style={{ fontSize: '0.8125rem', color: '#ef4444', marginTop: '0.25rem' }}>
-            Data indisponível — escolha outra data
-          </p>
-        )}
       </div>
 
       {/* Count */}
@@ -137,7 +122,7 @@ export default function ServiceBookingWidget({ service, unavailableDates = [] }:
         )}
       </div>
 
-      {/* Total for per_person when count > 1 */}
+      {/* Total */}
       {!isPerGroup && count > 1 && (
         <div style={{ background: 'var(--sand)', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Total ({count} pessoas)</span>
@@ -162,7 +147,7 @@ export default function ServiceBookingWidget({ service, unavailableDates = [] }:
       </button>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border)' }}>
-        {['Pagamento via Pix', 'Confirmação por e-mail', 'Equipe local em Paraty'].map(item => (
+        {['Pagamento via Pix ou cartão', 'Confirmação por e-mail', 'Equipe local em Paraty'].map(item => (
           <p key={item} style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ocean-mid)', flexShrink: 0 }}>
               <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
