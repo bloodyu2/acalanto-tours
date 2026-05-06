@@ -9,8 +9,7 @@ const nav = [
   { href: '/fotografia', label: 'Fotografia' },
   { href: '/hotelaria',  label: 'Hospedagem' },
   { href: '/servicos',   label: 'Serviços' },
-  { href: '/quem-somos', label: 'Quem Somos' },
-  { href: '/contato',    label: 'Contato' },
+  { href: '/blog',       label: 'Blog' },
 ]
 
 export default function Header() {
@@ -33,8 +32,16 @@ export default function Header() {
         boxShadow: scrolled ? '0 1px 0 rgba(0,0,0,0.1)' : '0 1px 0 rgba(0,0,0,0.06)',
       }}
     >
-      <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '70px' }}>
-        {/* Logo */}
+      <div
+        className="container"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr',
+          alignItems: 'center',
+          height: '70px',
+        }}
+      >
+        {/* Logo — col 1 */}
         <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{
             fontFamily: 'var(--font-playfair)',
@@ -57,8 +64,8 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }} className="hidden-mobile">
+        {/* Desktop nav — col 2 (centered) */}
+        <nav className="hidden-mobile" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
           {nav.map(({ href, label }) => (
             <Link
               key={href}
@@ -76,41 +83,59 @@ export default function Header() {
               {label}
             </Link>
           ))}
+        </nav>
+
+        {/* Desktop right actions — col 3 (hidden on mobile) */}
+        <div
+          className="hidden-mobile"
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}
+        >
           <CartIcon />
           <Link
             href="/reservar"
             className="btn-primary"
-            style={{ marginLeft: '0.75rem', padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}
+            style={{ marginLeft: '0.25rem', padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}
           >
             Reservar
           </Link>
-        </nav>
+        </div>
 
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setOpen(!open)}
+        {/* Mobile right actions — col 3 (shown only on mobile) */}
+        <div
           className="show-mobile"
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '0.5rem',
-            color: 'var(--text-primary)',
-            position: 'relative',
-            zIndex: 60,
-          }}
-          aria-label="Menu"
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}
         >
-          {open ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-          )}
-        </button>
+          <Link
+            href="/reservar"
+            className="btn-primary"
+            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem' }}
+          >
+            Reservar
+          </Link>
+          <button
+            onClick={() => setOpen(!open)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '0.5rem',
+              color: 'var(--text-primary)',
+              position: 'relative',
+              zIndex: 60,
+            }}
+            aria-label="Menu"
+          >
+            {open ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Mobile dropdown */}
