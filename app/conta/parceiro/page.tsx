@@ -31,9 +31,7 @@ export default async function ParceiroDashboardPage() {
     .eq('active', true)
     .maybeSingle()
 
-  // Get boats for this partner (if partner found, filter by partner's boats)
-  // Since partners link to bookings via boat_id, fetch recent bookings for boats
-  // owned by this partner. If no direct link, fall back to all bookings.
+  // Get boats belonging to this partner, then scope bookings to those boats
   let bookings: Array<{
     id: string
     tour_date: string | null
@@ -45,12 +43,23 @@ export default async function ParceiroDashboardPage() {
   }> = []
 
   if (partner) {
-    const { data } = await supabase
-      .from('bookings')
-      .select('id, tour_date, adults, children, status, customer_name, boats(name)')
-      .order('created_at', { ascending: false })
-      .limit(10)
-    bookings = (data as typeof bookings) ?? []
+    // Boats are linked to partners via the `partner_id` column (if it exists)
+    // or by matching partner email/name. Try partner_id first.
+    const { data: boatRows } = await supabase
+      .from('boats')
+      .select('id')
+      .eq('partner_id', partner.id)
+    const boatIds = (boatRows ?? []).map((b: { id: string }) => b.id)
+
+    if (boatIds.length > 0) {
+      const { data } = await supabase
+        .from('bookings')
+        .select('id, tour_date, adults, children, status, customer_name, boats(name)')
+        .in('boat_id', boatIds)
+        .order('created_at', { ascending: false })
+        .limit(10)
+      bookings = (data as typeof bookings) ?? []
+    }
   }
 
   // Stats: this month
