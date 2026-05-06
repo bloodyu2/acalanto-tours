@@ -30,9 +30,9 @@ const verticals = [
   },
   {
     href: '/servicos',
-    emoji: '🚙',
-    title: 'Servicos',
-    desc: 'Lancha privativa, jeep, transfer e guias locais. Em breve.',
+    emoji: '🚤',
+    title: 'Serviços',
+    desc: 'Lancha privativa, passeio de jeep, transfer e guias locais. Em breve.',
     color: '#D97706',
     tag: 'Em breve',
     active: false,
@@ -45,9 +45,9 @@ export default function VerticalsSection() {
       <div className="container">
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <span className="section-tag">O que voce encontra aqui</span>
-          <h2 className="section-title">Tudo para seu passeio em Paraty</h2>
+          <h2 className="section-title">Tudo para seu turismo em Paraty</h2>
           <p className="section-subtitle">
-            A Acalanto reune os melhores servicos de turismo de Paraty num unico lugar.
+            A Acalanto reúne os melhores serviços de turismo de Paraty num único lugar.
           </p>
         </div>
 
