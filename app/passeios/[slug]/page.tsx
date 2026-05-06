@@ -31,6 +31,23 @@ export default async function PasseioDetailPage({ params }: Props) {
 
   const itinerary: ItineraryStop[] = Array.isArray(boat.itinerary) ? boat.itinerary as ItineraryStop[] : []
 
+  // Dates where this boat is fully booked (sum of passengers >= capacity_max)
+  const { data: bookingCounts } = await supabase
+    .from('bookings')
+    .select('tour_date, adults, children')
+    .eq('boat_id', boat.id)
+    .in('status', ['confirmed', 'whatsapp_initiated'])
+    .gte('tour_date', new Date().toISOString().split('T')[0])
+
+  const dateTotals: Record<string, number> = {}
+  for (const b of bookingCounts ?? []) {
+    if (!b.tour_date) continue
+    dateTotals[b.tour_date] = (dateTotals[b.tour_date] ?? 0) + (b.adults ?? 0) + (b.children ?? 0)
+  }
+  const soldOutDates = Object.entries(dateTotals)
+    .filter(([, total]) => total >= boat.capacity_max)
+    .map(([date]) => date)
+
   return (
     <>
       {/* Hero */}
@@ -123,7 +140,7 @@ export default async function PasseioDetailPage({ params }: Props) {
 
             {/* Right - booking widget */}
             <div className="service-cta-sticky">
-              <BookingWidget boat={boat} />
+              <BookingWidget boat={boat} unavailableDates={soldOutDates} />
             </div>
           </div>
         </div>

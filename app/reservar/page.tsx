@@ -148,53 +148,27 @@ export default async function ReservarPage() {
 
           {/* ── Fotografia ───────────────────────────────────────────────── */}
           <div style={{ marginBottom: '4rem' }}>
-            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>} label="Fotografia Profissional" color="#8B5CF6" tag="contratação via whatsapp" />
+            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>} label="Fotografia Profissional" color="#8B5CF6" tag="reserva com calendário" />
             {pkgs && pkgs.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
                 {pkgs.map((pkg) => (
-                  <div key={pkg.id} className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '3px solid #8B5CF6' }}>
-                    <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{pkg.name}</div>
-                    {pkg.description && <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{pkg.description}</div>}
-                    <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', fontWeight: 700, color: '#8B5CF6' }}>
-                        {pkg.price_cents ? fmt(pkg.price_cents) : (pkg.price_label || 'Sob consulta')}
+                  <Link key={pkg.id} href={`/fotografia/${pkg.slug}`} style={{ textDecoration: 'none' }}>
+                    <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '3px solid #8B5CF6', height: '100%' }}>
+                      <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{pkg.name}</div>
+                      {pkg.description && <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{pkg.description}</div>}
+                      <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', fontWeight: 700, color: '#8B5CF6' }}>
+                          {pkg.price_cents ? fmt(pkg.price_cents) : (pkg.price_label || 'Ver opções')}
+                        </div>
+                        <span style={{ background: '#8B5CF6', color: 'white', borderRadius: '8px', padding: '0.45rem 1rem', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                          Selecionar data →
+                        </span>
                       </div>
-                      <a
-                        href={waLink(`Olá! Tenho interesse no pacote de fotografia "${pkg.name}". Pode me informar disponibilidade?`)}
-                        target="_blank" rel="noreferrer"
-                        style={{ background: '#8B5CF6', color: 'white', borderRadius: '8px', padding: '0.45rem 1rem', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}
-                      >
-                        Contratar →
-                      </a>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
-            ) : (
-              /* Fallback when no packages in DB yet */
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
-                {[
-                  { name: 'Sessão Bordo Básica', desc: 'Fotógrafo embarca junto, entrega digital em 48h.', price: 'A partir de R$250' },
-                  { name: 'Sessão Bordo Completa', desc: 'Cobertura total do passeio + edição premium.', price: 'A partir de R$450' },
-                  { name: 'Pacote Família', desc: 'Ideal para grupos. Galeria privada de acesso.', price: 'A partir de R$600' },
-                ].map((pkg) => (
-                  <div key={pkg.name} className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '3px solid #8B5CF6' }}>
-                    <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{pkg.name}</div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{pkg.desc}</div>
-                    <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', fontWeight: 700, color: '#8B5CF6' }}>{pkg.price}</div>
-                      <a
-                        href={waLink(`Olá! Tenho interesse no pacote de fotografia "${pkg.name}". Pode me informar disponibilidade?`)}
-                        target="_blank" rel="noreferrer"
-                        style={{ background: '#8B5CF6', color: 'white', borderRadius: '8px', padding: '0.45rem 1rem', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}
-                      >
-                        Contratar →
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+            ) : null}
             <div style={{ marginTop: '1rem' }}>
               <Link href="/fotografia" style={{ fontSize: '0.875rem', color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
                 Ver todos os pacotes de fotografia →
@@ -204,7 +178,7 @@ export default async function ReservarPage() {
 
           {/* ── Serviços ─────────────────────────────────────────────────── */}
           <div style={{ marginBottom: '4rem' }}>
-            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>} label="Serviços Exclusivos" color="#D97706" tag="contratação via whatsapp" />
+            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>} label="Serviços Exclusivos" color="#D97706" tag="reserva com calendário" />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem' }}>
               {extraServices.length > 0 ? extraServices.map((svc) => {
                 const svcIconMap: Record<string, React.ReactNode> = {
@@ -213,47 +187,28 @@ export default async function ReservarPage() {
                   'transfer': (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>),
                 }
                 const icon = svcIconMap[svc.slug] || (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg>)
-                const waMsg = `Olá! Tenho interesse no serviço "${svc.name}" em Paraty. Pode me passar mais informações?`
                 return (
-                  <div key={svc.id} className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.625rem', borderTop: '3px solid #D97706' }}>
-                    <div style={{ color: '#D97706' }}>{icon}</div>
-                    <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{svc.name}</div>
-                    {svc.description && <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{svc.description}</div>}
-                    <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#D97706' }}>{svc.price_label || 'Sob consulta'}</div>
-                      <a
-                        href={waLink(waMsg)}
-                        target="_blank" rel="noreferrer"
-                        style={{ background: '#D97706', color: 'white', borderRadius: '8px', padding: '0.45rem 1rem', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}
-                      >
-                        Contratar →
-                      </a>
+                  <Link key={svc.id} href={`/servicos/${svc.slug}`} style={{ textDecoration: 'none' }}>
+                    <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.625rem', borderTop: '3px solid #D97706', height: '100%' }}>
+                      <div style={{ color: '#D97706' }}>{icon}</div>
+                      <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{svc.name}</div>
+                      {svc.description && <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{svc.description}</div>}
+                      <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#D97706' }}>
+                          {svc.price_cents_per_person
+                            ? fmt(svc.price_cents_per_person) + '/pessoa'
+                            : svc.price_cents_group
+                            ? fmt(svc.price_cents_group) + '/grupo'
+                            : (svc.price_label || 'Ver opções')}
+                        </div>
+                        <span style={{ background: '#D97706', color: 'white', borderRadius: '8px', padding: '0.45rem 1rem', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                          Selecionar data →
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 )
-              }) : (
-                /* Fallback when no services in DB yet */
-                [{name:'Lancha Privativa', slug:'lancha-privativa', icon:(<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>), desc:'Embarque privativo para grupos, passeios personalizados pelas ilhas.'},
-                 {name:'Passeio de Jeep', slug:'passeio-de-jeep', icon:(<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>), desc:'Trilhas e mirantes da Serra da Bocaina a bordo de um jeep 4x4.'},
-                 {name:'Transfer', slug:'transfer', icon:(<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>), desc:'Translado confortável entre Paraty, RJ e SP — van ou van executiva.'}
-                ].map(svc => (
-                  <div key={svc.slug} className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.625rem', borderTop: '3px solid #D97706' }}>
-                    <div style={{ color: '#D97706' }}>{svc.icon}</div>
-                    <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{svc.name}</div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{svc.desc}</div>
-                    <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#D97706' }}>Sob consulta</div>
-                      <a
-                        href={waLink(`Olá! Tenho interesse no serviço "${svc.name}" em Paraty. Pode me passar mais informações?`)}
-                        target="_blank" rel="noreferrer"
-                        style={{ background: '#D97706', color: 'white', borderRadius: '8px', padding: '0.45rem 1rem', fontSize: '0.8rem', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}
-                      >
-                        Contratar →
-                      </a>
-                    </div>
-                  </div>
-                ))
-              )}
+              }) : null
             </div>
             <div style={{ marginTop: '1rem' }}>
               <Link href="/servicos" style={{ fontSize: '0.875rem', color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
