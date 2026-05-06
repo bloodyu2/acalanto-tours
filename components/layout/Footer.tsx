@@ -112,7 +112,7 @@ export default function Footer() {
             {[
               { href: '/quem-somos', label: 'Quem somos' },
               { href: '/seja-parceiro', label: 'Seja parceiro' },
-              { href: '/#contato', label: 'Contato' },
+              { href: '/contato', label: 'Contato' },
             ].map(({ href, label }) => (
               <Link key={href} href={href} style={{ display: 'block', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.875rem', marginBottom: '0.45rem', transition: 'color 0.2s' }}>
                 {label}

@@ -10,6 +10,7 @@ const nav = [
   { href: '/hotelaria',  label: 'Hospedagem' },
   { href: '/servicos',   label: 'Serviços' },
   { href: '/quem-somos', label: 'Quem Somos' },
+  { href: '/contato',    label: 'Contato' },
 ]
 
 export default function Header() {

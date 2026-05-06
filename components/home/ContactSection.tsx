@@ -29,7 +29,7 @@ export default function ContactSection() {
   return (
     <section id="contato" style={{ padding: '5rem 0', background: 'white' }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '4rem', alignItems: 'center' }}>
           {/* Left */}
           <div>
             <span className="section-tag">Fale Conosco</span>
@@ -112,13 +112,6 @@ export default function ContactSection() {
         </div>
       </div>
 
-      <style jsx>{`
-        @media (max-width: 768px) {
-          div[style*="gridTemplateColumns: 1fr 1fr"] {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }
