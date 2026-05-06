@@ -106,7 +106,7 @@ export default function QuemSomosPage() {
             <p style={{ color: 'rgba(255,255,255,0.65)', marginBottom: '1.5rem', fontSize: '1rem' }}>
               Veja as opções e fale com a gente pelo WhatsApp.
             </p>
-            <Link href="/#escunas" className="btn-primary">
+            <Link href="/passeios" className="btn-primary">
               Ver Passeios
             </Link>
           </div>
