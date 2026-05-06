@@ -29,7 +29,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TouristAttraction',
   name: 'Acalanto Tours',
-  description: 'Passeios de escuna em Paraty. Baías, ilhas e praias da Costa Verde.',
+  description: 'Tudo para seu turismo em Paraty: passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://acalantotours.com.br',
   address: {
     '@type': 'PostalAddress',
@@ -44,23 +44,23 @@ const jsonLd = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Acalanto Tours | Passeios de Escuna em Paraty',
+    default: 'Acalanto Tours | Turismo em Paraty',
     template: '%s | Acalanto Tours',
   },
-  description: 'Passeios de escuna em Paraty. Quatro embarcações pelas baías e ilhas da Costa Verde. Reserve pelo WhatsApp.',
-  keywords: ['escuna Paraty', 'passeio barco Paraty', 'turismo náutico Paraty', 'passeio de escuna', 'Paraty tours', 'Costa Verde'],
+  description: 'Tudo para seu turismo em Paraty: passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos.',
+  keywords: ['turismo Paraty', 'escuna Paraty', 'passeio barco Paraty', 'fotografia Paraty', 'hospedagem Paraty', 'Paraty tours', 'Costa Verde'],
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
     siteName: 'Acalanto Tours',
-    title: 'Acalanto Tours | Passeios de Escuna em Paraty',
-    description: 'Quatro escunas, saídas diárias pelas ilhas e praias da Costa Verde.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Acalanto Tours | Escunas em Paraty' }],
+    title: 'Acalanto Tours | Turismo em Paraty',
+    description: 'Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos em Paraty.',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Acalanto Tours | Turismo em Paraty' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Acalanto Tours | Passeios de Escuna em Paraty',
-    description: 'Quatro escunas, saídas diárias pelas ilhas e praias da Costa Verde.',
+    title: 'Acalanto Tours | Turismo em Paraty',
+    description: 'Tudo para seu turismo em Paraty: escunas, fotografia, hospedagem e serviços.',
   },
   robots: { index: true, follow: true },
   manifest: '/manifest.json',

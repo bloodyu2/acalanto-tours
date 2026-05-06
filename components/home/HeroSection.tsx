@@ -36,8 +36,8 @@ export default function HeroSection() {
             letterSpacing: '-0.035em',
             marginBottom: '1.5rem',
           }}>
-            Passeios de escuna{' '}
-            <span className="text-gradient">pela Baía de Paraty</span>
+            Tudo para seu{' '}
+            <span className="text-gradient">turismo em Paraty</span>
           </h1>
 
           <p style={{
@@ -48,12 +48,12 @@ export default function HeroSection() {
             maxWidth: '520px',
             fontWeight: 400,
           }}>
-            Saídas diárias pelas ilhas e praias da Costa Verde. Quatro escunas, cada uma com um jeito diferente de navegar. A tranquila, a familiar com escorregador, a premium com ofurô, e a mais contemplativa. Você escolhe.
+            Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos — tudo num só lugar, com quem conhece Paraty de verdade.
           </p>
 
           <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
-            <Link href="/#escunas" className="btn-primary" style={{ fontSize: '0.9375rem', padding: '0.9375rem 2rem' }}>
-              Escolher Passeio
+            <Link href="/passeios" className="btn-primary" style={{ fontSize: '0.9375rem', padding: '0.9375rem 2rem' }}>
+              Ver Passeios
             </Link>
             <Link href="/quem-somos" className="btn-white" style={{ fontSize: '0.9375rem', padding: '0.9375rem 2rem' }}>
               Conheça a Acalanto
@@ -66,10 +66,10 @@ export default function HeroSection() {
             borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.75rem',
           }}>
             {[
-              { label: '4', sub: 'escunas' },
-              { label: '5h', sub: 'de passeio' },
-              { label: 'R$100', sub: 'por pessoa' },
-              { label: 'diário', sub: 'saídas' },
+              { label: '4', sub: 'passeios' },
+              { label: '📸', sub: 'fotografia' },
+              { label: '🏡', sub: 'hospedagem' },
+              { label: '🚤', sub: 'serviços' },
             ].map(({ label, sub }, i) => (
               <div key={sub} style={{
                 flex: '1', minWidth: '80px',
