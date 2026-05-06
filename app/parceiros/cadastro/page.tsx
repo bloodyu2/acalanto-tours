@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { Suspense, useState, type FormEvent } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { WizardSteps } from './_components/WizardSteps'
 
-export default function CadastroStep1Page() {
+function CadastroForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const claimSlug = searchParams.get('claim')
@@ -79,6 +79,62 @@ export default function CadastroStep1Page() {
   }
 
   return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
+      <div>
+        <label className="form-label">Nome do negócio *</label>
+        <input
+          type="text"
+          value={nome}
+          onChange={e => setNome(e.target.value)}
+          required
+          placeholder="Ex: Pousada do Cais, João Fotografia"
+          className="form-input"
+        />
+      </div>
+      <div>
+        <label className="form-label">E-mail *</label>
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          placeholder="seu@email.com"
+          className="form-input"
+        />
+      </div>
+      <div>
+        <label className="form-label">Senha *</label>
+        <input
+          type="password"
+          value={senha}
+          onChange={e => setSenha(e.target.value)}
+          required
+          minLength={8}
+          placeholder="Mínimo 8 caracteres"
+          className="form-input"
+        />
+      </div>
+
+      {error && (
+        <p style={{ color: '#dc2626', fontSize: '0.875rem', background: '#fef2f2', padding: '0.75rem 1rem', borderRadius: '8px', margin: 0 }}>
+          {error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        className="btn-primary"
+        disabled={loading}
+        style={{ padding: '1rem', fontSize: '1rem', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+      >
+        {loading ? 'Criando conta...' : 'Continuar'}
+      </button>
+    </form>
+  )
+}
+
+export default function CadastroStep1Page() {
+  return (
     <main style={{ minHeight: '100vh', background: 'var(--sand)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '5rem 1.5rem 2rem' }}>
       <div style={{ width: '100%', maxWidth: '480px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
@@ -95,57 +151,9 @@ export default function CadastroStep1Page() {
             Comece com e-mail, senha e o nome do seu negócio.
           </p>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
-            <div>
-              <label className="form-label">Nome do negócio *</label>
-              <input
-                type="text"
-                value={nome}
-                onChange={e => setNome(e.target.value)}
-                required
-                placeholder="Ex: Pousada do Cais, João Fotografia"
-                className="form-input"
-              />
-            </div>
-            <div>
-              <label className="form-label">E-mail *</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                placeholder="seu@email.com"
-                className="form-input"
-              />
-            </div>
-            <div>
-              <label className="form-label">Senha *</label>
-              <input
-                type="password"
-                value={senha}
-                onChange={e => setSenha(e.target.value)}
-                required
-                minLength={8}
-                placeholder="Mínimo 8 caracteres"
-                className="form-input"
-              />
-            </div>
-
-            {error && (
-              <p style={{ color: '#dc2626', fontSize: '0.875rem', background: '#fef2f2', padding: '0.75rem 1rem', borderRadius: '8px', margin: 0 }}>
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              className="btn-primary"
-              disabled={loading}
-              style={{ padding: '1rem', fontSize: '1rem', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
-            >
-              {loading ? 'Criando conta...' : 'Continuar'}
-            </button>
-          </form>
+          <Suspense fallback={<div style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)' }}>Carregando...</div>}>
+            <CadastroForm />
+          </Suspense>
 
           <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1.5rem' }}>
             Já tem conta?{' '}
