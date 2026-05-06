@@ -27,7 +27,7 @@ function BoatCard({ boat }: { boat: Boat }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={boat.cover_image} alt={boat.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>⛵</div>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)' }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg></div>
           )}
           <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem' }}>
             <span className="vertical-tag tag-passeios">Escuna</span>
@@ -52,11 +52,11 @@ function BoatCard({ boat }: { boat: Boat }) {
             </p>
           )}
           <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              🕐 {boat.duration_hours}h de passeio
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> {boat.duration_hours}h de passeio
             </span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              ⏰ Saida {boat.departure_time?.slice(0, 5)}
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Saida {boat.departure_time?.slice(0, 5)}
             </span>
           </div>
           <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -111,7 +111,7 @@ export default async function PasseiosPage() {
         <div className="container">
           {/* Pricing info */}
           <div style={{ background: 'var(--sand)', borderRadius: '12px', padding: '1rem 1.5rem', marginBottom: '2.5rem', display: 'flex', alignItems: 'flex-start', gap: '0.875rem', border: '1px solid var(--border)' }}>
-            <span style={{ fontSize: '1.25rem' }}>ℹ️</span>
+            <span style={{ display: 'flex', alignItems: 'center', color: 'var(--ocean-mid)' }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
             <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
               <strong style={{ color: 'var(--text-primary)' }}>Tabela de precos:</strong>{' '}
               Adultos pagam valor cheio. Criancas de 6 a 10 anos pagam meia entrada. Criancas ate 5 anos nao pagam. Pagamento confirmado pelo WhatsApp ou online.
@@ -124,7 +124,7 @@ export default async function PasseiosPage() {
 
           {(!boats || boats.length === 0) && (
             <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-muted)' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⛵</div>
+              <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)', display: 'flex', justifyContent: 'center' }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg></div>
               <p>Nenhum passeio disponivel no momento. Volte em breve.</p>
             </div>
           )}

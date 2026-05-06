@@ -104,11 +104,14 @@ export default async function ServicoPage({ params }: Props) {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginTop: '1.25rem' }}>
                 {[
-                  '✅ Resposta rápida',
-                  '✅ Sem compromisso',
-                  '✅ Equipe local em Paraty',
+                  'Resposta rápida',
+                  'Sem compromisso',
+                  'Equipe local em Paraty',
                 ].map(item => (
-                  <p key={item} style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>{item}</p>
+                  <p key={item} style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{color:'var(--ocean-mid)',flexShrink:0}}><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    {item}
+                  </p>
                 ))}
               </div>
             </div>

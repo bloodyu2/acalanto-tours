@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import type { ReactNode } from 'react'
 
-const serviceIcons: Record<string, string> = {
-  'lancha-privativa': '🚤',
-  'fotografia': '📸',
-  'passeio-de-jeep': '🚙',
-  'transfer': '🚐',
+const serviceIcons: Record<string, ReactNode> = {
+  'lancha-privativa': (<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>),
+  'fotografia': (<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>),
+  'passeio-de-jeep': (<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>),
+  'transfer': (<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>),
 }
+const AnchorFallback = () => (<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg>)
 
 export default async function ServicesSection() {
   const supabase = await createClient()
@@ -42,8 +44,8 @@ export default async function ServicesSection() {
               style={{ textDecoration: 'none' }}
             >
               <div className="card" style={{ padding: '1.75rem', height: '100%', background: 'white' }}>
-                <div style={{ fontSize: '2.5rem', marginBottom: '0.875rem' }}>
-                  {serviceIcons[svc.slug] || '⚓'}
+                <div style={{ marginBottom: '0.875rem', color: 'var(--ocean-mid)' }}>
+                  {serviceIcons[svc.slug] || <AnchorFallback />}
                 </div>
                 <h3 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.125rem', color: 'var(--ocean-deep)', marginBottom: '0.5rem' }}>
                   {svc.name}

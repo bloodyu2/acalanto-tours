@@ -38,13 +38,13 @@ export default function ServicosComingSoonPage() {
 
   const upcomingServices = [
     {
-      icon: '🚙',
+      icon: (<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>),
       title: 'Jeep Tour pela Mata Atlantica',
       description:
         'Exploracao em jeep pelas trilhas e cachoeiras da Serra da Bocaina. Em breve.',
     },
     {
-      icon: '🚐',
+      icon: (<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>),
       title: 'Transfer do Aeroporto',
       description:
         'Transfer confortavel de SP/RJ ate Paraty. Em breve.',
@@ -140,7 +140,7 @@ export default function ServicosComingSoonPage() {
                 >
                   Em breve
                 </span>
-                <div style={{ fontSize: 36, marginBottom: 12 }}>{svc.icon}</div>
+                <div style={{ marginBottom: 12, color: 'var(--ocean-mid)' }}>{svc.icon}</div>
                 <h3
                   style={{
                     fontFamily: 'var(--font-playfair)',

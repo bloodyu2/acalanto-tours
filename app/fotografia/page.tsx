@@ -58,7 +58,7 @@ export default async function FotografiaPage() {
             marginBottom: '1rem',
             border: '1px solid rgba(255,255,255,0.35)',
           }}>
-            📸 Fotografia
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.3rem'}}><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg> Fotografia
           </span>
           <h1 style={{
             fontFamily: 'var(--font-playfair)',
@@ -87,7 +87,7 @@ export default async function FotografiaPage() {
             alignItems: 'flex-start',
             gap: '1rem',
           }}>
-            <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>💡</span>
+            <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center', color: '#d97706' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 018.91 14"/></svg></span>
             <div>
               <p style={{ margin: 0, color: 'var(--text-primary)', lineHeight: 1.65, fontSize: '0.95rem' }}>
                 <strong>Como funciona:</strong> O fotografo embarca junto com voce na escuna e acompanha todo o passeio. As fotos sao editadas profissionalmente e entregues em 48 horas por link de download privado. Voce escolhe o pacote e combina os detalhes pelo WhatsApp.
@@ -102,7 +102,7 @@ export default async function FotografiaPage() {
         <div className="container">
           {pkgs.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
-              <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>📸</p>
+              <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)', display: 'flex', justifyContent: 'center' }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
               <p style={{ fontSize: '1.1rem' }}>Nenhum pacote disponivel no momento.</p>
               <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Entre em contato pelo WhatsApp para mais informacoes.</p>
             </div>
@@ -144,7 +144,7 @@ function PhotographerPackageCard({ pkg }: { pkg: PackageWithPartner }) {
             style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
           />
         ) : (
-          <span style={{ fontSize: '4rem' }}>📸</span>
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{color:'rgba(255,255,255,0.7)'}}><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
         )}
         <div style={{
           position: 'absolute',

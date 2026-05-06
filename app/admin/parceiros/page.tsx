@@ -31,8 +31,15 @@ export default async function AdminParceirosPage() {
     boat: 'Embarcacao', photo: 'Fotografia', jeep: 'Jeep',
     guide: 'Guia', transfer: 'Transfer', hotel: 'Hotel', other: 'Outro',
   }
-  const typeIcons: Record<string, string> = {
-    boat: '⛵', photo: '📸', jeep: '🚙', guide: '🧭', transfer: '🚐', hotel: '🏨', other: '🔹',
+  const BoatIco = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>)
+  const PhotoIco = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>)
+  const JeepIco = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>)
+  const CompassIco = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>)
+  const VanIco = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>)
+  const HouseIco = () => (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>)
+  const DotIco = () => (<svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="3"/></svg>)
+  const typeIconNodes: Record<string, React.ReactNode> = {
+    boat: <BoatIco />, photo: <PhotoIco />, jeep: <JeepIco />, guide: <CompassIco />, transfer: <VanIco />, hotel: <HouseIco />, other: <DotIco />,
   }
 
   // Normalize listings for client component
@@ -69,8 +76,8 @@ export default async function AdminParceirosPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
               <div>
                 <p style={{ fontWeight: 700, color: 'var(--ocean-deep)', fontSize: '1rem' }}>{p.name}</p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--ocean-mid)', marginTop: '0.2rem' }}>
-                  {typeIcons[p.type] || ''} {typeLabels[p.type] || p.type}
+                <p style={{ fontSize: '0.8rem', color: 'var(--ocean-mid)', marginTop: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  {typeIconNodes[p.type] || null} {typeLabels[p.type] || p.type}
                 </p>
               </div>
               <span style={{

@@ -83,13 +83,13 @@ export default async function TourPage({ params }: Props) {
               {/* Quick info */}
               <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', padding: '1.25rem', background: 'var(--sand)', borderRadius: '1rem', marginBottom: '2rem' }}>
                 {[
-                  { icon: '⏰', label: 'Saída', value: departure },
-                  { icon: '⏱', label: 'Duração', value: `${boat.duration_hours}h` },
-                  { icon: '👥', label: 'Capacidade', value: `até ${boat.capacity_max} pax` },
-                  { icon: '💰', label: 'A partir de', value: formatCents(boat.price_adult) },
+                  { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>), label: 'Saída', value: departure },
+                  { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>), label: 'Duração', value: `${boat.duration_hours}h` },
+                  { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>), label: 'Capacidade', value: `até ${boat.capacity_max} pax` },
+                  { icon: (<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>), label: 'A partir de', value: formatCents(boat.price_adult) },
                 ].map(({ icon, label, value }) => (
                   <div key={label} style={{ textAlign: 'center', flex: '1 1 100px' }}>
-                    <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{icon}</div>
+                    <div style={{ marginBottom: '0.25rem', color: 'var(--ocean-mid)', display: 'flex', justifyContent: 'center' }}>{icon}</div>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
                     <div style={{ fontWeight: 700, color: 'var(--ocean-deep)', fontSize: '0.9375rem' }}>{value}</div>
                   </div>

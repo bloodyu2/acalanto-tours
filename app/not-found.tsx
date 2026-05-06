@@ -11,7 +11,7 @@ export default function NotFound() {
       textAlign: 'center',
       padding: '2rem',
     }}>
-      <p style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚓</p>
+      <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)', display: 'flex', justifyContent: 'center' }}><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg></div>
       <h1 style={{
         fontFamily: 'var(--font-playfair)',
         fontSize: 'clamp(2rem, 5vw, 3rem)',

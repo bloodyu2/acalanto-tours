@@ -116,7 +116,7 @@ export default async function ParceiroDashboardPage() {
         {/* Status banner */}
         {partner.status === 'pending' && (
           <div style={{ background: '#fef9c3', border: '1px solid #fde047', borderRadius: '0.75rem', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '1.25rem' }}>⏳</span>
+            <span style={{ display: 'flex', alignItems: 'center' }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
             <p style={{ color: '#854d0e', fontWeight: 500, margin: 0 }}>
               Cadastro em análise — retorno em até 24 horas
             </p>
@@ -125,7 +125,7 @@ export default async function ParceiroDashboardPage() {
         {partner.status === 'rejected' && (
           <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '0.75rem', padding: '1rem 1.25rem', marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: partner.rejection_reason ? '0.5rem' : 0 }}>
-              <span style={{ fontSize: '1.25rem' }}>❌</span>
+              <span style={{ display: 'flex', alignItems: 'center' }}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
               <p style={{ color: '#991b1b', fontWeight: 600, margin: 0 }}>
                 Cadastro rejeitado
               </p>
@@ -164,7 +164,7 @@ export default async function ParceiroDashboardPage() {
             href="/conta/parceiro/anuncios"
             style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', textDecoration: 'none', color: 'var(--ocean-deep)', fontWeight: 600, border: '1.5px solid transparent', transition: 'border-color 0.2s' }}
           >
-            <span style={{ fontSize: '1.5rem' }}>📋</span>
+            <span style={{ display: 'flex', alignItems: 'center' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></span>
             <span>Meus Anúncios</span>
             <span style={{ marginLeft: 'auto', color: 'var(--text-muted)' }}>→</span>
           </Link>
@@ -172,7 +172,7 @@ export default async function ParceiroDashboardPage() {
             href="/conta/parceiro/repasses"
             style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', textDecoration: 'none', color: 'var(--ocean-deep)', fontWeight: 600 }}
           >
-            <span style={{ fontSize: '1.5rem' }}>💰</span>
+            <span style={{ display: 'flex', alignItems: 'center' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>
             <span>Histórico de repasses</span>
             <span style={{ marginLeft: 'auto', color: 'var(--text-muted)' }}>→</span>
           </Link>

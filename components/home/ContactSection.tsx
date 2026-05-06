@@ -40,16 +40,16 @@ export default function ContactSection() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {[
-                { icon: '📍', title: 'Localização', desc: 'Paraty, Rio de Janeiro. Costa Verde.' },
-                { icon: '💬', title: 'WhatsApp', desc: 'Resposta rápida, seg a sáb.' },
-                { icon: '✉️', title: 'E-mail', desc: 'contato@acalantotours.com.br' },
+                { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>), title: 'Localização', desc: 'Paraty, Rio de Janeiro. Costa Verde.' },
+                { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>), title: 'WhatsApp', desc: 'Resposta rápida, seg a sáb.' },
+                { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>), title: 'E-mail', desc: 'contato@acalantotours.com.br' },
               ].map(({ icon, title, desc }) => (
                 <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                   <div style={{
                     width: '3rem', height: '3rem', borderRadius: '0.75rem',
                     background: 'rgba(26,107,138,0.1)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '1.25rem', flexShrink: 0,
+                    flexShrink: 0, color: 'var(--ocean-mid)',
                   }}>
                     {icon}
                   </div>
@@ -70,7 +70,7 @@ export default function ContactSection() {
           }}>
             {status === 'ok' ? (
               <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+                <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)', display: 'flex', justifyContent: 'center' }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
                 <h3 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.375rem', color: 'var(--ocean-deep)', marginBottom: '0.5rem' }}>
                   Mensagem enviada!
                 </h3>

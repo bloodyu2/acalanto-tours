@@ -4,16 +4,64 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import type { ReactNode } from 'react'
 
-const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: '📊' },
-  { href: '/admin/reservas', label: 'Reservas', icon: '📅' },
-  { href: '/admin/capacidade', label: 'Capacidade', icon: '⚓' },
-  { href: '/admin/repasses', label: 'Repasses', icon: '💰' },
-  { href: '/admin/contatos', label: 'Contatos', icon: '📧' },
-  { href: '/admin/nps', label: 'NPS', icon: '⭐' },
-  { href: '/admin/parceiros', label: 'Parceiros', icon: '🤝' },
-  { href: '/admin/depoimentos', label: 'Depoimentos', icon: '💬' },
+const DashboardIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+    <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+  </svg>
+)
+const CalendarIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="18" rx="2"/>
+    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+    <line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+)
+const AnchorNavIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/>
+    <path d="M5 12H2a10 10 0 0020 0h-3"/>
+  </svg>
+)
+const MoneyNavIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23"/>
+    <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+  </svg>
+)
+const MailIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+  </svg>
+)
+const StarIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </svg>
+)
+const HandshakeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l1.06 1.06L12 21.23l7.36-7.94 1.06-1.06a5.4 5.4 0 000-7.65z"/>
+  </svg>
+)
+const ChatIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+  </svg>
+)
+
+const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
+  { href: '/admin', label: 'Dashboard', icon: <DashboardIcon /> },
+  { href: '/admin/reservas', label: 'Reservas', icon: <CalendarIcon /> },
+  { href: '/admin/capacidade', label: 'Capacidade', icon: <AnchorNavIcon /> },
+  { href: '/admin/repasses', label: 'Repasses', icon: <MoneyNavIcon /> },
+  { href: '/admin/contatos', label: 'Contatos', icon: <MailIcon /> },
+  { href: '/admin/nps', label: 'NPS', icon: <StarIcon /> },
+  { href: '/admin/parceiros', label: 'Parceiros', icon: <HandshakeIcon /> },
+  { href: '/admin/depoimentos', label: 'Depoimentos', icon: <ChatIcon /> },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { Boat } from '@/lib/types/database'
+import React from 'react'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,13 +22,13 @@ function fmt(cents: number) {
 }
 
 // ─── Section header ──────────────────────────────────────────────────────────
-function SectionHeader({ emoji, label, color, tag }: { emoji: string; label: string; color: string; tag?: string }) {
+function SectionHeader({ emoji, label, color, tag }: { emoji: React.ReactNode; label: string; color: string; tag?: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
       <div style={{
         width: '44px', height: '44px', borderRadius: '12px',
         background: `${color}18`, display: 'flex', alignItems: 'center',
-        justifyContent: 'center', fontSize: '1.375rem', flexShrink: 0,
+        justifyContent: 'center', flexShrink: 0, color,
       }}>
         {emoji}
       </div>
@@ -106,7 +107,7 @@ export default async function ReservarPage() {
 
           {/* ── Passeios ─────────────────────────────────────────────────── */}
           <div style={{ marginBottom: '4rem' }}>
-            <SectionHeader emoji="⛵" label="Passeios de Escuna" color="var(--ocean-mid)" tag="reserva online disponível" />
+            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>} label="Passeios de Escuna" color="var(--ocean-mid)" tag="reserva online disponível" />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
               {(boats ?? []).map((boat: Boat) => (
                 <Link key={boat.id} href={`/passeios/${boat.slug}`} style={{ textDecoration: 'none' }}>
@@ -120,7 +121,7 @@ export default async function ReservarPage() {
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={boat.cover_image} alt={boat.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
-                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem' }}>⛵</div>
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)' }}><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg></div>
                       )}
                       <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'rgba(0,0,0,0.55)', color: 'white', borderRadius: '6px', padding: '0.2rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, backdropFilter: 'blur(4px)' }}>
                         {fmt(boat.price_adult)}<span style={{ fontWeight: 400, fontSize: '0.65rem' }}>/pessoa</span>
@@ -130,8 +131,8 @@ export default async function ReservarPage() {
                       <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{boat.name}</div>
                       {boat.tagline && <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>{boat.tagline}</div>}
                       <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.25rem' }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>🕐 {boat.duration_hours}h</span>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>⏰ {boat.departure_time?.slice(0, 5)}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> {boat.duration_hours}h</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> {boat.departure_time?.slice(0, 5)}</span>
                       </div>
                       <div style={{ marginTop: 'auto', paddingTop: '0.75rem' }}>
                         <span style={{ display: 'inline-block', background: 'var(--ocean-mid)', color: 'white', borderRadius: '8px', padding: '0.45rem 1rem', fontSize: '0.8125rem', fontWeight: 600, width: '100%', textAlign: 'center' }}>
@@ -147,7 +148,7 @@ export default async function ReservarPage() {
 
           {/* ── Fotografia ───────────────────────────────────────────────── */}
           <div style={{ marginBottom: '4rem' }}>
-            <SectionHeader emoji="📸" label="Fotografia Profissional" color="#8B5CF6" tag="contratação via whatsapp" />
+            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>} label="Fotografia Profissional" color="#8B5CF6" tag="contratação via whatsapp" />
             {pkgs && pkgs.length > 0 ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
                 {pkgs.map((pkg) => (
@@ -203,19 +204,19 @@ export default async function ReservarPage() {
 
           {/* ── Serviços ─────────────────────────────────────────────────── */}
           <div style={{ marginBottom: '4rem' }}>
-            <SectionHeader emoji="🚤" label="Serviços Exclusivos" color="#D97706" tag="contratação via whatsapp" />
+            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>} label="Serviços Exclusivos" color="#D97706" tag="contratação via whatsapp" />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem' }}>
               {extraServices.length > 0 ? extraServices.map((svc) => {
-                const icons: Record<string, string> = {
-                  'lancha-privativa': '🚤',
-                  'passeio-de-jeep': '🚙',
-                  'transfer': '🚐',
+                const svcIconMap: Record<string, React.ReactNode> = {
+                  'lancha-privativa': (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>),
+                  'passeio-de-jeep': (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>),
+                  'transfer': (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>),
                 }
-                const icon = icons[svc.slug] || '⚓'
+                const icon = svcIconMap[svc.slug] || (<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/><path d="M5 12H2a10 10 0 0020 0h-3"/></svg>)
                 const waMsg = `Olá! Tenho interesse no serviço "${svc.name}" em Paraty. Pode me passar mais informações?`
                 return (
                   <div key={svc.id} className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.625rem', borderTop: '3px solid #D97706' }}>
-                    <div style={{ fontSize: '2rem' }}>{icon}</div>
+                    <div style={{ color: '#D97706' }}>{icon}</div>
                     <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{svc.name}</div>
                     {svc.description && <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{svc.description}</div>}
                     <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -232,12 +233,12 @@ export default async function ReservarPage() {
                 )
               }) : (
                 /* Fallback when no services in DB yet */
-                [{name:'Lancha Privativa', slug:'lancha-privativa', icon:'🚤', desc:'Embarque privativo para grupos, passeios personalizados pelas ilhas.'},
-                 {name:'Passeio de Jeep', slug:'passeio-de-jeep', icon:'🚙', desc:'Trilhas e mirantes da Serra da Bocaina a bordo de um jeep 4x4.'},
-                 {name:'Transfer', slug:'transfer', icon:'🚐', desc:'Translado confortável entre Paraty, RJ e SP — van ou van executiva.'}
+                [{name:'Lancha Privativa', slug:'lancha-privativa', icon:(<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg>), desc:'Embarque privativo para grupos, passeios personalizados pelas ilhas.'},
+                 {name:'Passeio de Jeep', slug:'passeio-de-jeep', icon:(<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>), desc:'Trilhas e mirantes da Serra da Bocaina a bordo de um jeep 4x4.'},
+                 {name:'Transfer', slug:'transfer', icon:(<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>), desc:'Translado confortável entre Paraty, RJ e SP — van ou van executiva.'}
                 ].map(svc => (
                   <div key={svc.slug} className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.625rem', borderTop: '3px solid #D97706' }}>
-                    <div style={{ fontSize: '2rem' }}>{svc.icon}</div>
+                    <div style={{ color: '#D97706' }}>{svc.icon}</div>
                     <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.0625rem', color: 'var(--text-primary)', fontWeight: 700 }}>{svc.name}</div>
                     <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', lineHeight: 1.55 }}>{svc.desc}</div>
                     <div style={{ marginTop: 'auto', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -263,7 +264,7 @@ export default async function ReservarPage() {
 
           {/* ── Hospedagem ───────────────────────────────────────────────── */}
           <div>
-            <SectionHeader emoji="🏡" label="Hospedagem" color="#059669" />
+            <SectionHeader emoji={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>} label="Hospedagem" color="#059669" />
             <div style={{
               background: '#f0fdf4',
               border: '1.5px dashed #86efac',
@@ -271,7 +272,7 @@ export default async function ReservarPage() {
               padding: '2.5rem',
               textAlign: 'center',
             }}>
-              <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>🏡</div>
+              <div style={{ marginBottom: '0.75rem', color: '#059669', display: 'flex', justifyContent: 'center' }}><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
               <h3 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: '#065f46', marginBottom: '0.5rem' }}>
                 Hospedagem em breve
               </h3>
