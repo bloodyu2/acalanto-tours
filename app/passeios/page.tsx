@@ -79,11 +79,12 @@ function BoatCard({ boat }: { boat: Boat }) {
 
 export default async function PasseiosPage() {
   const supabase = await createClient()
-  const { data: boats } = await supabase
+  const { data: boats, error } = await supabase
     .from('boats')
     .select('*')
     .eq('active', true)
     .order('display_order', { ascending: true })
+  if (error) console.error('[passeios] supabase error:', error.message)
 
   return (
     <>
