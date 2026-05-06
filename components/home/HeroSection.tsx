@@ -123,7 +123,7 @@ export default function HeroSection() {
             maxWidth: '520px',
             fontWeight: 400,
           }}>
-            Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos — tudo num só lugar, com quem conhece Paraty de verdade.
+            Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos: tudo num só lugar, com quem conhece Paraty de verdade.
           </p>
 
           <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
