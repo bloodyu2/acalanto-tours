@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react'
 import CartIcon from '@/components/cart/CartIcon'
 
 const nav = [
-  { href: '/',           label: 'Início' },
   { href: '/passeios',   label: 'Passeios' },
   { href: '/fotografia', label: 'Fotografia' },
+  { href: '/hotelaria',  label: 'Hospedagem' },
+  { href: '/servicos',   label: 'Serviços' },
   { href: '/quem-somos', label: 'Quem Somos' },
 ]
 
