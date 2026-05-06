@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
       // Update payment
       const { data: paymentData, error: payErr } = await supabase
-        .from('acalanto_payments')
+        .from('payments')
         .update({ status: 'paid', paid_at: now, raw_webhook: body })
         .eq('id', paymentId)
         .select('booking_id')
@@ -52,20 +52,20 @@ export async function POST(req: NextRequest) {
       if (paymentData?.booking_id) {
         const bookingId = paymentData.booking_id
         await supabase
-          .from('acalanto_bookings')
+          .from('bookings')
           .update({ status: 'confirmed', paid_at: now })
           .eq('id', bookingId)
 
         // Fetch booking for confirmation email
         const { data: booking } = await supabase
-          .from('acalanto_bookings')
-          .select('customer_name, customer_email, tour_date, adults, children, acalanto_boats(name), acalanto_payments(amount_cents)')
+          .from('bookings')
+          .select('customer_name, customer_email, tour_date, adults, children, boats(name), payments(amount_cents)')
           .eq('id', bookingId)
           .single()
 
         if (booking?.customer_email) {
-          const boatName = (booking.acalanto_boats as { name: string } | null)?.name ?? 'escuna'
-          const totalCents = (booking.acalanto_payments as { amount_cents: number }[] | null)?.[0]?.amount_cents ?? 0
+          const boatName = (booking.boats as { name: string } | null)?.name ?? 'escuna'
+          const totalCents = (booking.payments as { amount_cents: number }[] | null)?.[0]?.amount_cents ?? 0
           const tourDateFormatted = booking.tour_date
             ? new Date(booking.tour_date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })
             : 'a confirmar'

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     // Insert booking
     const { data: booking, error: bookingError } = await supabase
-      .from('acalanto_bookings')
+      .from('bookings')
       .insert({
         boat_id: firstItem.boatId ?? null,
         tour_date: firstItem.date || null,
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
 
     // Insert payment
     const { data: payment, error: paymentError } = await supabase
-      .from('acalanto_payments')
+      .from('payments')
       .insert({
         booking_id: bookingId,
         amount_cents: totalAmountCents,

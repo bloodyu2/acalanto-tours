@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
   const targetDate = twoDaysAgo.toISOString().slice(0, 10)
 
   const { data: bookings, error } = await supabase
-    .from('acalanto_bookings')
-    .select('id, customer_name, customer_email, adults, children, acalanto_boats(name)')
+    .from('bookings')
+    .select('id, customer_name, customer_email, adults, children, boats(name)')
     .eq('tour_date', targetDate)
     .eq('status', 'confirmed')
     .not('customer_email', 'is', null)
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   for (const booking of (bookings ?? [])) {
     // Check if NPS already sent
     const { data: existing } = await supabase
-      .from('acalanto_nps_surveys')
+      .from('nps_surveys')
       .select('id')
       .eq('booking_id', booking.id)
       .maybeSingle()
@@ -54,14 +54,14 @@ export async function GET(request: NextRequest) {
     const { token, token_expires } = createNpsSurveyData(booking.id)
 
     const { error: insertErr } = await supabase
-      .from('acalanto_nps_surveys')
+      .from('nps_surveys')
       .insert({ booking_id: booking.id, token_expires })
 
     if (insertErr) { skipped++; continue }
 
     // Send email
     const surveyUrl = `${siteUrl}/pesquisa?t=${token}&b=${booking.id}`
-    const boatName = (booking.acalanto_boats as { name: string } | null)?.name ?? 'escuna'
+    const boatName = (booking.boats as { name: string } | null)?.name ?? 'escuna'
 
     await sendEmail({
       to: booking.customer_email,
