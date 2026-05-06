@@ -85,7 +85,7 @@ export default async function ReservarPage() {
             marginBottom: '1.25rem',
           }}>
             <span style={{ width: '20px', height: '1px', background: 'rgba(255,255,255,0.3)', display: 'inline-block' }} />
-            Acalanto Tours · Paraty
+            Acalanto Turismo · Paraty
             <span style={{ width: '20px', height: '1px', background: 'rgba(255,255,255,0.3)', display: 'inline-block' }} />
           </div>
           <h1 style={{

@@ -16,7 +16,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return { title: 'Passeio de Escuna em Paraty | Acalanto Tours' }
+    return { title: 'Passeio de Escuna em Paraty | Acalanto Turismo' }
   }
   const supabase = await createClient()
   const { data } = await supabase.from('boats').select('name,tagline,description').eq('slug', slug).single()

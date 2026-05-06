@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Termos de Uso — Acalanto Tours',
-  description: 'Leia os termos e condições de uso da plataforma Acalanto Tours.',
+  title: 'Termos de Uso — Acalanto Turismo',
+  description: 'Leia os termos e condições de uso da plataforma Acalanto Turismo.',
 }
 
 export default function TermosPage() {
@@ -24,7 +24,7 @@ export default function TermosPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', lineHeight: 1.75, color: 'var(--text-primary)', fontSize: '0.9375rem' }}>
           <section>
             <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Aceitação dos termos</h2>
-            <p>Ao realizar uma reserva ou usar qualquer serviço da Acalanto Tours, você concorda com estes termos. Se não concordar, por favor não realize reservas.</p>
+            <p>Ao realizar uma reserva ou usar qualquer serviço da Acalanto Turismo, você concorda com estes termos. Se não concordar, por favor não realize reservas.</p>
           </section>
 
           <section>
@@ -38,12 +38,12 @@ export default function TermosPage() {
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Responsabilidades da Acalanto Tours</h2>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Responsabilidades da Acalanto Turismo</h2>
             <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               <li>Garantir a realização do passeio conforme descrito, salvo impedimentos climáticos ou de força maior.</li>
               <li>Manter as embarcações em condições de segurança e com os equipamentos obrigatórios.</li>
               <li>Avisar os clientes com antecedência em caso de cancelamento por parte da empresa.</li>
-              <li>Em caso de cancelamento pela Acalanto Tours, o cliente receberá reembolso integral ou crédito para nova data.</li>
+              <li>Em caso de cancelamento pela Acalanto Turismo, o cliente receberá reembolso integral ou crédito para nova data.</li>
             </ul>
           </section>
 
@@ -65,7 +65,7 @@ export default function TermosPage() {
 
           <section>
             <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Propriedade intelectual</h2>
-            <p>Todo o conteúdo deste site (textos, fotos, vídeos, marcas) é de propriedade da Acalanto Tours. A reprodução sem autorização prévia é proibida.</p>
+            <p>Todo o conteúdo deste site (textos, fotos, vídeos, marcas) é de propriedade da Acalanto Turismo. A reprodução sem autorização prévia é proibida.</p>
           </section>
 
           <section>

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Cadastro em análise — Acalanto Tours',
+  title: 'Cadastro em análise — Acalanto Turismo',
 }
 
 export default function CadastroAguardandoPage() {

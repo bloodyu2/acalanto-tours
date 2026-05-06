@@ -28,7 +28,7 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TouristAttraction',
-  name: 'Acalanto Tours',
+  name: 'Acalanto Turismo',
   description: 'Tudo para seu turismo em Paraty: passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://acalantotours.com.br',
   address: {
@@ -44,22 +44,22 @@ const jsonLd = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Acalanto Tours | Turismo em Paraty',
-    template: '%s | Acalanto Tours',
+    default: 'Acalanto Turismo | Turismo em Paraty',
+    template: '%s | Acalanto Turismo',
   },
   description: 'Tudo para seu turismo em Paraty: passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos.',
   keywords: ['turismo Paraty', 'escuna Paraty', 'passeio barco Paraty', 'fotografia Paraty', 'hospedagem Paraty', 'Paraty tours', 'Costa Verde'],
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    siteName: 'Acalanto Tours',
-    title: 'Acalanto Tours | Turismo em Paraty',
+    siteName: 'Acalanto Turismo',
+    title: 'Acalanto Turismo | Turismo em Paraty',
     description: 'Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos em Paraty.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Acalanto Tours | Turismo em Paraty' }],
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Acalanto Turismo | Turismo em Paraty' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Acalanto Tours | Turismo em Paraty',
+    title: 'Acalanto Turismo | Turismo em Paraty',
     description: 'Tudo para seu turismo em Paraty: escunas, fotografia, hospedagem e serviços.',
   },
   robots: { index: true, follow: true },

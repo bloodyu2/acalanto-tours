@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import ContactSection from '@/components/home/ContactSection'
 
 export const metadata: Metadata = {
-  title: 'Fale Conosco | Acalanto Tours',
-  description: 'Entre em contato com a Acalanto Tours. Tire suas dúvidas sobre passeios de escuna em Paraty, reservas e serviços. Respondemos pelo WhatsApp e e-mail.',
+  title: 'Fale Conosco | Acalanto Turismo',
+  description: 'Entre em contato com a Acalanto Turismo. Tire suas dúvidas sobre passeios de escuna em Paraty, reservas e serviços. Respondemos pelo WhatsApp e e-mail.',
 }
 
 export default function ContatoPage() {

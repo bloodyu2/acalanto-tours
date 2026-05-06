@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useCallback, ReactNode } from 'rea
 
 export type CartItem = {
   id: string
-  type: 'passeio' | 'fotografia' | 'servico'
+  type: 'passeio' | 'fotografia' | 'servico' | 'hospedagem'
   name: string
   date: string // ISO date string
   adults: number
@@ -13,6 +13,17 @@ export type CartItem = {
   boatId?: string
   photographerPackageId?: string
   utmCampaign?: string | null
+  // Serviço fields
+  serviceId?: string
+  pricingType?: 'per_person' | 'per_group'
+  groupSize?: number
+  // Hospedagem fields
+  accommodationListingId?: string
+  checkIn?: string    // YYYY-MM-DD
+  checkOut?: string   // YYYY-MM-DD
+  nights?: number
+  guests?: number
+  pricePerNightCents?: number
 }
 
 type CartContextType = {
@@ -35,6 +46,16 @@ export function useCart() {
   return ctx
 }
 
+function itemTotal(item: CartItem): number {
+  if (item.type === 'hospedagem') {
+    return (item.pricePerNightCents ?? 0) * (item.nights ?? 1)
+  }
+  if (item.type === 'servico' && item.pricingType === 'per_group') {
+    return item.priceAdultCents
+  }
+  return item.priceAdultCents * item.adults + item.priceChildCents * item.children
+}
+
 export default function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isOpen, setIsOpen] = useState(false)
@@ -54,9 +75,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(() => setItems([]), [])
 
-  const totalCents = items.reduce((sum, item) => {
-    return sum + item.priceAdultCents * item.adults + item.priceChildCents * item.children
-  }, 0)
+  const totalCents = items.reduce((sum, item) => sum + itemTotal(item), 0)
 
   const itemCount = items.length
 

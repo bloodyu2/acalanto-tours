@@ -70,9 +70,51 @@ export interface Database {
           active: boolean
           display_order: number
           created_at: string
+          pricing_type: 'per_person' | 'per_group' | null
+          price_cents_per_person: number | null
+          price_cents_group: number | null
+          capacity_max: number | null
         }
         Insert: Omit<Database['public']['Tables']['services']['Row'], 'id' | 'created_at'>
         Update: Partial<Database['public']['Tables']['services']['Insert']>
+      }
+      service_availability: {
+        Row: {
+          id: string
+          service_id: string
+          date: string
+          available: boolean
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['service_availability']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['service_availability']['Insert']>
+      }
+      accommodation_availability: {
+        Row: {
+          id: string
+          listing_id: string
+          date: string
+          status: 'available' | 'blocked' | 'booked'
+          source: 'manual' | 'ical' | 'acalanto'
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['accommodation_availability']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['accommodation_availability']['Insert']>
+      }
+      ical_sources: {
+        Row: {
+          id: string
+          listing_id: string
+          url: string
+          direction: 'import' | 'export'
+          channel_type: string | null
+          active: boolean
+          last_synced_at: string | null
+          sync_status: 'ok' | 'error' | 'pending' | null
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['ical_sources']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['ical_sources']['Insert']>
       }
       gallery: {
         Row: {
@@ -299,3 +341,6 @@ export type PartnerPage = Database['public']['Tables']['partner_pages']['Row']
 export type NpsSurvey = Database['public']['Tables']['nps_surveys']['Row']
 export type Payout = Database['public']['Tables']['payouts']['Row']
 export type EvolutionTask = Database['public']['Tables']['evolution_tasks']['Row']
+export type ServiceAvailability = Database['public']['Tables']['service_availability']['Row']
+export type AccommodationAvailability = Database['public']['Tables']['accommodation_availability']['Row']
+export type ICalSource = Database['public']['Tables']['ical_sources']['Row']

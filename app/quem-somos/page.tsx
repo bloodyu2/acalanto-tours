@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Quem Somos',
-  description: 'Conheça a Acalanto Tours, plataforma de turismo náutico em Paraty que reúne escunas, lanchas, jeep, fotografia e guias num só canal de reservas.',
+  description: 'Conheça a Acalanto Turismo, plataforma de turismo náutico em Paraty que reúne escunas, lanchas, jeep, fotografia e guias num só canal de reservas.',
 }
 
 export default function QuemSomosPage() {

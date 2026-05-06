@@ -16,7 +16,7 @@ export default function Footer() {
           {/* Brand */}
           <div style={{ gridColumn: 'span 1' }}>
             <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.5rem', fontWeight: 700, color: 'white', marginBottom: '0.5rem' }}>
-              Acalanto Tours
+              Acalanto Turismo
             </div>
             <p style={{ fontSize: '0.875rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.6)', marginBottom: '1.25rem' }}>
               Tudo para seu turismo em Paraty: passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos.
@@ -124,7 +124,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-          <span>© {new Date().getFullYear()} Acalanto Tours · Paraty, RJ · Todos os direitos reservados.</span>
+          <span>© {new Date().getFullYear()} Acalanto Turismo · Paraty, RJ · Todos os direitos reservados.</span>
           <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
             <Link href="/privacidade" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '0.8125rem' }}>
               Privacidade

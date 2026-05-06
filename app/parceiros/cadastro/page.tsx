@@ -139,7 +139,7 @@ export default function CadastroStep1Page() {
       <div style={{ width: '100%', maxWidth: '480px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Link href="/" style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none' }}>
-            Acalanto Tours
+            Acalanto Turismo
           </Link>
         </div>
 

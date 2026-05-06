@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Seja Parceiro — Acalanto Tours',
-  description: 'Junte-se ao marketplace da Acalanto Tours: fotógrafos, hospedagens, jeep/transfer e guias. Aprovação em 24h, página própria com SEO e suporte WhatsApp.',
+  title: 'Seja Parceiro — Acalanto Turismo',
+  description: 'Junte-se ao marketplace da Acalanto Turismo: fotógrafos, hospedagens, jeep/transfer e guias. Aprovação em 24h, página própria com SEO e suporte WhatsApp.',
 }
 
 const partnerTypes = [
@@ -167,7 +167,7 @@ export default function SejaParceiroPage() {
             Nossa estrutura de comissão é transparente e alinhada com o crescimento do seu negócio. Entre em contato para conhecer as condições completas.
           </p>
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999627968'}?text=Olá, tenho interesse em ser parceiro da Acalanto Tours. Gostaria de saber as condições de comissionamento.`}
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999627968'}?text=Olá, tenho interesse em ser parceiro da Acalanto Turismo. Gostaria de saber as condições de comissionamento.`}
             className="btn-outline"
             target="_blank"
             rel="noreferrer"

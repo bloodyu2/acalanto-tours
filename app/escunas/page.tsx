@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import TourCard from '@/components/tours/TourCard'
+import EscunasPageClient from '@/components/tours/EscunasPageClient'
 
 export const dynamic = 'force-dynamic'
 
@@ -56,21 +56,7 @@ export default async function EscunasPage() {
       <section style={{ padding: '4rem 0 5rem' }}>
         <div className="container">
 
-          {boats && boats.length > 0 ? (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '1.75rem',
-            }}>
-              {boats.map(boat => (
-                <TourCard key={boat.id} boat={boat} />
-              ))}
-            </div>
-          ) : (
-            <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '4rem 0' }}>
-              Passeios em breve disponíveis.
-            </p>
-          )}
+          <EscunasPageClient boats={boats ?? []} />
 
           {/* Pricing info */}
           <div style={{

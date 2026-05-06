@@ -107,7 +107,7 @@ export default function CadastroAnuncioPage() {
       <div style={{ maxWidth: '560px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <Link href="/" style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', textDecoration: 'none' }}>
-            Acalanto Tours
+            Acalanto Turismo
           </Link>
         </div>
 

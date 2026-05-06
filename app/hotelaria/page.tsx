@@ -1,10 +1,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { getApprovedListings } from '@/lib/partner-listings'
+import { createClient } from '@/lib/supabase/server'
+import SearchBar from '@/components/hotelaria/SearchBar'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Hospedagem em Paraty — Acalanto Tours',
-  description: 'Encontre as melhores pousadas, hotéis e acomodações em Paraty, selecionadas pela Acalanto Tours.',
+  title: 'Hospedagem em Paraty — Acalanto Turismo',
+  description: 'Encontre as melhores pousadas, hotéis e acomodações em Paraty, selecionadas pela Acalanto Turismo.',
 }
 
 const amenityLabels: Record<string, string> = {
@@ -22,15 +27,40 @@ const hotelTypeLabel: Record<string, string> = {
   airbnb: 'Airbnb',
 }
 
-export default async function HotelariaPage() {
-  const listings = await getApprovedListings('hospedagem')
+interface Props {
+  searchParams: Promise<{ checkin?: string; checkout?: string; guests?: string }>
+}
+
+export default async function HotelariaPage({ searchParams }: Props) {
+  const sp = await searchParams
+  const allListings = await getApprovedListings('hospedagem')
+
+  let listings = allListings
+
+  // Filter by availability if dates provided
+  if (sp.checkin && sp.checkout && allListings.length > 0) {
+    const supabase = await createClient()
+    const { data: blocked } = await supabase
+      .from('accommodation_availability')
+      .select('listing_id')
+      .neq('status', 'available')
+      .gte('date', sp.checkin)
+      .lt('date', sp.checkout)
+
+    if (blocked && blocked.length > 0) {
+      const blockedIds = new Set(blocked.map((r: { listing_id: string }) => r.listing_id))
+      listings = allListings.filter(l => !blockedIds.has(l.id))
+    }
+  }
+
+  const hasSearch = !!(sp.checkin && sp.checkout)
 
   return (
     <main style={{ paddingTop: '5rem', minHeight: '80vh' }}>
       {/* Hero */}
       <section style={{
         background: 'linear-gradient(160deg, #0A3D5C 0%, #1A6B8A 100%)',
-        padding: 'clamp(3rem, 8vw, 5rem) 1.5rem',
+        padding: 'clamp(3rem, 8vw, 5rem) 1.5rem clamp(2rem, 4vw, 3rem)',
         textAlign: 'center',
         color: 'white',
       }}>
@@ -50,18 +80,45 @@ export default async function HotelariaPage() {
         </div>
       </section>
 
-      {/* Listings */}
-      <section style={{ padding: 'clamp(3rem, 6vw, 4rem) 1.5rem', background: 'var(--sand)' }}>
+      {/* Search bar */}
+      <section style={{ padding: '1.5rem 1.5rem 0' }}>
         <div className="container">
+          <Suspense fallback={null}>
+            <SearchBar />
+          </Suspense>
+        </div>
+      </section>
+
+      {/* Listings */}
+      <section style={{ padding: 'clamp(2rem, 4vw, 3rem) 1.5rem', background: 'var(--sand)' }}>
+        <div className="container">
+          {hasSearch && (
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+              {listings.length} hospedagem{listings.length !== 1 ? 's' : ''} disponível{listings.length !== 1 ? 'veis' : ''} de <strong>{sp.checkin}</strong> a <strong>{sp.checkout}</strong>
+              {' · '}
+              <Link href="/hotelaria" style={{ color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
+                Limpar filtro
+              </Link>
+            </p>
+          )}
+
           {listings.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem 1.5rem', color: 'var(--text-muted)' }}>
-              <p style={{ fontSize: '1.0625rem', marginBottom: '1rem' }}>Em breve, pousadas e hotéis parceiros aqui.</p>
-              <p style={{ fontSize: '0.875rem' }}>
-                É dono de uma hospedagem?{' '}
-                <Link href="/seja-parceiro" style={{ color: 'var(--ocean-mid)', fontWeight: 600 }}>
-                  Cadastre seu negócio
-                </Link>
+              <p style={{ fontSize: '1.0625rem', marginBottom: '1rem' }}>
+                {hasSearch ? 'Nenhuma hospedagem disponível para esse período.' : 'Em breve, pousadas e hotéis parceiros aqui.'}
               </p>
+              {hasSearch ? (
+                <Link href="/hotelaria" style={{ color: 'var(--ocean-mid)', fontWeight: 600 }}>
+                  Ver todas as hospedagens
+                </Link>
+              ) : (
+                <p style={{ fontSize: '0.875rem' }}>
+                  É dono de uma hospedagem?{' '}
+                  <Link href="/seja-parceiro" style={{ color: 'var(--ocean-mid)', fontWeight: 600 }}>
+                    Cadastre seu negócio
+                  </Link>
+                </p>
+              )}
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
@@ -69,15 +126,19 @@ export default async function HotelariaPage() {
                 const meta = listing.metadata as Record<string, unknown>
                 const typeLabel = hotelTypeLabel[(meta.hotel_type as string) ?? ''] ?? ''
                 const amenities = (meta.amenities as string[]) ?? []
+                const href = hasSearch
+                  ? `/hotelaria/${listing.slug}?checkin=${sp.checkin}&checkout=${sp.checkout}&guests=${sp.guests ?? 2}`
+                  : `/hotelaria/${listing.slug}`
 
                 return (
                   <Link
                     key={listing.id}
-                    href={`/hotelaria/${listing.slug}`}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
                     style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}
                   >
-                    <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border)', flex: 1, display: 'flex', flexDirection: 'column', transition: 'box-shadow 0.15s' }}>
-                      {/* Cover image placeholder */}
+                    <div style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border)', flex: 1, display: 'flex', flexDirection: 'column' }}>
                       <div style={{ height: '180px', background: 'linear-gradient(135deg, var(--ocean-mid), var(--sunset))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         {listing.cover_image ? (
                           <img src={listing.cover_image} alt={listing.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
@@ -132,7 +193,6 @@ export default async function HotelariaPage() {
             </div>
           )}
 
-          {/* Partner CTA */}
           <div style={{ marginTop: '3rem', textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '16px', border: '1px solid var(--border)' }}>
             <p style={{ color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9375rem' }}>
               Tem uma pousada ou hotel em Paraty?

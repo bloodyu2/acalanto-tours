@@ -56,6 +56,31 @@ export async function POST(req: NextRequest) {
           .update({ status: 'confirmed', paid_at: now })
           .eq('id', bookingId)
 
+        // Block dates for service/accommodation bookings
+        const { data: bookingForDates } = await supabase
+          .from('bookings')
+          .select('service_id, accommodation_listing_id, tour_date, check_in, check_out')
+          .eq('id', bookingId)
+          .single()
+        if (bookingForDates?.service_id && bookingForDates.tour_date) {
+          await supabase.from('service_availability').upsert(
+            { service_id: bookingForDates.service_id, date: bookingForDates.tour_date, available: false },
+            { onConflict: 'service_id,date' }
+          )
+        }
+        if (bookingForDates?.accommodation_listing_id && bookingForDates.check_in && bookingForDates.check_out) {
+          const rows: { listing_id: string; date: string; status: string; source: string }[] = []
+          const d = new Date(bookingForDates.check_in)
+          const end = new Date(bookingForDates.check_out)
+          while (d < end) {
+            rows.push({ listing_id: bookingForDates.accommodation_listing_id, date: d.toISOString().split('T')[0], status: 'booked', source: 'acalanto' })
+            d.setDate(d.getDate() + 1)
+          }
+          if (rows.length > 0) {
+            await supabase.from('accommodation_availability').upsert(rows, { onConflict: 'listing_id,date' })
+          }
+        }
+
         // Fetch booking for confirmation email
         const { data: booking } = await supabase
           .from('bookings')
@@ -72,7 +97,7 @@ export async function POST(req: NextRequest) {
 
           await sendEmail({
             to: booking.customer_email,
-            subject: 'Reserva confirmada - Acalanto Tours',
+            subject: 'Reserva confirmada - Acalanto Turismo',
             html: confirmationEmailHtml({
               customerName: booking.customer_name ?? 'Cliente',
               tourDate: tourDateFormatted,

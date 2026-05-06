@@ -36,7 +36,7 @@ export default async function GaleriaPage() {
               {gallery.map(img => (
                 <div key={img.id} style={{ breakInside: 'avoid', marginBottom: '0.75rem', borderRadius: '0.75rem', overflow: 'hidden' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img.url} alt={img.alt_text || 'Passeio Acalanto Tours'} style={{ width: '100%', display: 'block' }} />
+                  <img src={img.url} alt={img.alt_text || 'Passeio Acalanto Turismo'} style={{ width: '100%', display: 'block' }} />
                 </div>
               ))}
             </div>

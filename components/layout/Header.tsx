@@ -53,7 +53,7 @@ export default function Header() {
             letterSpacing: '0.12em',
             transition: 'color 0.3s',
           }}>
-            Tours
+            Turismo
           </span>
         </Link>
 

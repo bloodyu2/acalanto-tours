@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Política de Cancelamento — Acalanto Tours',
-  description: 'Saiba as condições para cancelamento e reembolso de reservas na Acalanto Tours.',
+  title: 'Política de Cancelamento — Acalanto Turismo',
+  description: 'Saiba as condições para cancelamento e reembolso de reservas na Acalanto Turismo.',
 }
 
 export default function CancelamentoPage() {
@@ -75,7 +75,7 @@ export default function CancelamentoPage() {
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Cancelamento por parte da Acalanto Tours</h2>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Cancelamento por parte da Acalanto Turismo</h2>
             <p>Em caso de cancelamento por mau tempo, problemas técnicos ou outro motivo de nossa responsabilidade, você receberá reembolso integral ou a opção de remarcar sem custo adicional.</p>
           </section>
 

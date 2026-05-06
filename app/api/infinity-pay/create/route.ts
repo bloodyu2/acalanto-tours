@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     const payload = {
       amount: totalAmountCents,
-      description: `Acalanto Tours - ${items[0].name}`,
+      description: `Acalanto Turismo - ${items[0].name}`,
       reference: paymentId,
       customer: { name: customerName, email: customerEmail, phone: customerPhone },
       redirect_url: `${siteUrl}/checkout/sucesso?booking_id=${bookingId}`,

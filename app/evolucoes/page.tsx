@@ -175,7 +175,7 @@ export default function EvolucoesDashboard() {
               marginBottom: '4px',
             }}
           >
-            Acalanto Tours
+            Acalanto Turismo
           </p>
           <p
             style={{
@@ -283,7 +283,7 @@ export default function EvolucoesDashboard() {
               marginLeft: '12px',
             }}
           >
-            Roadmap interno - Acalanto Tours
+            Roadmap interno - Acalanto Turismo
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

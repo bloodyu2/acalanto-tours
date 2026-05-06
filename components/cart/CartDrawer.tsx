@@ -78,7 +78,18 @@ export default function CartDrawer() {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {items.map(item => {
-                const itemTotal = item.adults * item.priceAdultCents + item.children * item.priceChildCents
+                let displayTotal: number
+                let displayDetails: string
+                if (item.type === 'hospedagem') {
+                  displayTotal = (item.pricePerNightCents ?? 0) * (item.nights ?? 1)
+                  displayDetails = `${item.nights} noite${item.nights !== 1 ? 's' : ''} · ${item.guests} hóspede${(item.guests ?? 1) !== 1 ? 's' : ''} · ${formatDate(item.checkIn ?? item.date)} → ${formatDate(item.checkOut ?? '')}`
+                } else if (item.type === 'servico' && item.pricingType === 'per_group') {
+                  displayTotal = item.priceAdultCents
+                  displayDetails = `Grupo de ${item.groupSize ?? item.adults} pessoas · ${formatDate(item.date)}`
+                } else {
+                  displayTotal = item.adults * item.priceAdultCents + item.children * item.priceChildCents
+                  displayDetails = `${item.adults} adulto${item.adults !== 1 ? 's' : ''}${item.children > 0 ? ` · ${item.children} criança${item.children !== 1 ? 's' : ''}` : ''} · ${formatDate(item.date)}`
+                }
                 return (
                   <div key={item.id} style={{
                     border: '1px solid var(--border)',
@@ -94,14 +105,10 @@ export default function CartDrawer() {
                           {item.name}
                         </p>
                         <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
-                          Data: {formatDate(item.date)}
-                        </p>
-                        <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-                          {item.adults} adulto{item.adults !== 1 ? 's' : ''}
-                          {item.children > 0 ? `, ${item.children} crianca${item.children !== 1 ? 's' : ''}` : ''}
+                          {displayDetails}
                         </p>
                         <p style={{ fontWeight: 700, marginTop: '0.5rem', color: 'var(--text-primary)' }}>
-                          {formatBRL(itemTotal)}
+                          {formatBRL(displayTotal)}
                         </p>
                       </div>
                       <button

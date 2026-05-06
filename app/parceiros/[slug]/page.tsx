@@ -186,7 +186,7 @@ export default async function PartnerPage({ params }: PageProps) {
           textAlign: 'center',
           margin: 0,
         }}>
-          Reservas via Acalanto Tours
+          Reservas via Acalanto Turismo
         </p>
       </div>
     </main>

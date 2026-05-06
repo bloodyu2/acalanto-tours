@@ -84,7 +84,7 @@ export default async function AdminDashboard() {
         Dashboard
       </h1>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem' }}>
-        Bem-vindo ao painel de administracao Acalanto Tours.
+        Bem-vindo ao painel de administracao Acalanto Turismo.
       </p>
 
       {/* KPI cards */}

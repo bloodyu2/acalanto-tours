@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className="admin-sidebar" style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '1.5rem 1.5rem 1rem' }}>
           <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, color: 'white', marginBottom: '0.25rem' }}>
-            Acalanto Tours
+            Acalanto Turismo
           </div>
           <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Painel Admin

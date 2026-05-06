@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidade — Acalanto Tours',
-  description: 'Saiba como coletamos e usamos seus dados pessoais. Confira a política de privacidade da Acalanto Tours.',
+  title: 'Política de Privacidade — Acalanto Turismo',
+  description: 'Saiba como coletamos e usamos seus dados pessoais. Confira a política de privacidade da Acalanto Turismo.',
 }
 
 export default function PrivacidadePage() {
@@ -24,7 +24,7 @@ export default function PrivacidadePage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', lineHeight: 1.75, color: 'var(--text-primary)', fontSize: '0.9375rem' }}>
           <section>
             <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Quem somos</h2>
-            <p>A Acalanto Tours é uma agência de turismo náutico localizada em Paraty, RJ. Operamos passeios de escuna, fotografia profissional e serviços exclusivos para visitantes da região.</p>
+            <p>A Acalanto Turismo é uma agência de turismo náutico localizada em Paraty, RJ. Operamos passeios de escuna, fotografia profissional e serviços exclusivos para visitantes da região.</p>
           </section>
 
           <section>
