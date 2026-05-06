@@ -95,6 +95,8 @@ export default function Header() {
             cursor: 'pointer',
             padding: '0.5rem',
             color: 'var(--text-primary)',
+            position: 'relative',
+            zIndex: 60,
           }}
           aria-label="Menu"
         >
@@ -134,6 +136,10 @@ export default function Header() {
               {label}
             </Link>
           ))}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 0', borderBottom: '1px solid var(--border)' }}>
+            <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>Carrinho</span>
+            <CartIcon />
+          </div>
           <Link
             href="/reservar"
             className="btn-primary"
