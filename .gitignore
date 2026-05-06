@@ -48,3 +48,4 @@ CLAUDE.md
 .env.local
 .git_broken*
 .next_old*
+memory.md

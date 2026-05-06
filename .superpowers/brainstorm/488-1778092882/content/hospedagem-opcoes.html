@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="color-scheme: light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hospedagem — Como desenvolver?</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 2rem 1.5rem; max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .sub { color: #555; font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 1.25rem; }
+  .option {
+    background: #fff; border: 2px solid #e0e0e5; border-radius: 14px;
+    padding: 1.5rem; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .option:hover { border-color: #0071e3; box-shadow: 0 0 0 3px rgba(0,113,227,0.1); }
+  .option.selected { border-color: #0071e3; background: #eff6ff; }
+  .option-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .letter {
+    width: 32px; height: 32px; border-radius: 50%; background: #0071e3; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .option-header h3 { font-size: 1rem; font-weight: 700; }
+  .option p { font-size: 0.875rem; color: #444; line-height: 1.6; margin-bottom: 0.5rem; }
+  .tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+  .tag { background: #f0f0f3; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; color: #555; }
+  .tag.pro { background: #dcfce7; color: #16a34a; }
+  .tag.con { background: #fee2e2; color: #dc2626; }
+  .mockup {
+    background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
+    padding: 1rem; margin-top: 1rem; font-size: 0.8rem; color: #6b7280;
+  }
+  .mock-row { display: flex; gap: 0.75rem; margin-bottom: 0.5rem; }
+  .mock-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.6rem 0.9rem; flex: 1; font-size: 0.8rem; }
+  .mock-card strong { color: #1d1d1f; display: block; margin-bottom: 2px; }
+</style>
+<script>
+  function pick(el) {
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+</script>
+</head>
+<body>
+
+<h1>Modulo de Hospedagem — Como desenvolver?</h1>
+<p class="sub">Escolha a abordagem que melhor representa o que voce quer para o modulo de hospedagem e hoteis da Acalanto.</p>
+
+<div class="options">
+
+  <!-- Opção A -->
+  <div class="option" onclick="pick(this)">
+    <div class="option-header">
+      <div class="letter">A</div>
+      <h3>Curadoria simples — hoteis selecionados com WhatsApp</h3>
+    </div>
+    <p>A Acalanto lista manualmente hoteis, pousadas e Airbnbs parceiros proximos ao pier. O visitante ve cards com fotos, nome, preco por noite (aprox.) e um botao "Ver opcoes" que abre WhatsApp ou link externo. Sem cadastro de parceiro, sem reserva online.</p>
+    <div class="mockup">
+      <div class="mock-row">
+        <div class="mock-card"><strong>Pousada do Cais</strong>A partir de R$320/noite · 200m do pier</div>
+        <div class="mock-card"><strong>Villa Paraty Boutique</strong>A partir de R$480/noite · Centro historico</div>
+      </div>
+      <div style="font-size:0.75rem">Cards simples gerenciados pelo admin → WhatsApp ou link externo</div>
+    </div>
+    <div class="tags">
+      <span class="tag pro">Mais simples de implementar</span>
+      <span class="tag pro">Admin controla tudo</span>
+      <span class="tag con">Nao escala (manual)</span>
+      <span class="tag">Prazo: 1 dia</span>
+    </div>
+  </div>
+
+  <!-- Opção B -->
+  <div class="option" onclick="pick(this)">
+    <div class="option-header">
+      <div class="letter">B</div>
+      <h3>Marketplace de hospedagem — parceiros se cadastram</h3>
+    </div>
+    <p>Hoteis, pousadas e Airbnbs criam conta como parceiro, escolhem o tipo "hospedagem", preenchem um anuncio (fotos, descricao, preco, comodidades) e aguardam aprovacao em ate 24h. O visitante ve um grid de opcoes com filtros (preco, tipo, distancia). Reserva via WhatsApp ou link externo do parceiro.</p>
+    <div class="mockup">
+      <div class="mock-row">
+        <div class="mock-card"><strong>Grid de listagens</strong>Filtros: preco, tipo (pousada/hotel/airbnb), distancia do pier</div>
+        <div class="mock-card"><strong>Pagina da hospedagem</strong>Galeria · Descricao · Comodidades · Contato via WhatsApp</div>
+      </div>
+      <div style="font-size:0.75rem">Parceiro faz login → painel → cria/edita anuncios → admin aprova</div>
+    </div>
+    <div class="tags">
+      <span class="tag pro">Escala sem trabalho manual</span>
+      <span class="tag pro">Alinhado com o sistema de parceiros</span>
+      <span class="tag con">Mais complexo</span>
+      <span class="tag">Prazo: 2-3 dias</span>
+    </div>
+  </div>
+
+  <!-- Opção C -->
+  <div class="option" onclick="pick(this)">
+    <div class="option-header">
+      <div class="letter">C</div>
+      <h3>Hibrido — curadoria agora, marketplace depois</h3>
+    </div>
+    <p>Comeca igual a opcao A: admin cadastra manualmente os primeiros parceiros de hospedagem com fotos e preco. Mas o schema e os componentes ja sao construidos pensando na opcao B — quando quiser ativar o cadastro de parceiros, e so ligar a feature.</p>
+    <div class="mockup">
+      <div class="mock-row">
+        <div class="mock-card"><strong>Fase 1 (agora)</strong>Admin insere os primeiros 5-10 parceiros manualmente</div>
+        <div class="mock-card"><strong>Fase 2 (depois)</strong>Ativa "Seja Parceiro" para hospedagem com cadastro proprio</div>
+      </div>
+      <div style="font-size:0.75rem">Mesmo schema da opcao B, mas sem o fluxo de cadastro ativo inicialmente</div>
+    </div>
+    <div class="tags">
+      <span class="tag pro">Produto pronto mais rapido</span>
+      <span class="tag pro">Nao precisa reescrever depois</span>
+      <span class="tag">Prazo: 1-2 dias</span>
+    </div>
+  </div>
+
+</div>
+
+<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:1rem 1.25rem;margin-top:1.5rem;font-size:0.875rem;line-height:1.6">
+  <strong>Recomendacao:</strong> Opcao C. Entrega rapido, nao precisa refatorar quando quiser escalar. As fotos do Drive que voce mencionou (pasta "clientes e parceiros") ja viram os primeiros parceiros cadastrados manualmente.
+</div>
+
+</body>
+</html>

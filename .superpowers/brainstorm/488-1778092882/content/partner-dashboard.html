@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="color-scheme: light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard do Parceiro</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 2rem 1.5rem; max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .sub { color: #555; font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.5; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: #fff; border: 1px solid #e0e0e5; border-radius: 14px; padding: 1.25rem; }
+  .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+  .badge { font-size: 0.7rem; background: #f0f0f3; padding: 2px 8px; border-radius: 999px; color: #555; font-weight: 500; }
+  .badge.all { background: #dcfce7; color: #16a34a; }
+  ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  li { font-size: 0.82rem; color: #444; padding: 0.3rem 0.5rem; background: #f9fafb; border-radius: 6px; }
+  li::before { content: "•"; color: #0071e3; margin-right: 0.4rem; }
+  .shared { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 1.25rem; margin-top: 1.25rem; }
+  .shared h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: #1d4ed8; }
+  .shared ul { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 1rem; margin-top: 1.25rem; font-size: 0.875rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<h1>O que cada parceiro ve no dashboard?</h1>
+<p class="sub">Cada tipo tem necessidades diferentes. Veja o que estou propondo para cada um — corrija se algo nao bater.</p>
+
+<div class="grid">
+
+  <div class="card">
+    <h3>Fotografo <span class="badge">photo</span></h3>
+    <ul>
+      <li>Seus pacotes (criar / editar / pausar)</li>
+      <li>Reservas recebidas via plataforma</li>
+      <li>Repasses pendentes e historico</li>
+      <li>Link da sua pagina publica</li>
+      <li>Status do anuncio (aprovado / pendente)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Hospedagem <span class="badge">hotel</span></h3>
+    <ul>
+      <li>Suas acomodacoes (criar / editar / pausar)</li>
+      <li>Contatos recebidos via plataforma</li>
+      <li>Fotos e galeria</li>
+      <li>Preco e disponibilidade (texto livre)</li>
+      <li>Status do anuncio (aprovado / pendente)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Jeep / Transfer <span class="badge">jeep</span></h3>
+    <ul>
+      <li>Seus servicos (criar / editar)</li>
+      <li>Contatos e solicitacoes recebidos</li>
+      <li>Repasses pendentes e historico</li>
+      <li>Link da pagina publica</li>
+      <li>Status do anuncio</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Guia de turismo <span class="badge">guide</span></h3>
+    <ul>
+      <li>Seus roteiros / experiencias</li>
+      <li>Reservas recebidas</li>
+      <li>Repasses</li>
+      <li>Pagina publica com bio</li>
+      <li>Status do anuncio</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="shared">
+  <h3>Todos os tipos tem em comum <span class="badge all">compartilhado</span></h3>
+  <ul>
+    <li>Editar perfil (nome, foto, contato, bio)</li>
+    <li>Ver status do cadastro</li>
+    <li>Notificacao quando aprovado</li>
+    <li>Historico de contatos / reservas</li>
+    <li>Link UTM proprio para comissao</li>
+    <li>Alterar senha / email</li>
+  </ul>
+</div>
+
+<div class="note">
+  <strong>Escunas:</strong> gerenciadas diretamente pela Acalanto. Nao aparecem como "parceiro que se cadastra" — ficam no admin mesmo.<br><br>
+  <strong>Reivindicar negocio (claim):</strong> parceiros da pasta "clientes e parceiros" do Drive ja tem pagina publica pre-criada. O link "Este e o seu negocio?" aparece na pagina deles, leva para o cadastro, e apos aprovacao o parceiro assume a gestao.
+</div>
+
+<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:1rem;margin-top:1.25rem;font-size:0.875rem;line-height:1.6">
+  <strong>Isso representa o que voce quer?</strong> Responda no chat — se falta algum tipo de parceiro ou alguma feature no dashboard, me diga agora antes de escrever a spec.
+</div>
+
+</body>
+</html>

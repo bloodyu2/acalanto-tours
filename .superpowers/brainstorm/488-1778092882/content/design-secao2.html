@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="color-scheme: light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design — Secao 2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 2rem 1.5rem; max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .sub { color: #555; font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.5; }
+  .block { background: #fff; border: 1px solid #e0e0e5; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .block-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .num { width: 28px; height: 28px; background: #0071e3; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+  h3 { font-size: 1rem; font-weight: 700; }
+  h4 { font-size: 0.875rem; font-weight: 700; margin: 0.75rem 0 0.35rem; color: #1d4ed8; }
+  p, li { font-size: 0.875rem; color: #444; line-height: 1.65; }
+  ul { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.4rem; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.78rem; font-family: monospace; }
+  .flow { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; }
+  .step { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.4rem 0.75rem; font-size: 0.8rem; font-weight: 600; color: #1d4ed8; white-space: nowrap; }
+  .arrow { color: #93c5fd; font-weight: 700; }
+  .tag { display: inline-block; background: #f0f0f3; padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; color: #555; margin: 0.15rem; }
+  .tag.green { background: #dcfce7; color: #16a34a; }
+  .tag.blue { background: #dbeafe; color: #1d4ed8; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+  @media (max-width: 580px) { .grid2 { grid-template-columns: 1fr; } }
+  .mini-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem; font-size: 0.8rem; }
+  .mini-card strong { display: block; margin-bottom: 0.25rem; color: #1d1d1f; font-size: 0.82rem; }
+  .ask { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 1rem 1.25rem; margin-top: 1.5rem; font-size: 0.875rem; line-height: 1.6; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.75rem; }
+  th { background: #f0f0f3; padding: 7px 12px; text-align: left; font-weight: 600; border-bottom: 1px solid #e0e0e5; }
+  td { padding: 7px 12px; border-bottom: 1px solid #f0f0f3; }
+</style>
+</head>
+<body>
+
+<h1>Design — Secao 2: Marketplace de Parceiros</h1>
+<p class="sub">Onboarding, hospedagem, dashboards, claim flow e pagina "Seja Parceiro".</p>
+
+<!-- ONBOARDING -->
+<div class="block">
+  <div class="block-header"><div class="num">7</div><h3>Onboarding de parceiro — fluxo completo</h3></div>
+
+  <h4>Fluxo de cadastro</h4>
+  <div class="flow">
+    <span class="step">1. Criar conta</span><span class="arrow">→</span>
+    <span class="step">2. Escolher tipo</span><span class="arrow">→</span>
+    <span class="step">3. Preencher anuncio</span><span class="arrow">→</span>
+    <span class="step">4. Enviar para aprovacao</span><span class="arrow">→</span>
+    <span class="step">5. Admin aprova em 24h</span><span class="arrow">→</span>
+    <span class="step">6. Anuncio publico</span>
+  </div>
+
+  <h4>Rotas novas</h4>
+  <ul>
+    <li><code>/parceiros/cadastro</code> — email + senha + nome do negocio</li>
+    <li><code>/parceiros/cadastro/tipo</code> — escolher: Fotografo / Hospedagem / Jeep-Transfer / Guia</li>
+    <li><code>/parceiros/cadastro/anuncio</code> — formulario especifico por tipo (campos dinamicos)</li>
+    <li><code>/parceiros/cadastro/aguardando</code> — pagina de confirmacao "Em analise — retorno em ate 24h"</li>
+    <li><code>/conta/parceiro</code> — dashboard (ja existe, expandir)</li>
+    <li><code>/conta/parceiro/anuncios</code> — CRUD dos proprios anuncios</li>
+    <li><code>/conta/parceiro/repasses</code> — ja existe</li>
+  </ul>
+
+  <h4>Campos do anuncio por tipo</h4>
+  <div class="grid2">
+    <div class="mini-card"><strong>Fotografo</strong>Nome, bio, especialidade, preco por pacote, galeria (ate 10 fotos), Instagram, WhatsApp</div>
+    <div class="mini-card"><strong>Hospedagem</strong>Nome, tipo (pousada/hotel/airbnb), descricao, preco por noite (texto), max hospedes, comodidades (checklist), galeria, WhatsApp / link externo</div>
+    <div class="mini-card"><strong>Jeep / Transfer</strong>Nome, tipo de servico, roteiros disponiveis, preco (texto), capacidade, fotos</div>
+    <div class="mini-card"><strong>Guia</strong>Nome, lingua, experiencias oferecidas, preco por pessoa, bio, foto de perfil</div>
+  </div>
+
+  <h4>Schema — novas colunas necessarias</h4>
+  <p>A tabela <code>partners</code> ja existe. Adicionar via migration:</p>
+  <ul>
+    <li><code>auth_user_id uuid</code> — vincula parceiro a conta Supabase Auth</li>
+    <li><code>status text</code> — <code>pending | approved | rejected</code> (default: pending)</li>
+    <li><code>rejection_reason text</code> — feedback do admin ao rejeitar</li>
+    <li><code>submitted_at timestamptz</code> — quando enviou para aprovacao</li>
+  </ul>
+  <p style="margin-top:0.5rem">Nova tabela <code>partner_listings</code> para anuncios (um parceiro pode ter varios anuncios — ex: fotografo com 3 pacotes).</p>
+</div>
+
+<!-- HOSPEDAGEM -->
+<div class="block">
+  <div class="block-header"><div class="num">8</div><h3>Modulo de Hospedagem — marketplace completo (Opcao B)</h3></div>
+
+  <h4>Paginas publicas</h4>
+  <ul>
+    <li><code>/hotelaria</code> — grid de hospedagens aprovadas com filtros (tipo, preco, comodidades)</li>
+    <li><code>/hotelaria/[slug]</code> — galeria + descricao + comodidades + CTA WhatsApp ou link externo</li>
+  </ul>
+
+  <h4>O que o visitante ve</h4>
+  <p>Cards com foto principal, nome, tipo (pousada / hotel / airbnb), preco a partir de, tag de comodidades (piscina, estacionamento, cafe da manha). Botao "Ver opcoes" abre WhatsApp do parceiro ou URL externa.</p>
+
+  <h4>Conexao com onboarding</h4>
+  <p>Parceiro que escolhe tipo "Hospedagem" no cadastro preenche o formulario especifico. Apos aprovacao, anuncio aparece automaticamente em <code>/hotelaria</code>. O parceiro pode editar fotos, preco e descricao a qualquer momento (edicao volta para status "pendente" ate re-aprovacao do admin).</p>
+
+  <h4>Fotos do Drive (pasta "clientes e parceiros")</h4>
+  <p>Os parceiros reais do Drive serao inseridos manualmente pelo admin como as primeiras listagens da plataforma, usando as fotos ja disponiveis. Cada um recebe um perfil com botao "E voce o dono?" para iniciar o claim.</p>
+</div>
+
+<!-- CLAIM -->
+<div class="block">
+  <div class="block-header"><div class="num">9</div><h3>Claim flow — reivindicar negocio pre-cadastrado</h3></div>
+  <p>Qualquer parceiro inserido manualmente pelo admin (vindos do Drive) tem um CTA discreto na pagina publica:</p>
+  <div style="background:#f9fafb;border:1px dashed #d1d5db;border-radius:8px;padding:0.75rem;margin:0.75rem 0;font-size:0.82rem;color:#6b7280">
+    "Este e o seu negocio? <u style="color:#0071e3;cursor:pointer">Reivindique esta pagina</u>"
+  </div>
+  <p>O link leva para <code>/parceiros/cadastro?claim=SLUG</code>. Apos aprovacao do admin, o parceiro assume a gestao: edita fotos, preco, descricao. O slug publico permanece o mesmo.</p>
+  <p style="margin-top:0.5rem">Nova coluna na tabela <code>partners</code>: <code>claimed_by uuid</code> (auth_user_id de quem reivindicou).</p>
+</div>
+
+<!-- SEJA PARCEIRO -->
+<div class="block">
+  <div class="block-header"><div class="num">10</div><h3>Pagina "Seja Parceiro" — informativa</h3></div>
+  <p>Substituir o formulario atual por uma landing page com:</p>
+  <ul>
+    <li><strong>Como funciona:</strong> 4 passos (cadastro → anuncio → aprovacao → vendas)</li>
+    <li><strong>Tipos de parceiro:</strong> cards para fotografo, hospedagem, jeep, guia — com o que cada um ganha</li>
+    <li><strong>Comissionamento:</strong> plataforma retira X% por reserva gerada (definir % com o cliente — nao estava na spec)</li>
+    <li><strong>Garantias:</strong> aprovacao em 24h, suporte via WhatsApp, pagina propria com SEO</li>
+    <li><strong>CTA:</strong> botao "Cadastrar meu negocio" → <code>/parceiros/cadastro</code></li>
+  </ul>
+</div>
+
+<!-- ADMIN -->
+<div class="block">
+  <div class="block-header"><div class="num">11</div><h3>Painel admin — aprovacao de anuncios</h3></div>
+  <p>A pagina <code>/admin/parceiros</code> ja existe. Expandir com:</p>
+  <table>
+    <thead><tr><th>Feature nova</th><th>Descricao</th></tr></thead>
+    <tbody>
+      <tr><td>Fila de aprovacao</td><td>Lista de anuncios em status <code>pending</code> com botoes Aprovar / Rejeitar</td></tr>
+      <tr><td>Motivo de rejeicao</td><td>Campo de texto que e enviado por email ao parceiro</td></tr>
+      <tr><td>Visualizar anuncio</td><td>Preview do anuncio antes de aprovar</td></tr>
+      <tr><td>Claims pendentes</td><td>Lista de reivindicacoes aguardando verificacao</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="ask">
+  <strong>Secao 2 aprovada?</strong><br>
+  Uma pergunta aberta: qual e o percentual de comissao da plataforma para aparecer na pagina "Seja Parceiro"? Se ainda nao definiu, posso deixar como "Entre em contato" por enquanto.
+</div>
+
+</body>
+</html>

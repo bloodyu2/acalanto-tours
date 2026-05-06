@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR" style="color-scheme: light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design — Secao 1</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 2rem 1.5rem; max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .sub { color: #555; font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.5; }
+  .block { background: #fff; border: 1px solid #e0e0e5; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .block-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .num { width: 28px; height: 28px; background: #0071e3; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+  h3 { font-size: 1rem; font-weight: 700; }
+  p, li { font-size: 0.875rem; color: #444; line-height: 1.65; }
+  ul { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.5rem; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem; }
+  @media (max-width: 600px) { .split { grid-template-columns: 1fr; } }
+  .before { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 0.75rem; font-size: 0.8rem; }
+  .after { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.75rem; font-size: 0.8rem; }
+  .label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+  .label.red { color: #dc2626; }
+  .label.green { color: #16a34a; }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; font-family: monospace; }
+  .ask { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 1rem 1.25rem; margin-top: 1.5rem; font-size: 0.875rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<h1>Design — Secao 1: Correcoes imediatas</h1>
+<p class="sub">6 itens de alta/media prioridade sem nova arquitetura. Revise e confirme antes de avancarmos para a Secao 2.</p>
+
+<div class="block">
+  <div class="block-header"><div class="num">1</div><h3>Mobile: layout, hamburger, botao de reserva, formularios</h3></div>
+  <p>Quatro problemas distintos no mesmo arquivo:</p>
+  <ul>
+    <li><strong>Side-scroll:</strong> adicionar <code>overflow-x: hidden</code> no body e nas secoes com SVG de onda. O wave SVG usa <code>width: 100%</code> mas pode vazar em viewports estreitas.</li>
+    <li><strong>Hamburger:</strong> posicionar com <code>position: fixed; right: 1.25rem; top: 1.125rem; z-index: 60</code> para nao sumir quando o header scrollar. Atualmente usa <code>display: flex</code> sem fixar posicao absoluta no mobile.</li>
+    <li><strong>Botao de reserva no mobile:</strong> adicionar botao "Reservar" fixo na barra inferior do mobile (acima do MobileBottomNav), visivel em todas as paginas de passeio.</li>
+    <li><strong>Formularios:</strong> garantir <code>width: 100%</code> e <code>max-width: 100%</code> em todos os inputs; remover padding horizontal excessivo nos formularios de hospedagem, contato e seja-parceiro em viewport estreita.</li>
+  </ul>
+</div>
+
+<div class="block">
+  <div class="block-header"><div class="num">2</div><h3>Emojis → SVGs inline</h3></div>
+  <p>Substituicoes necessarias:</p>
+  <div class="split">
+    <div class="before">
+      <div class="label red">Antes</div>
+      HeroSection: <code>📸</code> fotografia<br>
+      HeroSection: <code>🏡</code> hospedagem<br>
+      HeroSection: <code>🚤</code> servicos<br>
+      SejaParceiroPage: <code>🎁</code> beneficio<br>
+      SejaParceiroPage / success: <code>✅</code>
+    </div>
+    <div class="after">
+      <div class="label green">Depois</div>
+      SVG camera (24px, stroke)<br>
+      SVG house (24px, stroke)<br>
+      SVG anchor / boat (24px)<br>
+      SVG gift (24px, stroke)<br>
+      SVG check-circle (24px, stroke)
+    </div>
+  </div>
+  <p style="margin-top:0.75rem">Todos os SVGs usam <code>stroke="currentColor"</code>, width/height fixo em 20-24px, sem dependencia de biblioteca.</p>
+</div>
+
+<div class="block">
+  <div class="block-header"><div class="num">3</div><h3>Onda do hero + barquinho no scroll</h3></div>
+  <p><strong>Problema da onda cobrindo o texto:</strong> a onda esta em <code>position: absolute; bottom: 0; height: 80px</code>. O hero tem <code>paddingTop: 3rem</code> sem padding-bottom, entao o conteudo fica atras da onda no mobile. Solucao: adicionar <code>paddingBottom: 7rem</code> ao hero para que o conteudo sempre fique acima da onda.</p>
+  <p style="margin-top:0.75rem"><strong>Barquinho animado:</strong> SVG simples de barco posicionado sobre a crista da onda, com animacao CSS <code>translate-x</code> proporcional ao <code>window.scrollY</code> via <code>useEffect</code>. O barco desloca da esquerda para a direita a medida que o usuario scrolla, criando efeito de navegacao. Amplitude: 0px (topo) ate 300px (apos 500px de scroll).</p>
+</div>
+
+<div class="block">
+  <div class="block-header"><div class="num">4</div><h3>Depoimentos conectados ao banco</h3></div>
+  <p>A <code>TestimonialsSection</code> ja usa <code>.from('testimonials')</code> com <code>.eq('approved', true)</code>, que e correto para o schema dedicado <code>hnsbstmzbidfehvycptl</code>. O problema e que a tabela pode nao existir ainda no Supabase, causando fallback sempre. Correcao:</p>
+  <ul>
+    <li>Verificar se a tabela <code>testimonials</code> existe no projeto <code>hnsbstmzbidfehvycptl</code> via MCP</li>
+    <li>Se nao existir: criar via migration com campos <code>author_name, author_city, content, rating, approved</code></li>
+    <li>Remover os 3 depoimentos hardcoded do fallback — se banco vazio, mostrar secao vazia ou esconder a secao</li>
+    <li>Admin panel (<code>/admin/depoimentos</code>) ja existe — apenas garantir que a tabela esta correta</li>
+  </ul>
+</div>
+
+<div class="block">
+  <div class="block-header"><div class="num">5</div><h3>Paginas legais</h3></div>
+  <p>Criar 3 paginas estaticas simples:</p>
+  <ul>
+    <li><code>/privacidade</code> — Politica de Privacidade: coleta de dados (nome, email, telefone), cookies, LGPD, contato DPO</li>
+    <li><code>/termos</code> — Termos de Uso: regras de reserva, cancelamento, responsabilidade</li>
+    <li><code>/cancelamento</code> — Politica de Cancelamento: prazos (48h antes = reembolso total, 24h = 50%, menos de 24h = sem reembolso)</li>
+  </ul>
+  <p style="margin-top:0.5rem">Links no footer (ja existe espaco para isso). Conteudo gerado pelo /humanizer — sem termos juridicos excessivos, linguagem simples e direta.</p>
+</div>
+
+<div class="block">
+  <div class="block-header"><div class="num">6</div><h3>Humanizer + remocao de travessoes longos</h3></div>
+  <p>Passar o /humanizer em todos os textos publicos do site e aplicar uma regra global: substituir <code> — </code> (em-dash com espacos) por <code>, </code> ou <code>: </code> ou ponto, conforme o contexto. Os arquivos afetados principais sao <code>layout.tsx</code> (metadata), <code>HeroSection.tsx</code>, <code>ServicesSection.tsx</code>, <code>ToursSection.tsx</code> e paginas de passeio.</p>
+</div>
+
+<div class="ask">
+  <strong>Secao 1 aprovada?</strong> Se sim, responda "ok" e mostro a Secao 2 (marketplace de parceiros + hospedagem + onboarding). Se quiser ajustar algo, me diga.
+</div>
+
+</body>
+</html>
