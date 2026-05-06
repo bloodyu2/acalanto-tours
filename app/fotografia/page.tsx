@@ -1,0 +1,231 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import type { PhotographerPackage, Partner } from '@/lib/types/database'
+
+export const dynamic = 'force-dynamic'
+
+export const metadata: Metadata = {
+  title: 'Fotografia no Passeio | Acalanto',
+  description: 'Fotografos profissionais que embarcam junto na sua escuna e registram todos os momentos da experiencia. Fotos editadas entregues em 48h por link de download.',
+}
+
+type PackageWithPartner = PhotographerPackage & { partners: Pick<Partner, 'name'> | null }
+
+export default async function FotografiaPage() {
+  const supabase = await createClient()
+
+  const { data: packages, error } = await supabase
+    .from('photographer_packages')
+    .select('*, partners(name)')
+    .eq('active', true)
+    .order('display_order', { ascending: true })
+
+  if (error) {
+    console.error('[fotografia/page] Supabase error:', error)
+  }
+
+  const pkgs = (packages ?? []) as PackageWithPartner[]
+
+  return (
+    <div style={{ background: 'var(--sand-warm)', minHeight: '100vh' }}>
+
+      {/* Hero */}
+      <div style={{
+        background: 'linear-gradient(135deg, #92400e 0%, var(--vertical-fotografia) 60%, #fcd34d 100%)',
+        padding: '5rem 0 4rem',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <svg viewBox="0 0 1440 60" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%' }} preserveAspectRatio="none">
+          <path d="M0,0 C360,60 1080,60 1440,0 L1440,60 L0,60 Z" fill="var(--sand-warm)" />
+        </svg>
+
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.375rem',
+            padding: '0.3rem 1rem',
+            borderRadius: '9999px',
+            background: 'rgba(255,255,255,0.2)',
+            color: 'white',
+            fontSize: '0.8rem',
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            marginBottom: '1rem',
+            border: '1px solid rgba(255,255,255,0.35)',
+          }}>
+            📸 Fotografia
+          </span>
+          <h1 style={{
+            fontFamily: 'var(--font-playfair)',
+            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+            fontWeight: 700,
+            color: 'white',
+            margin: '0.75rem 0 1.25rem',
+          }}>
+            Fotografia no Passeio
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', maxWidth: '640px', margin: '0 auto', lineHeight: 1.7 }}>
+            O fotografo embarca junto na sua escuna e registra todos os momentos da experiencia, das baias as praias. Fotos editadas entregues em 48h por link de download.
+          </p>
+        </div>
+      </div>
+
+      {/* Info banner */}
+      <section style={{ padding: '2.5rem 0 0' }}>
+        <div className="container">
+          <div style={{
+            background: 'rgba(245, 158, 11, 0.1)',
+            border: '1px solid rgba(245, 158, 11, 0.3)',
+            borderRadius: '1rem',
+            padding: '1.25rem 1.5rem',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '1rem',
+          }}>
+            <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>💡</span>
+            <div>
+              <p style={{ margin: 0, color: 'var(--text-primary)', lineHeight: 1.65, fontSize: '0.95rem' }}>
+                <strong>Como funciona:</strong> O fotografo embarca junto com voce na escuna e acompanha todo o passeio. As fotos sao editadas profissionalmente e entregues em 48 horas por link de download privado. Voce escolhe o pacote e combina os detalhes pelo WhatsApp.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Packages grid */}
+      <section style={{ padding: '3rem 0 5rem' }}>
+        <div className="container">
+          {pkgs.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
+              <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>📸</p>
+              <p style={{ fontSize: '1.1rem' }}>Nenhum pacote disponivel no momento.</p>
+              <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Entre em contato pelo WhatsApp para mais informacoes.</p>
+            </div>
+          ) : (
+            <div className="marketplace-grid">
+              {pkgs.map(pkg => (
+                <PhotographerPackageCard key={pkg.id} pkg={pkg} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+    </div>
+  )
+}
+
+function PhotographerPackageCard({ pkg }: { pkg: PackageWithPartner }) {
+  const firstThreeIncludes = pkg.includes?.slice(0, 3) ?? []
+
+  return (
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '1rem' }}>
+      {/* Cover image */}
+      <div style={{
+        height: '200px',
+        background: 'linear-gradient(135deg, #92400e 0%, var(--vertical-fotografia) 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }}>
+        {pkg.cover_image ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={pkg.cover_image}
+            alt={pkg.name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', inset: 0 }}
+          />
+        ) : (
+          <span style={{ fontSize: '4rem' }}>📸</span>
+        )}
+        <div style={{
+          position: 'absolute',
+          top: '0.75rem',
+          left: '0.75rem',
+        }}>
+          <span className="vertical-tag tag-fotografia" style={{ fontSize: '0.7rem' }}>
+            Fotografia
+          </span>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+        {pkg.partners?.name && (
+          <p style={{ margin: '0 0 0.25rem', fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            {pkg.partners.name}
+          </p>
+        )}
+
+        <h3 style={{
+          margin: '0 0 0.5rem',
+          fontFamily: 'var(--font-playfair)',
+          fontSize: '1.2rem',
+          fontWeight: 700,
+          color: 'var(--text-primary)',
+          lineHeight: 1.3,
+        }}>
+          {pkg.name}
+        </h3>
+
+        {pkg.duration_label && (
+          <p style={{ margin: '0 0 0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+            Duracao: {pkg.duration_label}
+          </p>
+        )}
+
+        {firstThreeIncludes.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '1rem' }}>
+            {firstThreeIncludes.map((item, idx) => (
+              <span key={idx} style={{
+                background: 'rgba(245, 158, 11, 0.12)',
+                color: '#92400e',
+                fontSize: '0.72rem',
+                padding: '0.2rem 0.6rem',
+                borderRadius: '9999px',
+                border: '1px solid rgba(245, 158, 11, 0.25)',
+                fontWeight: 500,
+              }}>
+                {item}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
+          <span style={{
+            fontFamily: 'var(--font-playfair)',
+            fontSize: '1.25rem',
+            fontWeight: 700,
+            color: 'var(--ocean-deep)',
+          }}>
+            {pkg.price_label ?? 'Consultar'}
+          </span>
+          <Link
+            href={`/fotografia/${pkg.slug}`}
+            style={{
+              background: 'var(--vertical-fotografia)',
+              color: 'white',
+              padding: '0.5rem 1.1rem',
+              borderRadius: '0.5rem',
+              textDecoration: 'none',
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              transition: 'opacity 0.2s',
+            }}
+          >
+            Ver pacote
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
