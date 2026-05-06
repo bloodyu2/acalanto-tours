@@ -1,13 +1,30 @@
 import { createAdminClient } from '@/lib/supabase/server'
+import ApprovalTabs from './ApprovalTabs'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminParceirosPage() {
   const supabase = await createAdminClient()
 
-  const [{ data: partners }, { data: candidacies }] = await Promise.all([
+  const [
+    { data: partners },
+    { data: candidacies },
+    { data: pendingListings },
+    { data: pendingClaims },
+  ] = await Promise.all([
     supabase.from('partners').select('*').order('name'),
     supabase.from('contacts').select('*').eq('source', 'candidatura-parceiro').order('created_at', { ascending: false }).limit(50),
+    supabase
+      .from('partner_listings')
+      .select('id, title, slug, type, status, created_at, partner_id, partners(name)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('partners')
+      .select('id, name, type, submitted_at, claimed_by, status')
+      .not('claimed_by', 'is', null)
+      .eq('status', 'pending')
+      .order('submitted_at', { ascending: false }),
   ])
 
   const typeLabels: Record<string, string> = {
@@ -17,6 +34,27 @@ export default async function AdminParceirosPage() {
   const typeIcons: Record<string, string> = {
     boat: '⛵', photo: '📸', jeep: '🚙', guide: '🧭', transfer: '🚐', hotel: '🏨', other: '🔹',
   }
+
+  // Normalize listings for client component
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const listings = (pendingListings ?? []).map((l: any) => ({
+    id: l.id,
+    title: l.title,
+    slug: l.slug,
+    type: l.type,
+    status: l.status,
+    created_at: l.created_at,
+    partner_name: l.partners?.name ?? '—',
+  }))
+
+  const claims = (pendingClaims ?? []).map(c => ({
+    id: c.id,
+    name: c.name,
+    type: c.type,
+    submitted_at: c.submitted_at,
+    claimed_by: c.claimed_by,
+    status: c.status,
+  }))
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -64,8 +102,14 @@ export default async function AdminParceirosPage() {
         )}
       </div>
 
-      {/* Candidacies section */}
+      {/* Approval Queues */}
       <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
+        Fila de Aprovacao
+      </h2>
+      <ApprovalTabs listings={listings} claims={claims} />
+
+      {/* Candidacies section */}
+      <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: 'var(--ocean-deep)', marginBottom: '1rem', marginTop: '3rem' }}>
         Contatos de interesse ({(candidacies ?? []).length})
       </h2>
       <p style={{ color: 'var(--text-muted)', fontSize: 0.875 + 'rem', marginBottom: '1.25rem' }}>
