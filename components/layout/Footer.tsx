@@ -37,8 +37,11 @@ export default function Footer() {
 
           {/* Vertente: Passeios */}
           <div>
-            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '1rem', fontFamily: 'var(--font-jakarta)' }}>
-              ⛵ Passeios
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '1rem', fontFamily: 'var(--font-jakarta)', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 17l1-4h16l1 4"/><path d="M5 17l-1 4h16l-1-4"/><path d="M7 13V9a5 5 0 0110 0v4"/>
+              </svg>
+              Passeios
             </h4>
             {[
               { href: '/passeios', label: 'Todos os passeios' },
@@ -55,8 +58,12 @@ export default function Footer() {
 
           {/* Vertente: Fotografia + Hospedagem */}
           <div>
-            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '1rem', fontFamily: 'var(--font-jakarta)' }}>
-              📸 Fotografia
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '1rem', fontFamily: 'var(--font-jakarta)', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              Fotografia
             </h4>
             {[
               { href: '/fotografia', label: 'Pacotes de fotografia' },
@@ -68,21 +75,25 @@ export default function Footer() {
               </Link>
             ))}
 
-            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '0.75rem', marginTop: '1.5rem', fontFamily: 'var(--font-jakarta)' }}>
-              🏡 Hospedagem
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '0.75rem', marginTop: '1.5rem', fontFamily: 'var(--font-jakarta)', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              Hospedagem
             </h4>
             <Link href="/hotelaria" style={{ display: 'block', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.875rem', marginBottom: '0.45rem' }}>
               Pousadas e hotéis parceiros
-            </Link>
-            <Link href="/hotelaria" style={{ display: 'block', color: 'rgba(255,255,255,0.45)', textDecoration: 'none', fontSize: '0.8rem', fontStyle: 'italic' }}>
-              Em breve
             </Link>
           </div>
 
           {/* Vertente: Serviços */}
           <div>
-            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '1rem', fontFamily: 'var(--font-jakarta)' }}>
-              🚤 Serviços
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.45)', marginBottom: '1rem', fontFamily: 'var(--font-jakarta)', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 20h20"/><path d="M5 20V10.5a7.5 7.5 0 0115 0V20"/><path d="M12 3v5"/>
+              </svg>
+              Serviços
             </h4>
             {[
               { href: '/servicos', label: 'Todos os serviços' },
@@ -114,12 +125,20 @@ export default function Footer() {
         {/* Bottom bar */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.12)', paddingTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
           <span>© {new Date().getFullYear()} Acalanto Tours · Paraty, RJ · Todos os direitos reservados.</span>
-          <span>
-            Feito com ♥ pela{' '}
-            <a href="https://balaio.net" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>
-              Balaio Digital
+          <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <Link href="/privacidade" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '0.8125rem' }}>
+              Privacidade
+            </Link>
+            <Link href="/termos" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '0.8125rem' }}>
+              Termos de Uso
+            </Link>
+            <Link href="/cancelamento" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '0.8125rem' }}>
+              Cancelamento
+            </Link>
+            <a href="https://balaio.net" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>
+              Feito com ♥ pela Balaio Digital
             </a>
-          </span>
+          </div>
         </div>
       </div>
     </footer>
