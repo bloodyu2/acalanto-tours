@@ -48,7 +48,7 @@ function BoatOnWave() {
   useEffect(() => {
     const onScroll = () => {
       const maxTx = typeof window !== 'undefined' ? window.innerWidth - 80 : 400
-      setTx(Math.min(window.scrollY * 0.35, maxTx))
+      setTx(Math.min(window.scrollY * 1.5, maxTx))
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
