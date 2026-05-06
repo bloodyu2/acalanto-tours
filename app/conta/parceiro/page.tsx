@@ -24,11 +24,11 @@ export default async function ParceiroDashboardPage() {
 
   if (!profile || profile.role !== 'partner') redirect('/conta')
 
-  // Get partner record by email
+  // Get partner record for current user
   const { data: partner } = await supabase
     .from('partners')
-    .select('id, name, type')
-    .eq('active', true)
+    .select('id, name, type, status, rejection_reason')
+    .eq('auth_user_id', user.id)
     .maybeSingle()
 
   // Get boats belonging to this partner, then scope bookings to those boats
@@ -68,17 +68,41 @@ export default async function ParceiroDashboardPage() {
   const thisMonthBookings = bookings.filter(b => b.tour_date && b.tour_date >= monthStart.slice(0, 10))
   const totalThisMonth = thisMonthBookings.length
 
+  // No partner record found
+  if (!partner) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'var(--sand)', padding: '2rem 0' }}>
+        <div className="container" style={{ maxWidth: '640px' }}>
+          <div style={{ background: 'white', borderRadius: '1.25rem', padding: '2rem', boxShadow: '0 2px 16px rgba(0,0,0,0.06)', textAlign: 'center' }}>
+            <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.5rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
+              Cadastro não encontrado
+            </h1>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              Complete seu cadastro para acessar o painel de parceiro.
+            </p>
+            <Link
+              href="/parceiros/cadastro"
+              style={{ display: 'inline-block', background: 'var(--ocean-deep)', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.625rem', textDecoration: 'none', fontWeight: 600 }}
+            >
+              Completar cadastro
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--sand)', padding: '2rem 0' }}>
       <div className="container">
         {/* Header */}
-        <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.875rem', color: 'var(--ocean-deep)', marginBottom: '0.25rem' }}>
               Painel do Parceiro
             </h1>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-              {partner?.name ?? user.email}
+              {partner.name ?? user.email}
             </p>
           </div>
           <a
@@ -89,11 +113,36 @@ export default async function ParceiroDashboardPage() {
           </a>
         </div>
 
+        {/* Status banner */}
+        {partner.status === 'pending' && (
+          <div style={{ background: '#fef9c3', border: '1px solid #fde047', borderRadius: '0.75rem', padding: '1rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ fontSize: '1.25rem' }}>⏳</span>
+            <p style={{ color: '#854d0e', fontWeight: 500, margin: 0 }}>
+              Cadastro em análise — retorno em até 24 horas
+            </p>
+          </div>
+        )}
+        {partner.status === 'rejected' && (
+          <div style={{ background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: '0.75rem', padding: '1rem 1.25rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: partner.rejection_reason ? '0.5rem' : 0 }}>
+              <span style={{ fontSize: '1.25rem' }}>❌</span>
+              <p style={{ color: '#991b1b', fontWeight: 600, margin: 0 }}>
+                Cadastro rejeitado
+              </p>
+            </div>
+            {partner.rejection_reason && (
+              <p style={{ color: '#b91c1c', margin: '0 0 0 2rem', fontSize: '0.9rem' }}>
+                Motivo: {partner.rejection_reason}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
           <div style={{ background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.5rem' }}>
-              Reservas este mes
+              Reservas este mês
             </p>
             <p style={{ fontFamily: 'var(--font-playfair)', fontSize: '2rem', color: 'var(--ocean-deep)', fontWeight: 700 }}>
               {totalThisMonth}
@@ -109,11 +158,31 @@ export default async function ParceiroDashboardPage() {
           </div>
         </div>
 
+        {/* Quick links */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+          <Link
+            href="/conta/parceiro/anuncios"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', textDecoration: 'none', color: 'var(--ocean-deep)', fontWeight: 600, border: '1.5px solid transparent', transition: 'border-color 0.2s' }}
+          >
+            <span style={{ fontSize: '1.5rem' }}>📋</span>
+            <span>Meus Anúncios</span>
+            <span style={{ marginLeft: 'auto', color: 'var(--text-muted)' }}>→</span>
+          </Link>
+          <Link
+            href="/conta/parceiro/repasses"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', textDecoration: 'none', color: 'var(--ocean-deep)', fontWeight: 600 }}
+          >
+            <span style={{ fontSize: '1.5rem' }}>💰</span>
+            <span>Histórico de repasses</span>
+            <span style={{ marginLeft: 'auto', color: 'var(--text-muted)' }}>→</span>
+          </Link>
+        </div>
+
         {/* Recent bookings */}
         <div style={{ background: 'white', borderRadius: '1.25rem', overflow: 'hidden', boxShadow: '0 2px 16px rgba(0,0,0,0.06)', marginBottom: '1.5rem' }}>
-          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border)' }}>
             <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.125rem', color: 'var(--ocean-deep)', margin: 0 }}>
-              Ultimas reservas
+              Últimas reservas
             </h2>
           </div>
           {bookings.length === 0 ? (
@@ -139,14 +208,6 @@ export default async function ParceiroDashboardPage() {
             ))
           )}
         </div>
-
-        {/* Link to payouts */}
-        <Link
-          href="/conta/parceiro/repasses"
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none', fontSize: '0.9rem' }}
-        >
-          Ver historico de repasses &rarr;
-        </Link>
       </div>
     </div>
   )
