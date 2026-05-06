@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
         tour_date: firstItem.date || null,
         adults: firstItem.adults,
         children: firstItem.children,
+        total_cents: totalAmountCents,
         customer_name: customerName,
         customer_email: customerEmail,
         customer_phone: customerPhone,
