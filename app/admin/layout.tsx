@@ -58,6 +58,11 @@ const RoadmapIcon = () => (
     <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
   </svg>
 )
+const BlogIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+  </svg>
+)
 
 const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin', label: 'Dashboard', icon: <DashboardIcon /> },
@@ -68,6 +73,7 @@ const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin/nps', label: 'NPS', icon: <StarIcon /> },
   { href: '/admin/parceiros', label: 'Parceiros', icon: <HandshakeIcon /> },
   { href: '/admin/depoimentos', label: 'Depoimentos', icon: <ChatIcon /> },
+  { href: '/admin/blog', label: 'Blog', icon: <BlogIcon /> },
   { href: '/admin/roadmap', label: 'Roadmap', icon: <RoadmapIcon /> },
 ]
 
