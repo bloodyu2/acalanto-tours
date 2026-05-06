@@ -5,11 +5,18 @@ import { rateLimit } from '@/lib/rate-limit'
 interface CartItemInput {
   boatId?: string | null
   serviceId?: string | null
+  accommodationListingId?: string | null
   name: string
   date: string
   adults: number
   children: number
   type: 'passeio' | 'fotografia' | 'servico' | 'hospedagem'
+  // Hospedagem fields
+  checkIn?: string | null
+  checkOut?: string | null
+  nights?: number | null
+  guests?: number | null
+  pricePerNightCents?: number | null
 }
 
 export async function POST(req: NextRequest) {
@@ -57,6 +64,18 @@ export async function POST(req: NextRequest) {
         } else if (service.pricing_type === 'per_group' && service.price_cents_group) {
           totalAmountCents += service.price_cents_group
         }
+      } else if (item.accommodationListingId) {
+        const { data: listing } = await supabase
+          .from('partner_listings')
+          .select('price_cents_per_night, price_cents_extra_guest')
+          .eq('id', item.accommodationListingId)
+          .single()
+        if (!listing) return NextResponse.json({ error: 'Produto não encontrado.' }, { status: 400 })
+        const nights = item.nights ?? 1
+        const baseGuests = 2
+        const extraGuests = Math.max(0, (item.guests ?? 1) - baseGuests)
+        const extraCost = extraGuests * nights * (listing.price_cents_extra_guest ?? 0)
+        totalAmountCents += nights * listing.price_cents_per_night + extraCost
       }
     }
 
@@ -71,12 +90,18 @@ export async function POST(req: NextRequest) {
     const firstItem = items[0]
 
     // Insert booking
+    const tourDate = firstItem.type === 'hospedagem'
+      ? (firstItem.checkIn ?? firstItem.date)
+      : firstItem.date
+
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .insert({
         boat_id: firstItem.boatId ?? null,
-        tour_date: firstItem.date || null,
-        adults: firstItem.adults,
+        service_id: firstItem.serviceId ?? null,
+        accommodation_listing_id: firstItem.accommodationListingId ?? null,
+        tour_date: tourDate || null,
+        adults: firstItem.type === 'hospedagem' ? (firstItem.guests ?? firstItem.adults) : firstItem.adults,
         children: firstItem.children,
         total_cents: totalAmountCents,
         customer_name: customerName,
@@ -86,6 +111,9 @@ export async function POST(req: NextRequest) {
         vertical: firstItem.type,
         utm_campaign: utmCampaign ?? null,
         commission_rate: commissionRate,
+        notes: firstItem.type === 'hospedagem' && firstItem.checkOut
+          ? `check-out: ${firstItem.checkOut}`
+          : null,
       })
       .select('id')
       .single()

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { getListingBySlug } from '@/lib/partner-listings'
 import { createClient } from '@/lib/supabase/server'
 import AccommodationBookingWidget from '@/components/hotelaria/AccommodationBookingWidget'
+import CalendarSyncBar from '@/components/hotelaria/CalendarSyncBar'
 
 export const dynamic = 'force-dynamic'
 
@@ -102,8 +103,14 @@ export default async function HotelariaSlugPage({ params, searchParams }: Props)
               </div>
             )}
 
+            {/* Calendar sync */}
+            <CalendarSyncBar
+              slug={listing.slug}
+              siteUrl={process.env.NEXT_PUBLIC_SITE_URL || 'https://acalantoturismo.com.br'}
+            />
+
             {/* Claim CTA */}
-            <div style={{ marginTop: '3rem', padding: '1rem 1.25rem', background: 'white', border: '1px dashed var(--border)', borderRadius: '10px', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+            <div style={{ marginTop: '1.25rem', padding: '1rem 1.25rem', background: 'white', border: '1px dashed var(--border)', borderRadius: '10px', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
               Este é o seu negócio?{' '}
               <Link href={`/parceiros/cadastro?claim=${listing.slug}`} style={{ color: 'var(--ocean-mid)', fontWeight: 600 }}>
                 Reivindique esta página

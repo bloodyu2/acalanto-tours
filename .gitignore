@@ -49,3 +49,5 @@ CLAUDE.md
 .git_broken*
 .next_old*
 memory.md
+
+.vercel
