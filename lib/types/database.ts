@@ -316,6 +316,52 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['evolution_tasks']['Row'], 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Database['public']['Tables']['evolution_tasks']['Insert']>
       }
+      blog_posts: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          summary: string | null
+          content: string
+          cover_url: string | null
+          published: boolean
+          published_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          summary?: string | null
+          content?: string
+          cover_url?: string | null
+          published?: boolean
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: Partial<Database['public']['Tables']['blog_posts']['Insert']>
+      }
+      service_providers: {
+        Row: {
+          id: string
+          service_id: string
+          partner_id: string
+          notes: string | null
+          display_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          service_id: string
+          partner_id: string
+          notes?: string | null
+          display_order?: number
+          created_at?: string
+        }
+        Update: Partial<Database['public']['Tables']['service_providers']['Insert']>
+      }
     }
   }
 }
@@ -344,3 +390,16 @@ export type EvolutionTask = Database['public']['Tables']['evolution_tasks']['Row
 export type ServiceAvailability = Database['public']['Tables']['service_availability']['Row']
 export type AccommodationAvailability = Database['public']['Tables']['accommodation_availability']['Row']
 export type ICalSource = Database['public']['Tables']['ical_sources']['Row']
+export type BlogPost = Database['public']['Tables']['blog_posts']['Row']
+export type ServiceProvider = {
+  id: string
+  partner_id: string
+  notes: string | null
+  display_order: number
+  partner: {
+    id: string
+    name: string
+    description: string | null
+    whatsapp_number: string | null
+  }
+}
