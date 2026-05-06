@@ -52,6 +52,12 @@ const ChatIcon = () => (
     <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
   </svg>
 )
+const RoadmapIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+    <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+  </svg>
+)
 
 const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin', label: 'Dashboard', icon: <DashboardIcon /> },
@@ -62,6 +68,7 @@ const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin/nps', label: 'NPS', icon: <StarIcon /> },
   { href: '/admin/parceiros', label: 'Parceiros', icon: <HandshakeIcon /> },
   { href: '/admin/depoimentos', label: 'Depoimentos', icon: <ChatIcon /> },
+  { href: '/admin/roadmap', label: 'Roadmap', icon: <RoadmapIcon /> },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
