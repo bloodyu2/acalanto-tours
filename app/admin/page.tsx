@@ -26,7 +26,7 @@ export default async function AdminDashboard() {
   ] = await Promise.all([
     supabase.from('bookings').select('*', { count: 'exact', head: true }),
     supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('created_at', monthStart),
-    supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'whatsapp_initiated'),
+    supabase.from('bookings').select('*', { count: 'exact', head: true }).in('status', ['pending', 'whatsapp_initiated']),
     supabase.from('contacts').select('*', { count: 'exact', head: true }).eq('read', false),
     supabase.from('testimonials').select('*', { count: 'exact', head: true }).eq('approved', false),
     supabase.from('partners').select('*', { count: 'exact', head: true }).eq('active', true),
@@ -44,6 +44,7 @@ export default async function AdminDashboard() {
   const npsScore = scores.length > 0 ? Math.round(((promoters - detractors) / scores.length) * 100) : null
 
   const statusColors: Record<string, string> = {
+    pending: '#805ad5',
     whatsapp_initiated: '#d69e2e',
     confirmed: '#38a169',
     cancelled: '#e53e3e',
@@ -51,6 +52,7 @@ export default async function AdminDashboard() {
     paid: '#3182ce',
   }
   const statusLabels: Record<string, string> = {
+    pending: 'Aguardando pagto',
     whatsapp_initiated: 'Iniciada WA',
     confirmed: 'Confirmada',
     cancelled: 'Cancelada',

@@ -12,12 +12,14 @@ export default async function AdminReservasPage() {
     .limit(100)
 
   const statusColors: Record<string, string> = {
+    pending: '#805ad5',
     whatsapp_initiated: '#d69e2e',
     confirmed: '#38a169',
     cancelled: '#e53e3e',
     no_show: '#a0aec0',
   }
   const statusLabels: Record<string, string> = {
+    pending: 'Aguardando pagto',
     whatsapp_initiated: 'Iniciada WA',
     confirmed: 'Confirmada',
     cancelled: 'Cancelada',
