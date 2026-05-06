@@ -1,360 +1,164 @@
-# Acalanto Tours — Phase 2: Marketplace Plan
+# Acalanto — Phase 2: Marketplace Multi-Vertical
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development to implement this plan task-by-task.
+> **Para agentes:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` para executar este plano. Leia `docs/superpowers/plans/acalanto-marketplace/00-overview-e-arquitetura.md` como primeira ação antes de qualquer tarefa.
 
-**Goal:** Transformar o site WhatsApp-first de Phase 1 em um marketplace real — parceiros cadastram passeios, turistas reservam e pagam online, gestão de vagas em tempo real.
+**Goal:** Transformar o site WhatsApp-first de Phase 1 (escunas de Paraty) em **Acalanto** — marketplace multi-vertical de turismo no modelo Airbnb/Booking, com verticais de Passeios, Fotografia, Hotelaria e Serviços, pagamento online via Infinity Pay, portal de parceiros, área de cliente, CRM completo e PWA instalável.
 
-**Architecture:** Adicionar ao Next.js 16 existente: checkout Stripe (AbacatePay como alternativa BR), portal de parceiros com auth separado, sistema de slots/disponibilidade, reviews verificados pós-compra, dashboard de analytics.
+**Architecture:** Next.js 16 App Router, Supabase `hnsbstmzbidfehvycptl` (sa-east-1), Tailwind CSS v4, pagamento via **Infinity Pay** (JSON redirect, Pix 0% taxa), UTM attribution para comissão variável (30% vs 15%), Resend para emails transacionais, PWA com Service Worker.
 
-**Tech Stack:** Phase 1 stack + Stripe (ou AbacatePay) + Supabase Realtime + Edge Functions para webhooks de pagamento.
-
-**Pré-requisito:** Reunião com Gustavo (qua 07/05) para decidir gateway — AbacatePay (Pix nativo BR) vs Stripe (cartão internacional).
+**Tech Stack:** Next.js 16 · TypeScript · Tailwind CSS v4 · Supabase Auth + RLS · Infinity Pay · Resend · Vercel Cron · PWA Service Worker
 
 ---
 
-## Task 1: Schema de disponibilidade e slots
+## Estrutura dos Planos
 
-**Files:**
-- Create: `supabase/migrations/003_availability.sql`
+Os planos detalhados estão em `docs/superpowers/plans/acalanto-marketplace/` e devem ser executados na ordem abaixo. **Cada plano é autossuficiente** — contém todo o código, comandos e contexto necessários para ser executado por um agente sem contexto externo.
 
-- [ ] **Step 1: Criar tabelas de disponibilidade**
+| # | Arquivo | O que entrega |
+|---|---------|---------------|
+| 00 | `00-overview-e-arquitetura.md` | **LEIA PRIMEIRO** — fonte da verdade: regras de negócio, stack, parceiros, comissões, fluxos |
+| 01 | `01-schema-supabase.md` | Schema completo (migrations 001–003), RLS policies, seed de parceiros e produtos |
+| 02 | `02-design-system-e-layout.md` | Design tokens, globals.css, fonts, componentes base, layout groups, manifest PWA |
+| 03 | `03-homepage-e-marketplace-nav.md` | Homepage, navegação por verticais, SearchBar, mobile bottom nav |
+| 04 | `04-vertical-passeios.md` | `/passeios` listagem + `/passeios/[slug]` detalhe + BookingWidget + CapacityBar |
+| 05 | `05-vertical-fotografia.md` | `/fotografia` listagem + `/fotografia/[slug]` portfolio + PackageSelector + UTM |
+| 06 | `06-verticals-coming-soon.md` | `/hotelaria` + `/servicos` coming-soon com formulário de interesse |
+| 07 | `07-cart-e-infinity-pay.md` | CartDrawer (inspirado em Garras+MK) + /checkout + Infinity Pay redirect + webhook |
+| 08 | `08-paginas-parceiros-utm.md` | `/parceiros/[slug]` + UTM tracking + click analytics + `/seja-parceiro` form |
+| 09 | `09-contas-e-auth.md` | Magic link auth + middleware + área `/conta` (cliente + parceiro) |
+| 10 | `10-nps-e-avaliacoes.md` | `/pesquisa` NPS + token HMAC-SHA256 + moderação admin + StarRating integrado |
+| 11 | `11-admin-crm.md` | CRM completo: KPIs, reservas, reviews, candidaturas, repasses, capacidade |
+| 12 | `12-pwa-email-notificacoes.md` | Service Worker PWA + emails Resend (confirmação/NPS/repasse) + cron noturno |
+| 13 | `13-evolucoes-dashboard.md` | `/evolucoes` kanban password-protected (Acalanto + Balaio) com seed de 30+ tarefas |
 
-```sql
--- Slots por data + embarcação
-CREATE TABLE slots (
-  id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  boat_id     uuid NOT NULL REFERENCES boats(id),
-  date        date NOT NULL,
-  capacity    int NOT NULL DEFAULT 40,
-  booked      int NOT NULL DEFAULT 0,
-  blocked     boolean NOT NULL DEFAULT false,
-  created_at  timestamptz DEFAULT now(),
-  UNIQUE(boat_id, date)
-);
+---
 
--- Reservas com status de pagamento
-ALTER TABLE bookings
-  ADD COLUMN IF NOT EXISTS slot_id uuid REFERENCES slots(id),
-  ADD COLUMN IF NOT EXISTS payment_status text DEFAULT 'pending'
-    CHECK (payment_status IN ('pending','paid','cancelled','refunded')),
-  ADD COLUMN IF NOT EXISTS payment_provider text,
-  ADD COLUMN IF NOT EXISTS payment_id text,
-  ADD COLUMN IF NOT EXISTS total_cents int;
+## Regras de Negócio Principais
 
--- RLS
-ALTER TABLE slots ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "slots public read" ON slots FOR SELECT USING (true);
-CREATE POLICY "slots admin write" ON slots FOR ALL USING (is_admin());
+### Comissão
+- **30% Acalanto** — venda orgânica pelo site/marketing
+- **15% Acalanto** — cliente chegou via UTM próprio do parceiro (`utm_source=instagram&utm_medium=bio&utm_campaign=[slug]`)
+- Detecção automática: UTM armazenado em sessionStorage + cookie HTTP 7 dias → lido no checkout
+
+### Capacidade (Passeios)
+- Acalanto controla **50% da capacidade** de cada embarcação
+- Exemplo: embarcação de 80 vagas → Acalanto pode vender até 40
+- Admin pode ajustar a capacidade por data na tela `/admin/capacidade`
+
+### Pagamento (Infinity Pay)
+```
+1. CartDrawer → /checkout (resumo)
+2. /checkout → POST /api/infinity-pay/create → payload base64url → redirect
+3. Infinity Pay processa (Pix 0% taxa)
+4. Webhook POST /api/infinity-pay/webhook → status=paid → email confirmação
+5. Booking status: pending → paid → email NPS 2 dias depois
 ```
 
-- [ ] **Step 2: Função de disponibilidade**
+### Repasse
+- Calculado mensalmente: total_pago × (1 - taxa_parceiro)
+- Parceiro vê histórico em `/conta/parceiro/repasses`
+- Admin marca como pago em `/admin/repasses`
 
-```sql
-CREATE OR REPLACE FUNCTION get_available_slots(
-  p_boat_id uuid,
-  p_from date,
-  p_to date
-)
-RETURNS TABLE(date date, available int)
-LANGUAGE sql STABLE AS $$
-  SELECT
-    s.date,
-    GREATEST(0, s.capacity - s.booked) as available
-  FROM slots s
-  WHERE s.boat_id = p_boat_id
-    AND s.date BETWEEN p_from AND p_to
-    AND s.blocked = false
-  ORDER BY s.date;
-$$;
-```
+### Relatório Noturno
+- Edge Function `supabase/functions/nightly-report` roda via Vercel Cron às 01:00 UTC
+- Envia sumário do dia seguinte para email do parceiro de cada embarcação
 
-- [ ] **Step 3: Commit**
+---
+
+## Variáveis de Ambiente
 
 ```bash
-git add supabase/migrations/003_availability.sql
-git commit -m "feat(db): slots e disponibilidade por data"
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://hnsbstmzbidfehvycptl.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+
+# WhatsApp
+NEXT_PUBLIC_WHATSAPP_NUMBER=5524999627968
+
+# Infinity Pay
+INFINITY_PAY_API_KEY=...
+INFINITY_PAY_WEBHOOK_SECRET=...
+NEXT_PUBLIC_INFINITY_PAY_REDIRECT_URL=https://pay.infinitypay.io/...
+
+# Email (Resend)
+RESEND_API_KEY=...
+RESEND_FROM_EMAIL=noreply@acalantotours.com.br
+ADMIN_EMAIL=contato@acalantotours.com.br
+INTERNAL_EMAIL_SECRET=...
+
+# Analytics
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
+
+# Site
+NEXT_PUBLIC_SITE_URL=https://acalantotours.com.br
+
+# Auth interno
+REVIEW_HMAC_SECRET=...   # HMAC-SHA256 para tokens NPS
+EVOLUCOES_PASSWORD=acalanto2026
+CRON_SECRET=...
 ```
 
 ---
 
-## Task 2: Portal de Parceiros — Auth + Dashboard
+## Como Executar
 
-**Files:**
-- Create: `app/parceiros/` (route group separado do admin)
-- Create: `app/parceiros/login/page.tsx`
-- Create: `app/parceiros/dashboard/page.tsx`
-- Create: `app/parceiros/layout.tsx`
+### Opção 1 — Subagent-Driven (recomendado)
 
-- [ ] **Step 1: Layout do portal de parceiro**
-
-```typescript
-// app/parceiros/layout.tsx
-'use client'
-import { useEffect, useState } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { createBrowserClient } from '@/lib/supabase/client'
-
-export default function ParceiroLayout({ children }: { children: React.ReactNode }) {
-  const [ready, setReady] = useState(false)
-  const router = useRouter()
-  const pathname = usePathname()
-  const supabase = createBrowserClient()
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session && pathname !== '/parceiros/login') {
-        router.replace('/parceiros/login')
-      } else {
-        setReady(true)
-      }
-    })
-  }, [supabase, router, pathname])
-
-  if (!ready) return null
-  return <>{children}</>
-}
+```
+1. Leia 00-overview-e-arquitetura.md completamente
+2. Para cada plano 01→13:
+   a. Dispatch implementer subagent com conteúdo completo do plano
+   b. Dispatch spec reviewer subagent
+   c. Dispatch code quality reviewer subagent
+   d. Mark task complete
+3. Ao final: superpowers:finishing-a-development-branch
 ```
 
-- [ ] **Step 2: Página de login do parceiro**
-
-Reutilizar estrutura do `/admin/login/page.tsx` com branding diferente ("Portal do Parceiro").
-
-- [ ] **Step 3: Dashboard do parceiro**
-
-Mostrar:
-- Reservas do parceiro (filtrado por `partner_id`)
-- Calendário de disponibilidade dos seus barcos
-- Receita do período (total pago)
-- Botão "Bloquear data"
-
-- [ ] **Step 4: Commit**
+### Opção 2 — Manual (Claude Code no terminal)
 
 ```bash
-git add app/parceiros/
-git commit -m "feat: portal de parceiros com auth e dashboard"
+# No terminal, dentro de tours/acalanto-tours/:
+# Executar cada plano em sequência, checkpoint após cada um:
+# 01 → commit → 02 → commit → ... → 13 → commit → push
+```
+
+### Dependências críticas
+
+```
+01 (schema)  → todos os outros dependem dele — EXECUTAR PRIMEIRO
+02 (design)  → 03, 04, 05, 06 dependem dos tokens e layout
+07 (cart)    → 04 e 05 devem estar prontos (produtos no carrinho)
+09 (auth)    → 10, 11 dependem da middleware e área /conta
+11 (admin)   → usa createAdminClient() definido em 09
+12 (email)   → webhook definido em 07 deve existir
+13 (evolucoes) → independente, pode rodar a qualquer momento após 01
 ```
 
 ---
 
-## Task 3: Integração de Pagamento — AbacatePay (Pix) ou Stripe
+## Parceiros Confirmados no Seed
 
-**Decisão necessária na reunião de quarta:** AbacatePay vs Stripe.
+Ver `01-schema-supabase.md` Task "Seed" para o SQL completo. Resumo:
 
-### Opção A — AbacatePay (recomendado para BR)
-- Pix instantâneo
-- Taxa menor que cartão
-- SDK: `npm install abacatepay-nodejs-sdk`
-- Webhook: `/api/webhooks/abacatepay`
-
-### Opção B — Stripe
-- Cartão de crédito nacional e internacional
-- SDK: `npm install stripe`
-- Webhook: `/api/webhooks/stripe`
-
-**Files (independente da escolha):**
-- Create: `app/api/checkout/route.ts` — cria sessão de pagamento
-- Create: `app/api/webhooks/[provider]/route.ts` — recebe confirmação
-- Create: `app/checkout/page.tsx` — página de checkout
-- Create: `app/checkout/sucesso/page.tsx` — confirmação pós-pagamento
-
-- [ ] **Step 1: API de checkout**
-
-```typescript
-// app/api/checkout/route.ts
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-
-export async function POST(req: NextRequest) {
-  const { boat_id, date, adults, children, name, phone } = await req.json()
-
-  // 1. Verificar slot disponível
-  const supabase = await createClient()
-  const { data: slot } = await supabase
-    .from('slots')
-    .select('id, capacity, booked')
-    .eq('boat_id', boat_id)
-    .eq('date', date)
-    .single()
-
-  const total_pax = adults + children
-  if (!slot || (slot.capacity - slot.booked) < total_pax) {
-    return NextResponse.json({ error: 'Sem vagas disponíveis nesta data.' }, { status: 409 })
-  }
-
-  // 2. Criar reserva com status pending
-  const { data: booking } = await supabase
-    .from('bookings')
-    .insert({ boat_id, slot_id: slot.id, adult_count: adults, child_count: children, name, phone, payment_status: 'pending' })
-    .select()
-    .single()
-
-  // 3. Criar sessão de pagamento (AbacatePay ou Stripe — trocar aqui)
-  // const session = await createPaymentSession({ booking, total_cents })
-
-  return NextResponse.json({ booking_id: booking.id /*, payment_url: session.url */ })
-}
-```
-
-- [ ] **Step 2: Webhook de confirmação de pagamento**
-
-```typescript
-// app/api/webhooks/[provider]/route.ts
-// Quando pagamento confirmado:
-// - UPDATE bookings SET payment_status = 'paid' WHERE payment_id = ...
-// - UPDATE slots SET booked = booked + adult_count + child_count
-// - Enviar confirmação por WhatsApp/email
-```
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add app/api/checkout/ app/api/webhooks/ app/checkout/
-git commit -m "feat: checkout flow + webhook de pagamento"
-```
+**Embarcações:** Ilha Rasa IV, Ilha Rasa V (Bob Esponja), Tânia, Soberano, Cherry I (privativa)  
+**Fotógrafos:** Juliane Liberato, Arthur, Magno, Kai  
+**⚠️ NÃO CADASTRAR:** "Resta 1" — exclusividade com outra agência, apenas divulgação GFP nas redes
 
 ---
 
-## Task 4: Reviews verificados pós-compra
+## Diferencial de Onboarding para Parceiros
 
-**Files:**
-- Create: `app/api/reviews/route.ts`
-- Modify: `app/escunas/[slug]/page.tsx` — exibir reviews verificados
-- Create: `components/reviews/ReviewCard.tsx`
-- Create: `components/reviews/ReviewForm.tsx`
-
-**Regra:** Só pode deixar review quem tem `booking.payment_status = 'paid'` para aquele barco.
-
-- [ ] **Step 1: Tabela reviews com verificação**
-
-```sql
--- Na migration 003 ou nova 004
-ALTER TABLE reviews
-  ADD COLUMN IF NOT EXISTS booking_id uuid REFERENCES bookings(id),
-  ADD COLUMN IF NOT EXISTS verified boolean DEFAULT false;
-
--- Trigger: marca verified = true se booking existe e está pago
-CREATE OR REPLACE FUNCTION verify_review()
-RETURNS TRIGGER LANGUAGE plpgsql AS $$
-BEGIN
-  IF NEW.booking_id IS NOT NULL THEN
-    SELECT payment_status = 'paid' INTO NEW.verified
-    FROM bookings WHERE id = NEW.booking_id;
-  END IF;
-  RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER reviews_verify_on_insert
-  BEFORE INSERT ON reviews
-  FOR EACH ROW EXECUTE FUNCTION verify_review();
-```
-
-- [ ] **Step 2: ReviewCard e ReviewForm componentes**
-
-ReviewCard: avatar inicial, nome, data, estrelas (1–5), texto, badge "✓ Compra verificada" se `verified = true`.
-
-ReviewForm: aparece na página da escuna se usuário tem booking pago para aquele barco.
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add app/api/reviews/ components/reviews/
-git commit -m "feat: reviews verificados pós-compra"
-```
+> **Todo parceiro que fechar com a plataforma tem direito a um ensaio fotográfico gratuito do seu negócio** — fotos + vídeo + drone. Deve aparecer com destaque em toda comunicação de `/seja-parceiro` e emails de onboarding.
 
 ---
 
-## Task 5: Calendário de disponibilidade no BookingWidget
+## Fonte da Verdade
 
-**Files:**
-- Modify: `components/booking/BookingWidget.tsx` — buscar vagas reais
-
-- [ ] **Step 1: Buscar disponibilidade real**
-
-```typescript
-// Dentro do BookingWidget (client component)
-const [availability, setAvailability] = useState<Record<string, number>>({})
-
-useEffect(() => {
-  if (!boat.id) return
-  fetch(`/api/availability?boat_id=${boat.id}&from=${startOfMonth}&to=${endOfNextMonth}`)
-    .then(r => r.json())
-    .then(setAvailability)
-}, [boat.id])
-
-// No date picker: desabilitar datas com available === 0
-// Mostrar indicador visual de vagas: verde > 10, amarelo 1-10, vermelho 0
-```
-
-- [ ] **Step 2: API de disponibilidade**
-
-```typescript
-// app/api/availability/route.ts
-// Chama get_available_slots(boat_id, from, to) do Supabase
-// Retorna { [date]: available_seats }
-```
-
-- [ ] **Step 3: Commit**
-
-```bash
-git commit -m "feat: disponibilidade real no BookingWidget"
-```
-
----
-
-## Task 6: Admin — Gestão de slots e bloqueios de data
-
-**Files:**
-- Create: `app/admin/disponibilidade/page.tsx`
-- Modify: `app/admin/layout.tsx` — adicionar nav item
-
-- [ ] **Step 1: Página de disponibilidade no admin**
-
-- Calendário por embarcação
-- Clicar numa data: ver vagas, editar capacidade, bloquear/desbloquear
-- Bulk: "Bloquear todos os domingos de junho"
-- Gerar slots automáticos para o próximo mês
-
----
-
-## Task 7: Email de confirmação (Edge Function)
-
-**Files:**
-- Create: `supabase/functions/send-booking-confirmation/index.ts`
-
-- [ ] **Step 1: Edge Function com Resend**
-
-```typescript
-// Disparada pelo webhook de pagamento
-// Envia email para turista com:
-// - Nome do barco, data, horário de saída
-// - Local de embarque (cais de Paraty + mapa)
-// - O que levar
-// - Contato de emergência (WhatsApp da empresa)
-```
-
----
-
-## Dependências e Bloqueadores
-
-| Item | Bloqueador | Resolve quando |
-|------|-----------|----------------|
-| Gateway de pagamento | Decisão AbacatePay vs Stripe | Reunião qua 07/05 |
-| WhatsApp número real | Confirmar com Gustavo | Reunião seg 05/05 |
-| Portal de parceiros | Quais dados parceiros precisam ver | Reunião seg 05/05 |
-| Fotos profissionais | Gustavo providenciar | A definir |
-| Domínio acalantotours.com.br | Registrar / transferir DNS | Antes da entrega |
-
----
-
-## Ordem de implementação recomendada
+Para detalhes completos de qualquer decisão técnica ou de negócio, consulte:
 
 ```
-Task 1 (slots) → Task 5 (calendar widget) → Task 3 (checkout) → Task 2 (portal parceiro)
-     ↓
-Task 4 (reviews) → Task 6 (admin calendar) → Task 7 (email)
+tours/docs/superpowers/plans/acalanto-marketplace/00-overview-e-arquitetura.md
 ```
 
-Tasks 1 e 5 primeiro: sem disponibilidade real o checkout não faz sentido.
-Tasks 3 precisa da decisão de gateway (reunião qua).
-Tasks 4, 6, 7 podem ser paralelizadas depois do checkout funcionar.
+Este arquivo é o árbitro final de todas as decisões de arquitetura e negócio do marketplace Acalanto.

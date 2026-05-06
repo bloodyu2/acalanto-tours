@@ -1,6 +1,6 @@
 export const SITE_NAME = 'Acalanto Tours'
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://acalanto.com.br'
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '5524999999999'
+export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '5524999627968'
 export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? ''
 
 // Mon–Sat (0=Sun,1=Mon,...,6=Sat)

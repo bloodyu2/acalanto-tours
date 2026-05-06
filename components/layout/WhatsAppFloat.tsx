@@ -1,5 +1,5 @@
 export default function WhatsAppFloat() {
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999999999'
+  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999627968'
   return (
     <a
       href={`https://wa.me/${phone}?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20os%20passeios%20de%20escuna%20em%20Paraty.`}

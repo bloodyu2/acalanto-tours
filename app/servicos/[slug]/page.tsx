@@ -25,7 +25,7 @@ export default async function ServicoPage({ params }: Props) {
   const { data: svc } = await supabase.from('services').select('*').eq('slug', slug).eq('active', true).single()
   if (!svc) notFound()
 
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999999999'
+  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999627968'
   const waMsg = encodeURIComponent(`Olá! Tenho interesse no serviço "${svc.name}". Poderia me dar mais informações?`)
 
   return (
