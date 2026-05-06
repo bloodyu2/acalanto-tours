@@ -105,7 +105,15 @@ export default function SejaParceiroPage() {
           gap: '1rem',
           alignItems: 'flex-start',
         }}>
-          <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>🎁</span>
+          <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '1.5rem', height: '1.5rem', color: '#1a1a1a' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 12 20 22 4 22 4 12"/>
+              <rect x="2" y="7" width="20" height="5"/>
+              <line x1="12" y1="22" x2="12" y2="7"/>
+              <path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/>
+              <path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
+            </svg>
+          </div>
           <p style={{ margin: 0, color: '#1a1a1a', fontWeight: 600, fontSize: '0.98rem', lineHeight: 1.6 }}>
             Todo parceiro que fechar com a plataforma tem direito a um ensaio fotografico gratuito: fotos, video e drone do seu negocio.
           </p>
@@ -119,7 +127,12 @@ export default function SejaParceiroPage() {
             textAlign: 'center',
             boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
           }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#10b981' }}>
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
             <h2 style={{ fontFamily: 'var(--font-playfair, serif)', margin: '0 0 0.75rem', color: 'var(--ocean-deep, #0A3D5C)' }}>
               Candidatura recebida!
             </h2>
