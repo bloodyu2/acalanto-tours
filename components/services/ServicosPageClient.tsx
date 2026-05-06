@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import ServiceSheet, { type SheetService } from './ServiceSheet'
+import type { ServiceProvider } from '@/lib/types/database'
 
 const icons: Record<string, React.ReactNode> = {
   'lancha-privativa': (
@@ -46,9 +47,10 @@ const AnchorIcon = () => (
 interface Props {
   services: SheetService[]
   unavailableMap: Record<string, string[]>
+  providersMap: Record<string, ServiceProvider[]>
 }
 
-export default function ServicosPageClient({ services, unavailableMap }: Props) {
+export default function ServicosPageClient({ services, unavailableMap, providersMap }: Props) {
   const [activeService, setActiveService] = useState<SheetService | null>(null)
 
   return (
@@ -102,6 +104,7 @@ export default function ServicosPageClient({ services, unavailableMap }: Props) 
       <ServiceSheet
         service={activeService}
         unavailableMap={unavailableMap}
+        providers={activeService ? (providersMap[activeService.id] ?? []) : []}
         onClose={() => setActiveService(null)}
       />
     </>

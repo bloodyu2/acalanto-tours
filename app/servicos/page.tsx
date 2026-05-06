@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import ServicosPageClient from '@/components/services/ServicosPageClient'
+import type { ServiceProvider } from '@/lib/types/database'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,6 +36,20 @@ export default async function ServicosPage() {
     }
   }
 
+  // Fetch providers per service
+  const { data: providerRows } = await supabase
+    .from('service_providers')
+    .select('id, service_id, partner_id, notes, display_order, partner:partners(id, name, description, whatsapp_number)')
+    .order('display_order', { ascending: true })
+
+  const providersMap: Record<string, ServiceProvider[]> = {}
+  for (const row of providerRows ?? []) {
+    const sid = (row as unknown as { service_id: string }).service_id
+    if (!sid) continue
+    if (!providersMap[sid]) providersMap[sid] = []
+    providersMap[sid].push(row as unknown as ServiceProvider)
+  }
+
   return (
     <>
       <section style={{ background: 'linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-mid) 100%)', padding: '5rem 0 3rem', position: 'relative' }}>
@@ -54,6 +69,7 @@ export default async function ServicosPage() {
           <ServicosPageClient
             services={services ?? []}
             unavailableMap={unavailableMap}
+            providersMap={providersMap}
           />
         </div>
       </section>
