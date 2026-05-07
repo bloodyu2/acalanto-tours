@@ -45,7 +45,7 @@ export default function Header() {
         <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{
             fontFamily: 'var(--font-playfair)',
-            fontSize: '1.375rem',
+            fontSize: 'clamp(1.1rem, 4vw, 1.375rem)',
             fontWeight: 700,
             color: 'var(--text-primary)',
           }}>

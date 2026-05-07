@@ -52,7 +52,7 @@ export default function VerticalsSection() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
           {verticals.map(({ href, icon, title, desc, color, tag, active }) => (
             <Link key={href} href={href} style={{ textDecoration: 'none' }}>
               <div

@@ -139,12 +139,13 @@ export default function HeroSection() {
           <div style={{
             display: 'flex', gap: '0', marginTop: '3rem', flexWrap: 'wrap',
             borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.75rem',
+            rowGap: '1rem',
           }}>
             {trustItems.map(({ svg, number, sub }, i) => (
               <div key={sub} style={{
-                flex: '1', minWidth: '80px',
-                paddingRight: '1.5rem',
-                paddingLeft: i === 0 ? 0 : '1.5rem',
+                flex: '1', minWidth: '70px',
+                paddingRight: 'clamp(0.75rem, 2vw, 1.5rem)',
+                paddingLeft: i === 0 ? 0 : 'clamp(0.75rem, 2vw, 1.5rem)',
                 borderLeft: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.1)',
               }}>
                 <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.625rem', fontWeight: 700, color: 'white', letterSpacing: '-0.03em' }}>
