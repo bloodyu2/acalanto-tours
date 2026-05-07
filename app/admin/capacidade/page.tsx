@@ -28,15 +28,15 @@ export default function AdminCapacidadePage() {
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState('')
 
+  function loadOverrides() {
+    supabase.from('capacity_overrides').select('*, boats(name)').order('tour_date', { ascending: false }).limit(50).then(({ data }) => setOverrides((data as Override[]) ?? []))
+  }
+
   useEffect(() => {
     supabase.from('boats').select('id,name,capacity_max,active').eq('active', true).order('display_order').then(({ data }) => setBoats(data ?? []))
     loadOverrides()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  function loadOverrides() {
-    supabase.from('capacity_overrides').select('*, boats(name)').order('tour_date', { ascending: false }).limit(50).then(({ data }) => setOverrides((data as Override[]) ?? []))
-  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

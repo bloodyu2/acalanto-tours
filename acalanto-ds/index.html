@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Acalanto — Assets</title>
+<style>
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#F7F3EB;color:#0A3D5C;margin:0;padding:0;}
+  .header{background:#0A3D5C;color:white;padding:32px 48px;display:flex;align-items:center;gap:16px;}
+  .header h1{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-style:italic;margin:0;}
+  .header p{font-size:14px;color:rgba(255,255,255,0.6);margin:0;font-family:'JetBrains Mono',monospace;}
+  .stripe{height:4px;background:linear-gradient(90deg,#F4A623,#E8673A);}
+  .body{max-width:1200px;margin:0 auto;padding:40px 48px;}
+  h2{font-family:'Playfair Display',Georgia,serif;font-size:24px;color:#0A3D5C;border-bottom:2px solid #D6EEF5;padding-bottom:8px;margin-top:40px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-top:16px;}
+  .asset{background:white;border-radius:8px;overflow:hidden;border:1px solid #E8D9B8;transition:box-shadow 0.2s;}
+  .asset:hover{box-shadow:0 4px 16px rgba(10,61,92,0.12);}
+  .asset img{width:100%;height:140px;object-fit:contain;background:#f9f9f9;padding:8px;}
+  .asset .name{padding:8px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;color:rgba(10,34,53,0.6);border-top:1px solid #F3F4F6;}
+  .btn{display:inline-block;background:#0A3D5C;color:white;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;margin-top:24px;}
+</style>
+</head>
+<body>
+<div class="header">
+  <svg width="36" height="40" viewBox="0 0 120 136" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(60,68) rotate(-7) translate(-60,-68)">
+      <path d="M13,124 Q42,71 64,13" stroke="#F5EDD8" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <line x1="64" y1="13" x2="69" y2="124" stroke="#F5EDD8" stroke-width="2.8" stroke-linecap="round"/>
+      <path d="M64,19 Q92,65 122,120 L69,120 Z" fill="#F4A623"/>
+      <path d="M35,75 Q49,70 64,72" stroke="#F5EDD8" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+    </g>
+  </svg>
+  <div>
+    <h1>Acalanto Turismo</h1>
+    <p>Design System v1.0 · Assets exportados · 07.MAI.2026</p>
+  </div>
+</div>
+<div class="stripe"></div>
+<div class="body">
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+    <a href="Design System Acalanto.html" class="btn">▶ Design System Completo (28 slides)</a>
+    <a href="INSTRUCOES-CLAUDE-CODE.md" class="btn" style="background:#1A6B8A;">📋 Instruções para Claude Code</a>
+  </div>
+  <p style="font-size:13px;color:#6B7280;font-family:'JetBrains Mono',monospace;margin-top:4px;">Abra INSTRUCOES-CLAUDE-CODE.md e cole na conversa com o Claude Code para aplicar tudo automaticamente.</p>
+  
+  <h2>Logos</h2>
+  <div class="grid">
+    <div class="asset"><img src="assets/logos/logo-horizontal-light.png" alt="logo-horizontal-light.png"><div class="name">logo-horizontal-light.png</div></div><div class="asset"><img src="assets/logos/logo-horizontal-sand.png" alt="logo-horizontal-sand.png"><div class="name">logo-horizontal-sand.png</div></div><div class="asset"><img src="assets/logos/logo-horizontal-dark.png" alt="logo-horizontal-dark.png"><div class="name">logo-horizontal-dark.png</div></div><div class="asset"><img src="assets/logos/logo-horizontal-mono.png" alt="logo-horizontal-mono.png"><div class="name">logo-horizontal-mono.png</div></div><div class="asset"><img src="assets/logos/logo-stacked-light.png" alt="logo-stacked-light.png"><div class="name">logo-stacked-light.png</div></div><div class="asset"><img src="assets/logos/logo-stacked-dark.png" alt="logo-stacked-dark.png"><div class="name">logo-stacked-dark.png</div></div><div class="asset"><img src="assets/logos/icon-512-dark.png" alt="icon-512-dark.png"><div class="name">icon-512-dark.png</div></div><div class="asset"><img src="assets/logos/icon-512-light.png" alt="icon-512-light.png"><div class="name">icon-512-light.png</div></div><div class="asset"><img src="assets/logos/icon-512-white.png" alt="icon-512-white.png"><div class="name">icon-512-white.png</div></div><div class="asset"><img src="assets/logos/icon-512-mono.png" alt="icon-512-mono.png"><div class="name">icon-512-mono.png</div></div>
+  </div>
+
+  <h2>App Icons &amp; PWA</h2>
+  <div class="grid">
+    <div class="asset"><img src="assets/icons/icon-512.png" alt="icon-512"><div class="name">icon-512.png</div></div><div class="asset"><img src="assets/icons/icon-384.png" alt="icon-384"><div class="name">icon-384.png</div></div><div class="asset"><img src="assets/icons/icon-192.png" alt="icon-192"><div class="name">icon-192.png</div></div><div class="asset"><img src="assets/icons/icon-180.png" alt="icon-180"><div class="name">icon-180.png</div></div><div class="asset"><img src="assets/icons/icon-152.png" alt="icon-152"><div class="name">icon-152.png</div></div><div class="asset"><img src="assets/icons/icon-120.png" alt="icon-120"><div class="name">icon-120.png</div></div><div class="asset"><img src="assets/icons/icon-96.png" alt="icon-96"><div class="name">icon-96.png</div></div><div class="asset"><img src="assets/icons/icon-72.png" alt="icon-72"><div class="name">icon-72.png</div></div><div class="asset"><img src="assets/icons/icon-48.png" alt="icon-48"><div class="name">icon-48.png</div></div><div class="asset"><img src="assets/icons/icon-32.png" alt="icon-32"><div class="name">icon-32.png</div></div><div class="asset"><img src="assets/icons/icon-16.png" alt="icon-16"><div class="name">icon-16.png</div></div>
+    <div class="asset"><img src="assets/icons/maskable-512.png" alt="maskable"><div class="name">maskable-512.png</div></div>
+  </div>
+
+  <h2>Social Media</h2>
+  <div class="grid">
+    <div class="asset"><img src="assets/social/og-image.jpg" alt="og-image.jpg"><div class="name">og-image.jpg</div></div><div class="asset"><img src="assets/social/instagram-post.jpg" alt="instagram-post.jpg"><div class="name">instagram-post.jpg</div></div><div class="asset"><img src="assets/social/instagram-story.jpg" alt="instagram-story.jpg"><div class="name">instagram-story.jpg</div></div><div class="asset"><img src="assets/social/whatsapp-status.jpg" alt="whatsapp-status.jpg"><div class="name">whatsapp-status.jpg</div></div><div class="asset"><img src="assets/social/email-banner.jpg" alt="email-banner.jpg"><div class="name">email-banner.jpg</div></div><div class="asset"><img src="assets/social/facebook-cover.jpg" alt="facebook-cover.jpg"><div class="name">facebook-cover.jpg</div></div>
+  </div>
+
+  <h2>Brand Guidelines</h2>
+  <div class="grid">
+    <div class="asset"><img src="assets/brand/paleta-cores.jpg" alt="paleta-cores.jpg" style="height:200px;"><div class="name">paleta-cores.jpg</div></div><div class="asset"><img src="assets/brand/guia-tipografia.jpg" alt="guia-tipografia.jpg" style="height:200px;"><div class="name">guia-tipografia.jpg</div></div>
+  </div>
+</div>
+</body>
+</html>

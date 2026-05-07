@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Acalanto — Design System Completo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="../deck-stage.js"></script>
+<style>
+:root {
+  --ocean-deep:   #0A3D5C;
+  --ocean-mid:    #1A6B8A;
+  --ocean-light:  #2E9CBF;
+  --ocean-pale:   #D6EEF5;
+  --sand-warm:    #F5EDD8;
+  --sand-mid:     #E8D9B8;
+  --sunset-gold:  #F4A623;
+  --sunset-coral: #E8673A;
+  --paper:        #F7F3EB;
+  --ink:          #0A2235;
+  --muted:        rgba(10,34,53,0.48);
+  --line:         rgba(10,34,53,0.10);
+  --fd: 'Playfair Display', Georgia, serif;
+  --fs: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --fm: 'JetBrains Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+deck-stage > section {
+  width: 1920px; height: 1080px;
+  background: var(--paper);
+  font-family: var(--fs);
+  position: relative; overflow: hidden;
+}
+.chrome {
+  position: absolute; inset: 48px 80px 36px;
+  display: flex; flex-direction: column;
+}
+.top-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--fm); font-size: 13px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--muted);
+  padding-bottom: 24px; border-bottom: 1px solid var(--line);
+}
+.top-bar b { color: var(--ocean-deep); font-weight: 600; }
+.top-bar .r { display: flex; gap: 32px; }
+.bottom-bar {
+  margin-top: auto;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  font-family: var(--fm); font-size: 12px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--muted);
+  padding-top: 18px; border-top: 1px solid var(--line);
+}
+.stage-box {
+  border: 1px solid var(--line); border-radius: 6px;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.label-sm {
+  position: absolute; top: 12px; left: 14px;
+  font-family: var(--fm); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--muted);
+}
+/* LOGO COMPONENT */
+.logo { display: flex; align-items: center; user-select: none; }
+.logo-text { display: flex; flex-direction: column; }
+.logo-name {
+  font-family: var(--fd); font-style: italic; font-weight: 500;
+  line-height: 0.92; color: var(--ocean-deep);
+  letter-spacing: -0.015em; white-space: nowrap;
+}
+.logo-waves { display: flex; flex-direction: column; }
+.logo-wave-blue { background: var(--ocean-mid); border-radius: 999px; }
+.logo-wave-gold { background: var(--sunset-gold); border-radius: 999px; }
+.logo-endorse {
+  font-family: var(--fs); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.44em; color: var(--ocean-mid); white-space: nowrap;
+}
+</style>
+</head>
+<body>
+<deck-stage>
+<section data-screen-label="01 Capa">
+  <div class="chrome">
+    <div class="top-bar">
+      <span><b>Acalanto</b> · Design System</span>
+      <div class="r"><span>Versão 1.0</span><span>07.MAI.2026</span></div>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;">
+        <div style="font-family:var(--fd);font-style:italic;font-size:120px;color:var(--ocean-deep);line-height:1;letter-spacing:-0.02em;">Acalanto</div>
+        <div style="display:flex;justify-content:center;gap:0;margin-top:12px;">
+          <div style="height:3px;width:400px;background:var(--ocean-mid);border-radius:999px;"></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:0;margin-top:6px;">
+          <div style="height:3px;width:300px;background:var(--sunset-gold);border-radius:999px;"></div>
+        </div>
+        <div style="font-family:var(--fs);font-weight:700;font-size:18px;letter-spacing:0.44em;color:var(--ocean-mid);margin-top:16px;text-transform:uppercase;">Turismo</div>
+        <div style="font-family:var(--fm);font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:48px;">Design System & Manual de Marca · Paraty, RJ</div>
+      </div>
+    </div>
+    <div class="bottom-bar"><span>Sistema visual completo</span><span>01 / 28</span></div>
+  </div>
+</section>
+<section data-screen-label="02 Índice">
+  <div class="chrome">
+    <div class="top-bar">
+      <span><b>02</b> · Índice do Sistema</span>
+      <div class="r"><span>28 slides</span></div>
+    </div>
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:32px;">
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">01–03</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Marca & Logo</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Versões, usos, proibições</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">04–05</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Cores</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Paleta principal e estados</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">06–07</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Tipografia</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Display, body, mono</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">08–09</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Ícones & SVGs</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Sistema de ícones do site</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">10–11</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Botões</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Primário, secundário, estados</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">12–13</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Formulários</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Inputs, selects, calendário</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">14–15</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Cards</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Tour card, serviço, hotel</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">16–17</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Carrinho</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Drawer, badge, checkout</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">18–19</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Header & Footer</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Layout, breakpoints</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">20–21</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">PWA & App Icons</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">512px até favicon 16px</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">22–23</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Redes Sociais</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Instagram, WhatsApp, OG</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">24–25</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">E-mail</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Header, layout, assinatura</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">26–27</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Direcionamento IA</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Prompt guide para Claude</div>
+          </div>
+        </div>
+      
+        <div style="border:1px solid var(--line);border-radius:6px;padding:24px 28px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="font-family:var(--fm);font-size:11px;color:var(--sunset-gold);letter-spacing:0.1em;flex-shrink:0;margin-top:4px;">28</div>
+          <div>
+            <div style="font-family:var(--fd);font-size:20px;color:var(--ocean-deep);font-weight:600;">Manual de Marca</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">Regras de uso completas</div>
+          </div>
+        </div>
+      
+    </div>
+    <div class="bottom-bar"><span>Índice completo</span><span>02 / 28</span></div>
+  </div>
+</section>
+</deck-stage>
+</body>
+</html>

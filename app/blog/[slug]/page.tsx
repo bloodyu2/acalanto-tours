@@ -134,9 +134,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           >
             Pronto para conhecer Paraty?
           </p>
-          <a href="/" className="btn-primary">
+          <Link href="/passeios" className="btn-primary">
             Ver passeios
-          </a>
+          </Link>
         </section>
       </main>
     </>

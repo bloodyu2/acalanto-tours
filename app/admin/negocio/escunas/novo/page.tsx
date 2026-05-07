@@ -113,7 +113,7 @@ export default function NovaEscunaPage() {
           <label className="form-label">Roteiro (JSON)</label>
           <textarea className="form-input" name="itinerary" rows={4} style={{ resize: 'vertical', fontFamily: 'monospace', fontSize: '0.82rem' }}
             placeholder={'[{"stop":"Ilha dos Cocos","minutes":40},{"stop":"Praia da Lula","minutes":60}]'} />
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Array de objetos com "stop" e "minutes"</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Array de objetos com &quot;stop&quot; e &quot;minutes&quot;</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div className="form-group">

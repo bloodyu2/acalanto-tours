@@ -35,7 +35,7 @@ export default async function AdminDepoimentosPage() {
               </div>
             </div>
             <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '1rem', fontStyle: 'italic' }}>
-              "{t.content}"
+              &ldquo;{t.content}&rdquo;
             </p>
             <TestimonialsActions id={t.id} approved={t.approved ?? false} />
           </div>

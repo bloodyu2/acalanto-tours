@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { PhotographerPackage, PartnerPage, Partner } from '@/lib/types/database'
@@ -107,12 +108,12 @@ export default async function FotografiaDetailPage({ params }: Props) {
         </svg>
 
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <a
+          <Link
             href="/fotografia"
             style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.85rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginBottom: '1.25rem' }}
           >
             ← Todos os pacotes
-          </a>
+          </Link>
 
           {typedPkg.partners?.name && (
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.5rem' }}>

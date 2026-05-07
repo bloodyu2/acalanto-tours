@@ -13,8 +13,8 @@ export default function CookieBanner() {
   const accept = () => {
     localStorage.setItem('acalanto_cookie_consent', 'accepted')
     setVisible(false)
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('consent', 'update', {
+    if (typeof window !== 'undefined' && (window as Window & { gtag?: (...args: unknown[]) => void }).gtag) {
+      (window as Window & { gtag?: (...args: unknown[]) => void }).gtag!('consent', 'update', {
         analytics_storage: 'granted',
         ad_storage: 'granted',
       })

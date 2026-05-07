@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/server'
 
@@ -83,12 +84,12 @@ export default async function AdminBlogEditPage({ params }: { params: Promise<{ 
   return (
     <div style={{ padding: '2rem', maxWidth: '48rem' }}>
       <div style={{ marginBottom: '2rem' }}>
-        <a
+        <Link
           href="/admin/blog"
           style={{ fontSize: '0.875rem', color: 'var(--text-muted)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', marginBottom: '0.75rem' }}
         >
           ← Voltar para blog
-        </a>
+        </Link>
         <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', color: 'var(--text-primary)', margin: 0 }}>
           Editar artigo
         </h1>
@@ -166,12 +167,12 @@ export default async function AdminBlogEditPage({ params }: { params: Promise<{ 
             >
               Salvar alterações
             </button>
-            <a
+            <Link
               href="/admin/blog"
               style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', textDecoration: 'none' }}
             >
               Cancelar
-            </a>
+            </Link>
           </div>
         </form>
 
