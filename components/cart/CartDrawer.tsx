@@ -223,11 +223,25 @@ export default function CartDrawer() {
                   </svg>
                   Boleto
                 </div>
+                {/* Débito */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', gap: '0.375rem',
+                  padding: '0.375rem 0.75rem', borderRadius: '6px',
+                  background: '#f0f9ff', border: '1px solid #bae6fd',
+                  fontSize: '0.75rem', fontWeight: 600, color: '#0369a1',
+                }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="1" y="4" width="22" height="16" rx="2"/>
+                    <line x1="1" y1="10" x2="23" y2="10"/>
+                    <circle cx="7" cy="15" r="1" fill="currentColor"/>
+                  </svg>
+                  Débito
+                </div>
               </div>
             </div>
 
             <p style={{ textAlign: 'center', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.375rem' }}>
-              Pagamento 100% seguro via Infinity Pay
+              Pagamento seguro via ASAAS · protegido pela LGPD
             </p>
           </div>
         )}
