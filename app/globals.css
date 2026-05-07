@@ -1,26 +1,78 @@
 @import "tailwindcss";
 
 /* =====================================================
-   Acalanto Tours — Design Tokens (Airbnb placeholder)
+   Acalanto Tours — Design System (Oceano Caiçara)
    ===================================================== */
 :root {
-  /* — Airbnb palette — */
-  --ocean-deep:   #1a1a2e;   /* deep charcoal (was ocean blue) */
-  --ocean-mid:    #92174d;   /* wine/coral accent (was mid blue) */
-  --ocean-light:  #c0245e;   /* lighter wine (was light blue) */
-  --sand:         #f7f7f7;   /* light surface (was warm sand) */
-  --sand-dark:    #ebebeb;   /* border-level surface */
-  --sunset:       #e00b41;   /* red accent CTA (was amber) */
-  --sunset-dark:  #b80a35;   /* darker red */
-  --white:        #FFFFFF;
-  --text-primary: #222222;   /* Airbnb foreground */
-  --text-muted:   #717171;   /* Airbnb muted grey */
-  --border:       #dddddd;   /* Airbnb border */
-  --background:   #ffffff;
-  --foreground:   #222222;
+  /* Cores Primárias — Oceano */
+  --ocean-deep:    #0A3D5C;
+  --ocean-mid:     #1A6B8A;
+  --ocean-light:   #2E9CBF;
+  --ocean-pale:    #D6EEF5;
+
+  /* Cores Areia */
+  --sand-warm:     #F5EDD8;
+  --sand-mid:      #E8D9B8;
+  --sand-dark:     #C9B78A;
+  --sand:          #F5EDD8;  /* alias → sand-warm */
+
+  /* Cores Destaque */
+  --sunset:        #F4A623;
+  --sunset-dark:   #D4891A;
+  --sunset-coral:  #E8673A;
+
+  /* Texto e bordas */
+  --white:         #FFFFFF;
+  --text-primary:  #0A3D5C;
+  --text-body:     #374151;
+  --text-muted:    #6B7280;
+  --border:        #DDDDDD;
+  --background:    #ffffff;
+  --foreground:    #0A3D5C;
+
+  /* Tipografia */
   --font-playfair: 'Playfair Display', Georgia, serif;
-  --font-jakarta: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --font-mono: ui-monospace, 'JetBrains Mono', 'SF Mono', monospace;
+  --font-jakarta:  'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', ui-monospace, monospace;
+
+  /* Espaçamento */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* Border Radius */
+  --radius-sm:   6px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --radius-xl:   32px;
+  --radius-full: 9999px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(10,61,92,.08), 0 1px 2px rgba(10,61,92,.04);
+  --shadow-md: 0 4px 16px rgba(10,61,92,.12), 0 2px 6px rgba(10,61,92,.06);
+  --shadow-lg: 0 8px 32px rgba(10,61,92,.16), 0 4px 12px rgba(10,61,92,.08);
+  --shadow-xl: 0 20px 60px rgba(10,61,92,.20), 0 8px 24px rgba(10,61,92,.10);
+
+  /* Verticais de negócio */
+  --vertical-passeios:   #1A6B8A;
+  --vertical-fotografia: #8B5CF6;
+  --vertical-hotelaria:  #059669;
+  --vertical-servicos:   #D97706;
+
+  /* Status de reserva */
+  --status-pending:   #F59E0B;
+  --status-paid:      #10B981;
+  --status-cancelled: #EF4444;
+  --status-confirmed: #3B82F6;
+
+  /* PWA */
+  --theme-color: #0A3D5C;
+  --bg-color:    #F5EDD8;
 }
 
 @theme inline {
@@ -65,7 +117,7 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, var(--ocean-mid) 0%, var(--sunset) 100%);
+  background: var(--ocean-deep);
   color: var(--white);
   font-weight: 700;
   font-size: 0.9375rem;
@@ -76,12 +128,12 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
   transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
   white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(146,23,77,0.25);
+  box-shadow: 0 4px 20px rgba(10,61,92,0.25);
   letter-spacing: -0.01em;
 }
 .btn-primary:hover {
   opacity: 0.92;
-  box-shadow: 0 6px 28px rgba(146,23,77,0.38);
+  box-shadow: 0 6px 28px rgba(10,61,92,0.38);
   transform: translateY(-1px);
 }
 .btn-primary:active { transform: scale(0.98); }
@@ -152,7 +204,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
 }
 .text-gradient {
-  background: linear-gradient(135deg, var(--ocean-mid) 0%, var(--sunset) 100%);
+  background: linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -221,7 +273,7 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 92vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(160deg, #111111 0%, #1a1a2e 55%, #2d0f20 100%);
+  background: linear-gradient(160deg, #051f30 0%, var(--ocean-deep) 55%, var(--ocean-mid) 100%);
   overflow: hidden;
 }
 
@@ -350,18 +402,8 @@ h1, h2, h3, h4, h5, h6 {
    Marketplace — Vertical Colors
    ===================================================== */
 :root {
-  --vertical-passeios: var(--ocean-mid);
-  --vertical-fotografia: #8B5CF6;
-  --vertical-hotelaria: #059669;
-  --vertical-servicos: #D97706;
-
   --cart-badge-bg: var(--sunset);
   --cart-badge-text: white;
-
-  --status-pending: #F59E0B;
-  --status-paid: #10B981;
-  --status-cancelled: #EF4444;
-  --status-confirmed: #3B82F6;
 }
 
 /* =====================================================
