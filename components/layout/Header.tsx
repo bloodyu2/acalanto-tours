@@ -54,10 +54,11 @@ export default function Header() {
       <div
         className="container"
         style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr auto 1fr',
+          display: 'flex',
           alignItems: 'center',
+          justifyContent: 'space-between',
           height: '68px',
+          gap: '0.5rem',
         }}
       >
         {/* ── Logo ── */}
@@ -103,7 +104,7 @@ export default function Header() {
         </Link>
 
         {/* ── Desktop nav ── */}
-        <nav className="hidden-mobile" style={{ display: 'flex', alignItems: 'center', gap: '0.125rem' }}>
+        <nav className="hidden-mobile" style={{ display: 'flex', alignItems: 'center', gap: '0.125rem', flex: 1, justifyContent: 'center' }}>
           {nav.map(({ href, label }) => (
             <Link
               key={href}
@@ -149,16 +150,9 @@ export default function Header() {
         {/* ── Mobile right ── */}
         <div
           className="show-mobile"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}
         >
           <CartIcon />
-          <Link
-            href="/reservar"
-            className="btn-primary"
-            style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', borderRadius: '8px' }}
-          >
-            Reservar
-          </Link>
           <button
             onClick={() => setOpen(!open)}
             style={{

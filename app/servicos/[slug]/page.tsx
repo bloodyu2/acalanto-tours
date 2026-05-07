@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (slug === 'fotografia') return { title: 'Fotografia Profissional | Acalanto Turismo' }
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return { title: 'Serviço | Acalanto Turismo' }
   const supabase = await createClient()
-  const { data } = await supabase.from('acalanto_services').select('name,description').eq('slug', slug).single()
+  const { data } = await supabase.from('services').select('name,description').eq('slug', slug).single()
   if (!data) return { title: 'Serviço não encontrado' }
   return { title: data.name, description: data.description || undefined }
 }
@@ -52,8 +52,8 @@ export default async function ServicoPage({ params }: Props) {
 
   const supabase = await createClient()
   const { data: svc } = await supabase
-    .from('acalanto_services')
-    .select('id, slug, name, description, price_label, features, active, pricing_type, price_cents_per_person, price_cents_group, capacity_max')
+    .from('services')
+    .select('id, slug, name, description, price_label, active, pricing_type, price_cents_per_person, price_cents_group, capacity_max')
     .eq('slug', slug)
     .eq('active', true)
     .single()

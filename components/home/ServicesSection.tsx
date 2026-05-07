@@ -13,7 +13,7 @@ const AnchorFallback = () => (<svg width="40" height="40" viewBox="0 0 24 24" fi
 export default async function ServicesSection() {
   const supabase = await createClient()
   const { data: services } = await supabase
-    .from('acalanto_services')
+    .from('services')
     .select('id, slug, name, description, price_label')
     .eq('active', true)
     .order('display_order', { ascending: true })

@@ -42,7 +42,7 @@ const CATEGORY_LABELS: Record<Category, string> = {
   feature: 'Feature',
   bug: 'Bug',
   improvement: 'Melhoria',
-  content: 'Conteudo',
+  content: 'Conteúdo',
 }
 
 const AUTH_KEY = 'evolucoes_token'
@@ -199,7 +199,7 @@ export default function EvolucoesDashboard() {
               textTransform: 'uppercase',
             }}
           >
-            Area Restrita
+            Área Restrita
           </p>
           <input
             type="password"
@@ -287,7 +287,7 @@ export default function EvolucoesDashboard() {
               fontWeight: 700,
             }}
           >
-            Evolucoes
+            Evoluções
           </span>
           <span
             style={{
@@ -296,7 +296,7 @@ export default function EvolucoesDashboard() {
               marginLeft: '12px',
             }}
           >
-            Roadmap interno - Acalanto Turismo
+            Roadmap interno — Acalanto Turismo
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
