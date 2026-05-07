@@ -31,7 +31,7 @@ export default async function CheckoutSucessoPage({ searchParams }: Props) {
           Pagamento confirmado!
         </h1>
         <p style={{ color: 'var(--text-muted)', lineHeight: 1.65, marginBottom: '0.5rem' }}>
-          Sua reserva foi registrada. Voce recebera um email de confirmacao em breve.
+          Sua reserva foi registrada. Você receberá um e-mail de confirmação em breve.
         </p>
         {bookingId && (
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '1.5rem', fontFamily: 'var(--font-mono)' }}>

@@ -77,7 +77,7 @@ export default function SejaParceiroPage() {
 
       {/* Hero */}
       <section style={{
-        background: 'linear-gradient(160deg, #111111 0%, #1a1a2e 55%, #2d0f20 100%)',
+        background: 'linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-mid) 60%, var(--ocean-light) 100%)',
         padding: 'clamp(5rem, 12vw, 8rem) 1.5rem clamp(4rem, 8vw, 6rem)',
         textAlign: 'center',
         position: 'relative',
@@ -196,7 +196,7 @@ export default function SejaParceiroPage() {
       </section>
 
       {/* CTA final */}
-      <section style={{ padding: 'clamp(4rem, 8vw, 6rem) 1.5rem', background: 'linear-gradient(160deg, #111111 0%, #1a1a2e 55%, #2d0f20 100%)', textAlign: 'center' }}>
+      <section style={{ padding: 'clamp(4rem, 8vw, 6rem) 1.5rem', background: 'linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-mid) 100%)', textAlign: 'center' }}>
         <div style={{ maxWidth: '560px', margin: '0 auto' }}>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', color: 'white', marginBottom: '1rem' }}>
             Pronto para começar?

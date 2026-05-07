@@ -57,7 +57,7 @@ export default async function PesquisaPage({ searchParams }: PageProps) {
 
   if (survey.submitted_at) {
     return (
-      <ErrorCard message="Voce ja respondeu esta pesquisa. Obrigado!" />
+      <ErrorCard message="Você já respondeu esta pesquisa. Obrigado!" />
     )
   }
 

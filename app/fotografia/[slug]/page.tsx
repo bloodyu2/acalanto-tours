@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .eq('active', true)
     .single()
 
-  if (!data) return { title: 'Pacote nao encontrado | Acalanto' }
+  if (!data) return { title: 'Pacote não encontrado | Acalanto' }
 
   return {
     title: `${data.name} | Fotografia | Acalanto`,
@@ -176,7 +176,7 @@ export default async function FotografiaDetailPage({ params }: Props) {
             {typedPkg.includes && typedPkg.includes.length > 0 && (
               <div className="card" style={{ padding: '1.75rem' }}>
                 <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, margin: '0 0 1.25rem', color: 'var(--text-primary)' }}>
-                  O que esta incluso
+                  O que está incluso
                 </h2>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {typedPkg.includes.map((item, idx) => (
@@ -205,7 +205,7 @@ export default async function FotografiaDetailPage({ params }: Props) {
             {partnerPage?.bio && (
               <div className="card" style={{ padding: '1.75rem' }}>
                 <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, margin: '0 0 1rem', color: 'var(--text-primary)' }}>
-                  Sobre o fotografo
+                  Sobre o fotógrafo
                 </h2>
                 {partnerPage.cover_image && (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -247,10 +247,10 @@ export default async function FotografiaDetailPage({ params }: Props) {
               </h2>
               <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem', counterReset: 'steps' }}>
                 {[
-                  'O fotografo embarca junto com voce na escuna no dia do passeio.',
+                  'O fotógrafo embarca junto com você na escuna no dia do passeio.',
                   'Durante todo o passeio, ele registra os momentos mais especiais.',
-                  'As fotos sao editadas profissionalmente apos o passeio.',
-                  'Voce recebe um link privado de download em ate 48 horas.',
+                  'As fotos são editadas profissionalmente após o passeio.',
+                  'Você recebe um link privado de download em até 48 horas.',
                 ].map((step, idx) => (
                   <li key={idx} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                     <span style={{

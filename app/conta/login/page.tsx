@@ -26,7 +26,7 @@ export default function ContaLoginPage() {
 
     setLoading(false)
     if (err) {
-      setError('Nao foi possivel enviar o link. Tente novamente.')
+      setError('Não foi possível enviar o link. Tente novamente.')
     } else {
       setSent(true)
     }
@@ -41,7 +41,7 @@ export default function ContaLoginPage() {
             Entrar na sua conta
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-            Acesse suas reservas e historico de passeios
+            Acesse suas reservas e histórico de passeios
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export default function ContaLoginPage() {
               Clique no link para entrar.
             </p>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '1rem' }}>
-              Nao recebeu? Verifique a pasta de spam ou{' '}
+              Não recebeu? Verifique a pasta de spam ou{' '}
               <button
                 onClick={() => setSent(false)}
                 style={{ background: 'none', border: 'none', color: 'var(--ocean-mid)', cursor: 'pointer', fontSize: '0.8rem', textDecoration: 'underline', padding: 0 }}

@@ -61,7 +61,7 @@ export default function CheckoutPage() {
     return (
       <main style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>Seu carrinho esta vazio.</p>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>Seu carrinho está vazio.</p>
           <Link href="/passeios" className="btn-primary">Ver passeios</Link>
         </div>
       </main>

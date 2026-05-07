@@ -68,7 +68,7 @@ export default async function ContaPage() {
             <div style={{ padding: '3rem 1.5rem', textAlign: 'center' }}>
               <div style={{ marginBottom: '0.75rem', color: 'var(--ocean-mid)' }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg></div>
               <p style={{ color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
-                Voce ainda nao tem reservas. Explore os passeios.
+                Você ainda não tem reservas. Explore os passeios.
               </p>
               <Link href="/escunas" className="btn-primary" style={{ display: 'inline-flex' }}>
                 Ver passeios

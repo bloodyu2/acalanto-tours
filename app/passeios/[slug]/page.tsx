@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return { title: 'Passeio em Paraty | Acalanto' }
   const supabase = await createClient()
   const { data } = await supabase.from('boats').select('name,tagline').eq('slug', slug).single()
-  if (!data) return { title: 'Passeio nao encontrado' }
+  if (!data) return { title: 'Passeio não encontrado' }
   return {
     title: `${data.name} | Passeio de Escuna em Paraty`,
     description: data.tagline ?? `Passeio de escuna ${data.name} em Paraty`,
@@ -83,9 +83,9 @@ export default async function PasseioDetailPage({ params }: Props) {
               {/* Quick stats */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
                 {[
-                  { label: 'Duracao', value: `${boat.duration_hours}h` },
-                  { label: 'Saida', value: boat.departure_time?.slice(0, 5) ?? '--' },
-                  { label: 'Capacidade', value: `ate ${boat.capacity_max}` },
+                  { label: 'Duração', value: `${boat.duration_hours}h` },
+                  { label: 'Saída', value: boat.departure_time?.slice(0, 5) ?? '--' },
+                  { label: 'Capacidade', value: `até ${boat.capacity_max}` },
                   { label: 'Adulto', value: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(boat.price_adult / 100) },
                 ].map(({ label, value }) => (
                   <div key={label} style={{ background: 'var(--sand)', borderRadius: '10px', padding: '1rem', border: '1px solid var(--border)' }}>

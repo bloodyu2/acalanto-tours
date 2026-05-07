@@ -31,9 +31,17 @@ export default async function ParceiroDashboardLayout({ children }: { children: 
   ]
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'var(--font-jakarta)' }}>
+    <div className="parceiro-layout" style={{ display: 'flex', minHeight: '100vh', fontFamily: 'var(--font-jakarta)' }}>
+      <style>{`
+        @media (max-width: 767px) {
+          .parceiro-sidebar { width: 100% !important; flex-direction: row !important; align-items: center; flex-wrap: wrap; }
+          .parceiro-sidebar nav { display: flex !important; flex-direction: row !important; overflow-x: auto; flex: unset !important; padding: 0 !important; }
+          .parceiro-sidebar nav a { padding: 0.75rem 1rem !important; font-size: 0.8rem !important; flex-direction: column; gap: 0.25rem !important; text-align: center; }
+          .parceiro-layout { flex-direction: column !important; }
+        }
+      `}</style>
       {/* Sidebar */}
-      <aside style={{
+      <aside className="parceiro-sidebar" style={{
         width: '240px',
         background: 'var(--ocean-deep)',
         flexShrink: 0,

@@ -70,7 +70,7 @@ export default async function FotografiaPage() {
             Fotografia no Passeio
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', maxWidth: '640px', margin: '0 auto', lineHeight: 1.7 }}>
-            O fotografo embarca junto na sua escuna e registra todos os momentos da experiencia, das baias as praias. Fotos editadas entregues em 48h por link de download.
+            O fotógrafo embarca junto na sua escuna e registra todos os momentos da experiência, das baías às praias. Fotos editadas entregues em 48h por link de download.
           </p>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default async function FotografiaPage() {
             <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center', color: '#d97706' }}><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 018.91 14"/></svg></span>
             <div>
               <p style={{ margin: 0, color: 'var(--text-primary)', lineHeight: 1.65, fontSize: '0.95rem' }}>
-                <strong>Como funciona:</strong> O fotografo embarca junto com voce na escuna e acompanha todo o passeio. As fotos sao editadas profissionalmente e entregues em 48 horas por link de download privado. Voce escolhe o pacote e combina os detalhes pelo WhatsApp.
+                <strong>Como funciona:</strong> O fotógrafo embarca junto com você na escuna e acompanha todo o passeio. As fotos são editadas profissionalmente e entregues em 48 horas por link de download privado. Você escolhe o pacote e combina os detalhes pelo WhatsApp.
               </p>
             </div>
           </div>
@@ -178,7 +178,7 @@ function PhotographerPackageCard({ pkg }: { pkg: PackageWithPartner }) {
 
         {pkg.duration_label && (
           <p style={{ margin: '0 0 0.75rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Duracao: {pkg.duration_label}
+            Duração: {pkg.duration_label}
           </p>
         )}
 

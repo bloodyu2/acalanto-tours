@@ -71,7 +71,7 @@ export default function NpsSurveyForm({ bookingId, token, customerName }: Props)
       )}
 
       <p style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
-        Em uma escala de 0 a 10, qual a probabilidade de voce recomendar nossos passeios?
+        Em uma escala de 0 a 10, qual a probabilidade de você recomendar nossos passeios?
       </p>
 
       <div
