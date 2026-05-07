@@ -10,6 +10,14 @@ export async function GET(request: Request) {
     const supabase = await createClient()
     const { data: { session } } = await supabase.auth.exchangeCodeForSession(code)
 
+    const type = url.searchParams.get('type')
+    if (type === 'recovery') {
+      return NextResponse.redirect(new URL('/auth/reset-password', request.url))
+    }
+    if (type === 'invite') {
+      return NextResponse.redirect(new URL('/auth/invite', request.url))
+    }
+
     if (session?.user) {
       const user = session.user
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

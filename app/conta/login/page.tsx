@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export default function ContaLoginPage() {
@@ -108,6 +109,13 @@ export default function ContaLoginPage() {
             </button>
           </form>
         )}
+
+        <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+          É parceiro?{' '}
+          <Link href="/auth/login" style={{ color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
+            Acessar painel de parceiro
+          </Link>
+        </p>
 
         {/* Note for partners/admins */}
         <div style={{ marginTop: '1.75rem', padding: '1rem', background: 'var(--sand)', borderRadius: '0.75rem' }}>
