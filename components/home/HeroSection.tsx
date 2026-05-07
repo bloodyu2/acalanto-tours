@@ -169,7 +169,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll down hint */}
+      {/* Scroll down hint — hidden on mobile to avoid overlapping trust bar */}
       <div
         aria-hidden="true"
         style={{
@@ -185,6 +185,7 @@ export default function HeroSection() {
           animation: 'scrollHintBounce 2s ease-in-out infinite',
           cursor: 'default',
         }}
+        className="hero-scroll-hint"
       >
         <span style={{
           fontFamily: 'var(--font-mono)',

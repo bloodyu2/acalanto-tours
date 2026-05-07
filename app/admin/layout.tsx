@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -86,19 +86,28 @@ const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [authed, setAuthed] = useState<boolean | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = createClient()
+  // Stable ref so createClient() isn't called on every render
+  const supabaseRef = useRef(createClient())
+  const supabase = supabaseRef.current
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) {
+    // onAuthStateChange fires immediately with current session state —
+    // more reliable than getSession() alone right after login
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
         router.replace('/admin/login')
       } else {
         setAuthed(true)
       }
     })
-  }, [supabase, router])
+    return () => subscription.unsubscribe()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => { setSidebarOpen(false) }, [pathname])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -112,47 +121,103 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   )
 
-  return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'var(--font-jakarta)' }}>
-      {/* Sidebar */}
-      <aside className="admin-sidebar" style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '1.5rem 1.5rem 1rem' }}>
-          <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, color: 'white', marginBottom: '0.25rem' }}>
+  const SidebarContent = () => (
+    <>
+      <div style={{ padding: '1.5rem 1.5rem 1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.125rem', fontWeight: 700, color: 'white', marginBottom: '0.25rem' }}>
             Acalanto Turismo
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Painel Admin
           </div>
         </div>
-        <nav style={{ flex: 1, padding: '0.5rem 0' }}>
-          {navItems.map(({ href, label, icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`admin-nav-item ${pathname === href ? 'active' : ''}`}
-            >
-              <span>{icon}</span>
-              <span>{label}</span>
-            </Link>
-          ))}
-        </nav>
-        <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <Link href="/" style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textDecoration: 'none', marginBottom: '0.75rem' }}>
-            ← Ver site
-          </Link>
-          <button
-            onClick={handleLogout}
-            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.55)', cursor: 'pointer', fontSize: '0.875rem', padding: 0 }}
+        {/* Close button — only visible on mobile via CSS */}
+        <button
+          onClick={() => setSidebarOpen(false)}
+          className="admin-sidebar-close"
+          aria-label="Fechar menu"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.6)', padding: '0.25rem', display: 'none' }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <nav style={{ flex: 1, padding: '0.5rem 0' }}>
+        {navItems.map(({ href, label, icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className={`admin-nav-item ${pathname === href ? 'active' : ''}`}
           >
-            Sair
-          </button>
-        </div>
-      </aside>
+            <span>{icon}</span>
+            <span>{label}</span>
+          </Link>
+        ))}
+      </nav>
+      <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <Link href="/" style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', textDecoration: 'none', marginBottom: '0.75rem' }}>
+          ← Ver site
+        </Link>
+        <button
+          onClick={handleLogout}
+          style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.55)', cursor: 'pointer', fontSize: '0.875rem', padding: 0 }}
+        >
+          Sair
+        </button>
+      </div>
+    </>
+  )
 
-      {/* Main */}
-      <main style={{ flex: 1, background: '#f7f9fc', overflow: 'auto' }}>
-        {children}
-      </main>
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: 'var(--font-jakarta)', flexDirection: 'column' }}>
+
+      {/* Mobile top bar */}
+      <div className="admin-mobile-header">
+        <button
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Abrir menu"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'white', padding: '0.375rem', display: 'flex', alignItems: 'center' }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <span style={{ fontFamily: 'var(--font-playfair)', fontWeight: 700, fontSize: '1rem', color: 'white' }}>
+          Acalanto Admin
+        </span>
+        <div style={{ width: 34 }} /> {/* spacer */}
+      </div>
+
+      <div style={{ display: 'flex', flex: 1 }}>
+        {/* Overlay */}
+        <div
+          className={`admin-sidebar-overlay${sidebarOpen ? ' open' : ''}`}
+          onClick={() => setSidebarOpen(false)}
+        />
+
+        {/* Sidebar */}
+        <aside
+          className={`admin-sidebar${sidebarOpen ? ' open' : ''}`}
+          style={{ display: 'flex', flexDirection: 'column' }}
+        >
+          <SidebarContent />
+        </aside>
+
+        {/* Main */}
+        <main className="admin-main" style={{ flex: 1, background: '#f7f9fc', overflow: 'auto', padding: '2rem' }}>
+          {children}
+        </main>
+      </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .admin-sidebar-close { display: flex !important; }
+        }
+      `}</style>
     </div>
   )
 }
