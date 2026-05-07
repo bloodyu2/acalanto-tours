@@ -144,8 +144,11 @@ export default function HeroSection() {
                 paddingRight: 'clamp(0.75rem, 2vw, 1.5rem)',
                 paddingLeft: i === 0 ? 0 : 'clamp(0.75rem, 2vw, 1.5rem)',
                 borderLeft: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.1)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
               }}>
                 <div style={{
+                  height: '28px',
+                  display: 'flex', alignItems: 'center',
                   fontFamily: 'var(--font-playfair)',
                   fontSize: '1.625rem', fontWeight: 700, color: 'white',
                   letterSpacing: '-0.03em',
@@ -155,7 +158,7 @@ export default function HeroSection() {
                 <div style={{
                   fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
                   color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em',
-                  textTransform: 'uppercase', marginTop: '0.2rem',
+                  textTransform: 'uppercase', marginTop: '0.35rem',
                 }}>
                   {sub}
                 </div>
