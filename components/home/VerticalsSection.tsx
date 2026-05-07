@@ -45,7 +45,7 @@ export default function VerticalsSection() {
     <section style={{ padding: '3rem 0 4rem', background: 'white' }}>
       <div className="container">
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <span className="section-tag">O que voce encontra aqui</span>
+          <span className="section-tag">O que você encontra aqui</span>
           <h2 className="section-title">Tudo para seu turismo em Paraty</h2>
           <p className="section-subtitle">
             A Acalanto reúne os melhores serviços de turismo de Paraty num único lugar.

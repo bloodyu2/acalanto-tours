@@ -42,7 +42,7 @@ export default function NpsSurveyForm({ bookingId, token, customerName }: Props)
         setError(data.error ?? 'Erro ao enviar. Tente novamente.')
       }
     } catch {
-      setError('Erro de conexao. Tente novamente.')
+      setError('Erro de conexão. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -159,7 +159,7 @@ export default function NpsSurveyForm({ bookingId, token, customerName }: Props)
         className="btn-primary"
         style={{ width: '100%', opacity: loading ? 0.7 : 1 }}
       >
-        {loading ? 'Enviando...' : 'Enviar avaliacao'}
+        {loading ? 'Enviando...' : 'Enviar avaliação'}
       </button>
     </form>
   )

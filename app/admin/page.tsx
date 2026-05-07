@@ -69,12 +69,12 @@ export default async function AdminDashboard() {
   }
 
   const kpis = [
-    { icon: <KpiCalendar />, label: 'Reservas totais', value: totalBookings ?? 0, sub: `${monthBookings ?? 0} este mes`, color: 'var(--ocean-mid)' },
-    { icon: <KpiCard />, label: 'Receita este mes', value: formatCents(revenueMonth), sub: 'pagamentos confirmados', color: '#38a169' },
-    { icon: <KpiClock />, label: 'Reservas pendentes', value: pendingBookings ?? 0, sub: 'aguardando confirmacao', color: '#d69e2e' },
-    { icon: <KpiStar />, label: 'NPS medio', value: npsScore !== null ? npsScore : '-', sub: `${scores.length} respostas`, color: npsScore !== null && npsScore >= 50 ? '#38a169' : '#d69e2e' },
-    { icon: <KpiMail />, label: 'Contatos nao lidos', value: contacts ?? 0, sub: 'mensagens novas', color: '#e53e3e' },
-    { icon: <KpiChat />, label: 'Depoimentos pendentes', value: testimonials ?? 0, sub: 'aguardando moderacao', color: 'var(--sunset)' },
+    { icon: <KpiCalendar />, label: 'Reservas totais', value: totalBookings ?? 0, sub: `${monthBookings ?? 0} este mês`, color: 'var(--ocean-mid)' },
+    { icon: <KpiCard />, label: 'Receita este mês', value: formatCents(revenueMonth), sub: 'pagamentos confirmados', color: '#38a169' },
+    { icon: <KpiClock />, label: 'Reservas pendentes', value: pendingBookings ?? 0, sub: 'aguardando confirmação', color: '#d69e2e' },
+    { icon: <KpiStar />, label: 'NPS médio', value: npsScore !== null ? npsScore : '-', sub: `${scores.length} respostas`, color: npsScore !== null && npsScore >= 50 ? '#38a169' : '#d69e2e' },
+    { icon: <KpiMail />, label: 'Contatos não lidos', value: contacts ?? 0, sub: 'mensagens novas', color: '#e53e3e' },
+    { icon: <KpiChat />, label: 'Depoimentos pendentes', value: testimonials ?? 0, sub: 'aguardando moderação', color: 'var(--sunset)' },
     { icon: <KpiHandshake />, label: 'Parceiros ativos', value: partners ?? 0, sub: '', color: 'var(--ocean-deep)' },
   ]
 

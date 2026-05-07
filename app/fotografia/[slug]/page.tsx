@@ -156,8 +156,8 @@ export default async function FotografiaDetailPage({ params }: Props) {
               gap: '1rem',
             }}>
               {[
-                { label: 'Duracao', value: typedPkg.duration_label ?? 'Todo o passeio' },
-                { label: 'Preco', value: typedPkg.price_label ?? 'Consultar' },
+                { label: 'Duração', value: typedPkg.duration_label ?? 'Todo o passeio' },
+                { label: 'Preço', value: typedPkg.price_label ?? 'Consultar' },
                 { label: 'Entrega', value: '48 horas' },
                 { label: 'Fotos', value: 'Editadas' },
               ].map(stat => (

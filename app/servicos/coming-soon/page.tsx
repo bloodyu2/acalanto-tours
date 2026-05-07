@@ -31,7 +31,7 @@ export default function ServicosComingSoonPage() {
         setStatus('success')
       }
     } catch {
-      setErrorMsg('Erro de conexao. Tente novamente.')
+      setErrorMsg('Erro de conexão. Tente novamente.')
       setStatus('error')
     }
   }

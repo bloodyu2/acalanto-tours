@@ -51,7 +51,7 @@ export default function CheckoutPage() {
       clearCart()
       window.location.href = data.redirectUrl
     } catch {
-      setError('Erro de conexao. Tente novamente.')
+      setError('Erro de conexão. Tente novamente.')
     } finally {
       setLoading(false)
     }

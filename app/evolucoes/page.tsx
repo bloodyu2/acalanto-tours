@@ -20,7 +20,7 @@ const STATUS_LABELS: Record<Status, string> = {
   backlog: 'Backlog',
   todo: 'A Fazer',
   doing: 'Em Andamento',
-  done: 'Concluido',
+  done: 'Concluído',
 }
 
 const STATUS_ORDER: Status[] = ['backlog', 'todo', 'doing', 'done']

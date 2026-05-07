@@ -81,7 +81,7 @@ export default async function RepassesPage() {
         {/* Note */}
         <div style={{ background: 'white', borderRadius: '0.875rem', padding: '1rem 1.25rem', marginBottom: '1.5rem', borderLeft: '3px solid var(--ocean-mid)' }}>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.6 }}>
-            Os repasses sao calculados mensalmente e liberados ate o dia 10 do mes seguinte.
+            Os repasses são calculados mensalmente e liberados até o dia 10 do mês seguinte.
           </p>
         </div>
 

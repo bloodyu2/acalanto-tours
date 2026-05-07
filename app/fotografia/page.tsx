@@ -103,8 +103,8 @@ export default async function FotografiaPage() {
           {pkgs.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--text-muted)' }}>
               <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)', display: 'flex', justifyContent: 'center' }}><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
-              <p style={{ fontSize: '1.1rem' }}>Nenhum pacote disponivel no momento.</p>
-              <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Entre em contato pelo WhatsApp para mais informacoes.</p>
+              <p style={{ fontSize: '1.1rem' }}>Nenhum pacote disponível no momento.</p>
+              <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Entre em contato pelo WhatsApp para mais informações.</p>
             </div>
           ) : (
             <div className="marketplace-grid">

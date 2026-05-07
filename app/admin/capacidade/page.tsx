@@ -67,7 +67,7 @@ export default function AdminCapacidadePage() {
         Capacidade
       </h1>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem' }}>
-        Gerencie a capacidade disponivel por embarcacao e data.
+        Gerencie a capacidade disponível por embarcação e data.
       </p>
 
       {/* Boats capacity overview */}

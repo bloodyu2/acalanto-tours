@@ -97,7 +97,7 @@ export default async function AdminParceirosPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginBottom: '0.75rem' }}>
               <span style={{ color: 'var(--sunset)', fontSize: '1rem' }}>★</span>
               <span style={{ fontWeight: 700, color: 'var(--ocean-deep)' }}>{Number(p.internal_rating).toFixed(1)}</span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>avaliacao interna</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>avaliação interna</span>
             </div>
 
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>

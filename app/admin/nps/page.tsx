@@ -94,7 +94,7 @@ export default async function AdminNpsPage() {
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.375rem' }}>
-                  <span>Cliente: <strong style={{ color: 'var(--ocean-deep)' }}>{booking?.customer_name || 'Anonimo'}</strong></span>
+                  <span>Cliente: <strong style={{ color: 'var(--ocean-deep)' }}>{booking?.customer_name || 'Anônimo'}</strong></span>
                   {booking?.tour_date && <span>Data: {booking.tour_date}</span>}
                   {s.submitted_at && <span>Respondido em: {new Date(s.submitted_at).toLocaleDateString('pt-BR')}</span>}
                 </div>
@@ -135,10 +135,10 @@ export default async function AdminNpsPage() {
                     const booking = s.bookings as { customer_name?: string; tour_date?: string } | null
                     return (
                       <tr key={s.id} style={{ borderTop: '1px solid var(--border)', background: i % 2 === 0 ? 'white' : '#fafbfc' }}>
-                        <td style={{ padding: '0.875rem 1.25rem', color: 'var(--ocean-deep)' }}>{booking?.customer_name || 'Anonimo'}</td>
+                        <td style={{ padding: '0.875rem 1.25rem', color: 'var(--ocean-deep)' }}>{booking?.customer_name || 'Anônimo'}</td>
                         <td style={{ padding: '0.875rem 1.25rem' }}>{booking?.tour_date || '-'}</td>
                         <td style={{ padding: '0.875rem 1.25rem', color: 'var(--text-muted)' }}>
-                          {s.sent_at ? new Date(s.sent_at).toLocaleDateString('pt-BR') : 'Nao enviado'}
+                          {s.sent_at ? new Date(s.sent_at).toLocaleDateString('pt-BR') : 'Não enviado'}
                         </td>
                       </tr>
                     )
