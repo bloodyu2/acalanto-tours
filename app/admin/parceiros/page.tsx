@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import ApprovalTabs from './ApprovalTabs'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -67,6 +68,9 @@ export default async function AdminParceirosPage() {
     <div style={{ padding: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', color: 'var(--ocean-deep)' }}>Parceiros</h1>
+        <Link href="/admin/parceiros/novo" className="btn-primary" style={{ textDecoration: 'none', padding: '0.625rem 1.25rem', fontSize: '0.875rem' }}>
+          + Novo Parceiro
+        </Link>
       </div>
 
       {/* Partners grid */}
@@ -99,6 +103,11 @@ export default async function AdminParceirosPage() {
               {p.email && <span>Email: {p.email}</span>}
               {p.phone && <span>Tel: {p.phone}</span>}
               {p.notes && <span style={{ fontStyle: 'italic', marginTop: '0.375rem' }}>"{p.notes}"</span>}
+            </div>
+            <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid var(--border)' }}>
+              <Link href={`/admin/parceiros/${p.id}`} style={{ fontSize: '0.8rem', color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
+                Editar →
+              </Link>
             </div>
           </div>
         ))}
