@@ -22,56 +22,100 @@ export default function TermosPage() {
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', lineHeight: 1.75, color: 'var(--text-primary)', fontSize: '0.9375rem' }}>
+
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Aceitação dos termos</h2>
-            <p>Ao realizar uma reserva ou usar qualquer serviço da Acalanto Turismo, você concorda com estes termos. Se não concordar, por favor não realize reservas.</p>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>1. Sobre a Acalanto Turismo</h2>
+            <p>A Acalanto Turismo opera uma <strong>plataforma digital de intermediação</strong> que conecta viajantes a prestadores de serviços turísticos independentes em Paraty e região — incluindo armadores de embarcações, fotógrafos profissionais, guias turísticos e outros parceiros.</p>
+            <p style={{ marginTop: '0.75rem' }}>A Acalanto <strong>não é proprietária</strong> das embarcações, equipamentos fotográficos, veículos nem de qualquer outro ativo operacional anunciado na plataforma. Cada serviço é prestado por um parceiro independente, devidamente habilitado, que responde diretamente pela sua execução.</p>
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Reservas e confirmação</h2>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>2. Aceitação dos termos</h2>
+            <p>Ao acessar o site, solicitar uma reserva ou contratar qualquer serviço intermediado pela plataforma, você declara ter lido, compreendido e concordado com estes Termos de Uso. Se não concordar, não utilize a plataforma.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>3. Serviços intermediados</h2>
+            <p>A plataforma disponibiliza a contratação dos seguintes serviços, prestados por parceiros independentes:</p>
+            <ul style={{ paddingLeft: '1.5rem', marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              <li><strong>Passeios de escuna</strong> — realizados por armadores independentes com embarcações próprias, devidamente registradas na Capitania dos Portos.</li>
+              <li><strong>Fotografia profissional</strong> — realizada por fotógrafos autônomos ou microempreendedores individuais parceiros da plataforma.</li>
+              <li><strong>Passeio de jeep e trilhas</strong> — realizados por guias e operadoras locais independentes.</li>
+              <li><strong>Lancha privativa</strong> — operada por armadores parceiros com frota própria.</li>
+              <li><strong>Transfer</strong> — realizado por motoristas e transportadoras parceiras.</li>
+              <li><strong>Hospedagem</strong> — oferecida por pousadas e meios de hospedagem parceiros, não vinculados à Acalanto.</li>
+            </ul>
+            <p style={{ marginTop: '0.75rem' }}>A lista de serviços pode ser alterada a qualquer momento, sem aviso prévio.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>4. Papel da plataforma</h2>
+            <p>A Acalanto Turismo atua exclusivamente como <strong>intermediária</strong> entre o cliente e o prestador de serviço. Nossa responsabilidade se limita a:</p>
+            <ul style={{ paddingLeft: '1.5rem', marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+              <li>Exibir informações sobre os serviços conforme fornecidas pelos parceiros.</li>
+              <li>Facilitar o contato e a confirmação da reserva entre cliente e parceiro.</li>
+              <li>Garantir que os parceiros listados possuam as habilitações mínimas exigidas pela legislação aplicável, ao tempo do seu cadastro.</li>
+              <li>Oferecer canal de atendimento para dúvidas e resolução de conflitos.</li>
+            </ul>
+            <p style={{ marginTop: '0.75rem' }}>A Acalanto <strong>não responde</strong> por danos, atrasos, cancelamentos, acidentes, perdas ou quaisquer prejuízos decorrentes da execução (ou não execução) do serviço pelo parceiro, salvo dolo ou culpa grave comprovados da própria plataforma.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>5. Reservas e confirmação</h2>
             <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <li>A reserva é confirmada apenas após o pagamento integral ser processado.</li>
-              <li>Após a confirmação, você receberá um comprovante com os detalhes do passeio.</li>
-              <li>As informações prestadas no momento da reserva (nome, contato, número de passageiros) são de responsabilidade do cliente.</li>
-              <li>Vagas são limitadas e a confirmação é por ordem de pagamento.</li>
+              <li>A solicitação de reserva é enviada via WhatsApp ao parceiro responsável pelo serviço escolhido.</li>
+              <li>A confirmação definitiva ocorre mediante contato do parceiro e, quando aplicável, comprovação de pagamento.</li>
+              <li>As informações prestadas pelo cliente (nome, contato, número de participantes, data) são de sua exclusiva responsabilidade.</li>
+              <li>Vagas são limitadas e atendidas por ordem de solicitação confirmada.</li>
             </ul>
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Responsabilidades da Acalanto Turismo</h2>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>6. Responsabilidades do cliente</h2>
             <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <li>Garantir a realização do passeio conforme descrito, salvo impedimentos climáticos ou de força maior.</li>
-              <li>Manter as embarcações em condições de segurança e com os equipamentos obrigatórios.</li>
-              <li>Avisar os clientes com antecedência em caso de cancelamento por parte da empresa.</li>
-              <li>Em caso de cancelamento pela Acalanto Turismo, o cliente receberá reembolso integral ou crédito para nova data.</li>
+              <li>Apresentar-se no local, data e horário combinados. Atrasos podem inviabilizar o embarque sem direito a reembolso.</li>
+              <li>Seguir todas as orientações de segurança da tripulação ou do prestador de serviço durante a atividade.</li>
+              <li>Não portar ou consumir substâncias ilegais durante o serviço contratado.</li>
+              <li>Responsabilizar-se por danos causados à embarcação, equipamentos ou propriedades do parceiro por negligência ou descuido próprio.</li>
+              <li>Garantir que menores de 18 anos estejam acompanhados de responsável legal.</li>
+              <li>Observar as regras e limitações específicas de cada serviço, conforme informadas pelo parceiro.</li>
             </ul>
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Responsabilidades do cliente</h2>
-            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-              <li>Chegar no local e horário indicados. Atrasos podem impossibilitar o embarque sem direito a reembolso.</li>
-              <li>Seguir as orientações da tripulação durante todo o passeio.</li>
-              <li>Não trazer substâncias ilegais a bordo.</li>
-              <li>Responsabilizar-se por danos causados à embarcação por descuido próprio.</li>
-              <li>Menores de 18 anos devem estar acompanhados de responsável legal.</li>
-            </ul>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>7. Cancelamentos e remarcações</h2>
+            <p>As condições de cancelamento e remarcação são definidas por cada parceiro prestador e informadas no momento da confirmação da reserva. A Acalanto recomenda que o cliente confirme diretamente com o parceiro as políticas vigentes antes de concluir a contratação.</p>
+            <p style={{ marginTop: '0.75rem' }}>Em caso de condições climáticas adversas que comprometam a segurança, o parceiro responsável poderá cancelar ou remarcar o serviço. Nessas situações, não haverá acréscimo de custo para o cliente na remarcação.</p>
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Condições climáticas</h2>
-            <p>Os passeios dependem de condições climáticas favoráveis. Em caso de mau tempo que comprometa a segurança, o passeio pode ser cancelado ou remarcado. Não haverá cobrança adicional na remarcação. Consulte nossa{' '}<Link href="/cancelamento" style={{ color: 'var(--ocean-mid)', textDecoration: 'none' }}>política de cancelamento</Link>.</p>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>8. Parceiros e prestadores</h2>
+            <p>Ao se cadastrar na plataforma, o parceiro declara possuir todas as licenças, habilitações, seguros e autorizações exigidas por lei para a prestação dos serviços anunciados. A Acalanto não realiza vistoria contínua das embarcações, equipamentos ou credenciais dos parceiros, sendo a manutenção dessas condições responsabilidade exclusiva do prestador.</p>
+            <p style={{ marginTop: '0.75rem' }}>A Acalanto reserva-se o direito de remover ou suspender parceiros que não atendam aos padrões de qualidade ou segurança da plataforma, a seu critério exclusivo.</p>
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Propriedade intelectual</h2>
-            <p>Todo o conteúdo deste site (textos, fotos, vídeos, marcas) é de propriedade da Acalanto Turismo. A reprodução sem autorização prévia é proibida.</p>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>9. Propriedade intelectual</h2>
+            <p>O nome, logotipo, design e conteúdos originais do site são de propriedade da Acalanto Turismo. As fotos e descrições dos serviços podem ser de propriedade dos parceiros respectivos. A reprodução de qualquer conteúdo sem autorização prévia e por escrito é proibida.</p>
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>Contato</h2>
-            <p>Em caso de dúvidas sobre estes termos, fale conosco pelo{' '}<a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999627968'}`} style={{ color: 'var(--ocean-mid)', textDecoration: 'none', fontWeight: 500 }}>WhatsApp</a>.</p>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>10. Limitação de responsabilidade</h2>
+            <p>Na máxima extensão permitida pela legislação brasileira, a Acalanto Turismo não será responsável por danos indiretos, incidentais, especiais ou consequentes decorrentes do uso da plataforma ou da prestação dos serviços pelos parceiros — incluindo, sem limitação, danos pessoais, perda de objetos, atrasos ou quaisquer prejuízos financeiros.</p>
           </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>11. Legislação aplicável</h2>
+            <p>Estes termos são regidos pela legislação brasileira. Fica eleito o foro da comarca de Paraty, RJ, para dirimir quaisquer controvérsias, com renúncia a qualquer outro, por mais privilegiado que seja.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', marginBottom: '0.75rem' }}>12. Contato</h2>
+            <p>Em caso de dúvidas sobre estes termos ou sobre os serviços intermediados, fale conosco pelo{' '}
+              <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5524999627968'}`} style={{ color: 'var(--ocean-mid)', textDecoration: 'none', fontWeight: 500 }}>WhatsApp</a>.
+            </p>
+          </section>
+
         </div>
       </div>
     </main>
