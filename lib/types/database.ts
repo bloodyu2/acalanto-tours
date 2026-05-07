@@ -24,6 +24,8 @@ export interface Database {
           active: boolean
           internal_rating: number | null
           notes: string | null
+          asaas_wallet_id:  string | null
+          commission_pct:   number
           created_at: string
           updated_at: string
         }
@@ -174,6 +176,14 @@ export interface Database {
           utm_campaign: string | null
           commission_rate: number
           paid_at: string | null
+          cpf_hash:           string | null
+          asaas_payment_id:   string | null
+          asaas_customer_id:  string | null
+          payment_method:     string | null
+          payment_status:     string
+          payment_url:        string | null
+          pix_qr_code:        string | null
+          pix_copy_paste:     string | null
           created_at: string
         }
         Insert: Omit<Database['public']['Tables']['bookings']['Row'], 'id' | 'created_at'>
@@ -362,6 +372,23 @@ export interface Database {
         }
         Update: Partial<Database['public']['Tables']['service_providers']['Insert']>
       }
+      roadmap_tasks: {
+        Row: {
+          id:          string
+          area:        string
+          title:       string
+          description: string | null
+          status:      string
+          priority:    string
+          eta:         string | null
+          notes:       string | null
+          sort_order:  number
+          created_at:  string
+          updated_at:  string
+        }
+        Insert: Omit<Database['public']['Tables']['roadmap_tasks']['Row'], 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Database['public']['Tables']['roadmap_tasks']['Insert']>
+      }
     }
   }
 }
@@ -391,6 +418,7 @@ export type ServiceAvailability = Database['public']['Tables']['service_availabi
 export type AccommodationAvailability = Database['public']['Tables']['accommodation_availability']['Row']
 export type ICalSource = Database['public']['Tables']['ical_sources']['Row']
 export type BlogPost = Database['public']['Tables']['blog_posts']['Row']
+export type RoadmapTask = Database['public']['Tables']['roadmap_tasks']['Row']
 export type ServiceProvider = {
   id: string
   partner_id: string
