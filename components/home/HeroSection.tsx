@@ -169,6 +169,37 @@ export default function HeroSection() {
         </div>
       </div>
 
+      {/* Scroll down hint */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          bottom: '96px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px',
+          animation: 'scrollHintBounce 2s ease-in-out infinite',
+          cursor: 'default',
+        }}
+      >
+        <span style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.6rem',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          color: 'rgba(255,255,255,0.45)',
+        }}>
+          role
+        </span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sunset)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+
       {/* Bottom wave */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0 }}>
         <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"

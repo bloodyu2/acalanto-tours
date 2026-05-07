@@ -9,6 +9,7 @@ import ServiceWorkerRegister from '@/components/layout/ServiceWorkerRegister'
 import CartProvider from '@/components/cart/CartProvider'
 import CartDrawer from '@/components/cart/CartDrawer'
 import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
+import BackToTop from '@/components/layout/BackToTop'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -132,6 +133,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CookieBanner />
           <ServiceWorkerRegister />
           <PwaInstallBanner />
+          <BackToTop />
         </CartProvider>
       </body>
     </html>

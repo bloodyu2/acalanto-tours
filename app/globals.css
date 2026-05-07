@@ -88,6 +88,12 @@
   --font-display: var(--font-playfair);
 }
 
+/* ── Animações ── */
+@keyframes scrollHintBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.8; }
+  50%       { transform: translateX(-50%) translateY(6px); opacity: 1; }
+}
+
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; }
 html {
