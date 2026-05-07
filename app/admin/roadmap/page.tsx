@@ -1,321 +1,308 @@
-export const dynamic = 'force-static'
+'use client'
 
-type Status = 'done' | 'in_progress' | 'pending' | 'blocked'
+import { useEffect, useState, useRef } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import type { RoadmapTask } from '@/lib/types/database'
+import type { Database } from '@/lib/types/database'
 
-interface Task {
-  id: string
-  area: string
-  title: string
-  description: string
-  status: Status
-  priority: 'alta' | 'média' | 'baixa'
-  eta?: string
-  notes?: string
+type RoadmapInsert = Database['public']['Tables']['roadmap_tasks']['Insert']
+
+const STATUS_OPTIONS = ['done', 'in_progress', 'pending', 'blocked'] as const
+const PRIORITY_OPTIONS = ['alta', 'média', 'baixa'] as const
+
+const STATUS_COLORS: Record<string, { bg: string; color: string; label: string }> = {
+  done:        { bg: '#dcfce7', color: '#166534', label: '✓ Concluído' },
+  in_progress: { bg: '#fef9c3', color: '#854d0e', label: '⟳ Em andamento' },
+  pending:     { bg: '#f1f5f9', color: '#475569', label: '○ Pendente' },
+  blocked:     { bg: '#fee2e2', color: '#991b1b', label: '✕ Bloqueado' },
 }
 
-const tasks: Task[] = [
-  // ✅ Concluído
-  {
-    id: '1',
-    area: 'Infra',
-    title: 'Deploy inicial no Vercel',
-    description: 'Next.js 16 + Supabase + domínio configurado',
-    status: 'done',
-    priority: 'alta',
-    eta: 'Maio 2026',
-  },
-  {
-    id: '2',
-    area: 'Passeios',
-    title: 'Catálogo de escunas + booking widget',
-    description: 'Página por barco, seletor de adultos/crianças, data, carrinho e checkout Infinity Pay',
-    status: 'done',
-    priority: 'alta',
-    eta: 'Maio 2026',
-  },
-  {
-    id: '3',
-    area: 'Hospedagem',
-    title: 'Catálogo de pousadas + booking widget',
-    description: 'Página por pousada, seletor de datas (check-in/out), hóspedes, disponibilidade via iCal',
-    status: 'done',
-    priority: 'alta',
-    eta: 'Maio 2026',
-  },
-  {
-    id: '4',
-    area: 'Serviços',
-    title: 'Catálogo de serviços + booking inline',
-    description: 'Lancha privativa, jeep, fotografia, transfer — seletor de data/pessoas, carrinho',
-    status: 'done',
-    priority: 'alta',
-    eta: 'Maio 2026',
-  },
-  {
-    id: '5',
-    area: 'iCal',
-    title: 'Sincronização de calendário (exportação)',
-    description: 'Feed .ics por pousada, botões Google Calendar / Apple Calendar na página de hospedagem',
-    status: 'done',
-    priority: 'média',
-    eta: 'Maio 2026',
-  },
-  {
-    id: '6',
-    area: 'Admin',
-    title: 'Painel admin base',
-    description: 'Dashboard KPIs, reservas, capacidade, repasses, contatos, NPS, parceiros, depoimentos',
-    status: 'done',
-    priority: 'alta',
-    eta: 'Maio 2026',
-  },
-  {
-    id: '7',
-    area: 'Segurança',
-    title: 'Hardening OWASP',
-    description: 'CSP, X-Frame, rate limiting, server-side price validation, EVOLUCOES_PASSWORD server-only',
-    status: 'done',
-    priority: 'alta',
-    eta: 'Maio 2026',
-  },
+const PRIORITY_COLORS: Record<string, { bg: string; color: string }> = {
+  alta:  { bg: '#fee2e2', color: '#991b1b' },
+  média: { bg: '#fef9c3', color: '#854d0e' },
+  baixa: { bg: '#f1f5f9', color: '#475569' },
+}
 
-  // 🔄 Em andamento / Próximo
-  {
-    id: '8',
-    area: 'Pagamentos',
-    title: 'Todos os métodos de pagamento (Pix + Cartão + Apple/Google Pay)',
-    description: 'InfinityPay hosted checkout já suporta todos os métodos — ajustar webhook para captura de método usado, mostrar no admin',
-    status: 'in_progress',
-    priority: 'alta',
-    eta: 'Jun 2026',
-    notes: 'InfinityPay NÃO tem split nativo. Ver tarefa #9.',
-  },
-  {
-    id: '9',
-    area: 'Pagamentos',
-    title: 'Split de pagamento por parceiro',
-    description: 'Repasse automático para cada parceiro (pousada, barco, serviço) no momento do pagamento. Requer processador com split nativo (Asaas / iugu / Pagar.me) OU automação via Pix após receber.',
-    status: 'blocked',
-    priority: 'alta',
-    eta: 'A definir',
-    notes: 'BLOQUEADO — InfinityPay não tem API de split. Decisão pendente: trocar processador ou split manual pós-recebimento.',
-  },
-  {
-    id: '10',
-    area: 'Admin',
-    title: 'Painel financeiro por parceiro',
-    description: 'Cada parceiro vê suas vendas, comissões retidas, repasses pendentes e histórico. Admin vê tudo consolidado e por parceiro.',
-    status: 'pending',
-    priority: 'alta',
-    eta: 'Jun/Jul 2026',
-    notes: 'Depende da decisão do split (#9).',
-  },
-  {
-    id: '11',
-    area: 'Parceiros',
-    title: 'Portal do parceiro (login próprio)',
-    description: 'Parceiro acessa /parceiros/dashboard — vê reservas dos seus produtos, agenda, financeiro, uploads de fotos.',
-    status: 'pending',
-    priority: 'alta',
-    eta: 'Jul 2026',
-  },
-  {
-    id: '12',
-    area: 'Pagamentos',
-    title: 'Definir porcentagens de comissão por categoria',
-    description: 'Passeios próprios: Acalanto 100%. Pousadas parceiras: % a definir. Barcos parceiros: % a definir. Serviços: % a definir.',
-    status: 'pending',
-    priority: 'alta',
-    eta: 'A definir (decisão do cliente)',
-    notes: 'Aguardando definição das porcentagens.',
-  },
-  {
-    id: '13',
-    area: 'iCal',
-    title: 'iCal bidirecional — importação de reservas externas',
-    description: 'Sincronizar bloqueios de datas de Airbnb/Booking.com via cron que importa iCal de parceiros.',
-    status: 'in_progress',
-    priority: 'média',
-    eta: 'Jun 2026',
-    notes: 'Endpoint /api/ical/sync/[listingId] já existe. Falta UI no admin para o parceiro cadastrar a URL do calendário externo.',
-  },
-  {
-    id: '14',
-    area: 'SEO',
-    title: 'SEO completo + Google Search Console',
-    description: 'sitemap.xml, robots.txt, JSON-LD por página, meta descriptions, imagens WebP',
-    status: 'pending',
-    priority: 'média',
-    eta: 'Jun 2026',
-  },
-  {
-    id: '15',
-    area: 'Marketing',
-    title: 'GTM + GA4 + Consent Mode v2',
-    description: 'Google Tag Manager configurado, eventos de conversão (reserva iniciada, checkout concluído), funil.',
-    status: 'pending',
-    priority: 'média',
-    eta: 'Jun 2026',
-  },
-  {
-    id: '16',
-    area: 'Conteúdo',
-    title: 'Migração de conteúdo do WordPress',
-    description: 'Fotos das escunas, textos das páginas, depoimentos reais, galeria por barco.',
-    status: 'pending',
-    priority: 'alta',
-    eta: 'A definir',
-    notes: 'Aguarda entrega de assets do cliente.',
-  },
-  {
-    id: '17',
-    area: 'Infra',
-    title: 'Domínio definitivo + SSL',
-    description: 'Apontar domínio final (acalantoturismo.com.br ou similar) no Vercel.',
-    status: 'pending',
-    priority: 'alta',
-    eta: 'A definir',
-    notes: 'Aguarda decisão do cliente sobre nome do domínio.',
-  },
-  {
-    id: '18',
-    area: 'Fotografia',
-    title: 'Página de fotografia completa',
-    description: 'Portfolio, pacotes de ensaio, galeria, booking inline.',
-    status: 'pending',
-    priority: 'média',
-    eta: 'Jul 2026',
-  },
-  {
-    id: '19',
-    area: 'NPS',
-    title: 'Cron NPS + emails automáticos pós-passeio',
-    description: 'Cron noturno já existe. Testar em produção e validar emails chegando.',
-    status: 'in_progress',
-    priority: 'baixa',
-    eta: 'Jun 2026',
-  },
+// Seed data migrated from the hardcoded array — only inserted if table is empty
+const SEED_TASKS: RoadmapInsert[] = [
+  { area: 'Infra',       title: 'Deploy inicial no Vercel',                     description: 'Next.js 16 + Supabase + domínio configurado',                                                                                  status: 'done',        priority: 'alta',  sort_order: 0,  notes: null, eta: 'Maio 2026' },
+  { area: 'Passeios',    title: 'Catálogo de escunas + booking widget',          description: 'Página por barco, seletor de adultos/crianças, data, carrinho e checkout Infinity Pay',                                         status: 'done',        priority: 'alta',  sort_order: 1,  notes: null, eta: 'Maio 2026' },
+  { area: 'Hospedagem',  title: 'Catálogo de pousadas + booking widget',         description: 'Página por pousada, seletor de datas (check-in/out), hóspedes, disponibilidade via iCal',                                      status: 'done',        priority: 'alta',  sort_order: 2,  notes: null, eta: 'Maio 2026' },
+  { area: 'Serviços',    title: 'Catálogo de serviços + booking inline',         description: 'Lancha privativa, jeep, fotografia, transfer — seletor de data/pessoas, carrinho',                                             status: 'done',        priority: 'alta',  sort_order: 3,  notes: null, eta: 'Maio 2026' },
+  { area: 'iCal',        title: 'Sincronização de calendário (exportação)',      description: 'Feed .ics por pousada, botões Google Calendar / Apple Calendar na página de hospedagem',                                       status: 'done',        priority: 'média', sort_order: 4,  notes: null, eta: 'Maio 2026' },
+  { area: 'Admin',       title: 'Painel admin base',                             description: 'Dashboard KPIs, reservas, capacidade, repasses, contatos, NPS, parceiros, depoimentos',                                       status: 'done',        priority: 'alta',  sort_order: 5,  notes: null, eta: 'Maio 2026' },
+  { area: 'Segurança',   title: 'Hardening OWASP',                               description: 'CSP, X-Frame, rate limiting, server-side price validation, EVOLUCOES_PASSWORD server-only',                                   status: 'done',        priority: 'alta',  sort_order: 6,  notes: null, eta: 'Maio 2026' },
+  { area: 'Pagamentos',  title: 'Todos os métodos de pagamento',                 description: 'InfinityPay hosted checkout já suporta todos os métodos — ajustar webhook para captura de método usado, mostrar no admin',     status: 'in_progress', priority: 'alta',  sort_order: 7,  notes: 'InfinityPay NÃO tem split nativo. Ver tarefa de split.', eta: 'Jun 2026' },
+  { area: 'Pagamentos',  title: 'Split de pagamento por parceiro',               description: 'Repasse automático para cada parceiro (pousada, barco, serviço) no momento do pagamento. Requer processador com split nativo', status: 'blocked',     priority: 'alta',  sort_order: 8,  notes: 'BLOQUEADO — InfinityPay não tem API de split. Decisão pendente: trocar processador ou split manual pós-recebimento.', eta: 'A definir' },
+  { area: 'Admin',       title: 'Painel financeiro por parceiro',                description: 'Cada parceiro vê suas vendas, comissões retidas, repasses pendentes e histórico. Admin vê tudo consolidado e por parceiro.',   status: 'pending',     priority: 'alta',  sort_order: 9,  notes: 'Depende da decisão do split.', eta: 'Jun/Jul 2026' },
+  { area: 'Parceiros',   title: 'Portal do parceiro (login próprio)',            description: 'Parceiro acessa /parceiros/dashboard — vê reservas dos seus produtos, agenda, financeiro, uploads de fotos.',                  status: 'pending',     priority: 'alta',  sort_order: 10, notes: null, eta: 'Jul 2026' },
+  { area: 'Pagamentos',  title: 'Definir porcentagens de comissão por categoria', description: 'Passeios próprios: Acalanto 100%. Pousadas parceiras: % a definir. Barcos parceiros: % a definir. Serviços: % a definir.',   status: 'pending',     priority: 'alta',  sort_order: 11, notes: 'Aguardando definição das porcentagens.', eta: 'A definir' },
+  { area: 'iCal',        title: 'iCal bidirecional — importação de reservas externas', description: 'Sincronizar bloqueios de datas de Airbnb/Booking.com via cron que importa iCal de parceiros.',                         status: 'in_progress', priority: 'média', sort_order: 12, notes: 'Endpoint /api/ical/sync/[listingId] já existe. Falta UI no admin para o parceiro cadastrar a URL do calendário externo.', eta: 'Jun 2026' },
+  { area: 'SEO',         title: 'SEO completo + Google Search Console',          description: 'sitemap.xml, robots.txt, JSON-LD por página, meta descriptions, imagens WebP',                                                status: 'pending',     priority: 'média', sort_order: 13, notes: null, eta: 'Jun 2026' },
+  { area: 'Marketing',   title: 'GTM + GA4 + Consent Mode v2',                  description: 'Google Tag Manager configurado, eventos de conversão (reserva iniciada, checkout concluído), funil.',                         status: 'pending',     priority: 'média', sort_order: 14, notes: null, eta: 'Jun 2026' },
+  { area: 'Conteúdo',    title: 'Migração de conteúdo do WordPress',             description: 'Fotos das escunas, textos das páginas, depoimentos reais, galeria por barco.',                                                 status: 'pending',     priority: 'alta',  sort_order: 15, notes: 'Aguarda entrega de assets do cliente.', eta: 'A definir' },
+  { area: 'Infra',       title: 'Domínio definitivo + SSL',                      description: 'Apontar domínio final (acalantoturismo.com.br ou similar) no Vercel.',                                                        status: 'pending',     priority: 'alta',  sort_order: 16, notes: 'Aguarda decisão do cliente sobre nome do domínio.', eta: 'A definir' },
+  { area: 'Fotografia',  title: 'Página de fotografia completa',                 description: 'Portfolio, pacotes de ensaio, galeria, booking inline.',                                                                       status: 'pending',     priority: 'média', sort_order: 17, notes: null, eta: 'Jul 2026' },
+  { area: 'NPS',         title: 'Cron NPS + emails automáticos pós-passeio',     description: 'Cron noturno já existe. Testar em produção e validar emails chegando.',                                                       status: 'in_progress', priority: 'baixa', sort_order: 18, notes: null, eta: 'Jun 2026' },
 ]
 
-const statusConfig: Record<Status, { label: string; color: string; bg: string }> = {
-  done:        { label: 'Concluído',    color: '#16a34a', bg: '#dcfce7' },
-  in_progress: { label: 'Em andamento', color: '#d97706', bg: '#fef3c7' },
-  pending:     { label: 'Pendente',     color: '#6b7280', bg: '#f3f4f6' },
-  blocked:     { label: 'Bloqueado',    color: '#dc2626', bg: '#fee2e2' },
-}
+export default function AdminRoadmapPage() {
+  const [tasks, setTasks] = useState<RoadmapTask[]>([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState<string | null>(null)
+  const [adding, setAdding] = useState(false)
+  const supabase = createClient()
 
-const priorityConfig: Record<string, { color: string }> = {
-  alta:  { color: '#dc2626' },
-  média: { color: '#d97706' },
-  baixa: { color: '#6b7280' },
-}
+  useEffect(() => {
+    loadTasks()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-const areas = [...new Set(tasks.map(t => t.area))]
+  async function loadTasks() {
+    setLoading(true)
+    const { data, error } = await supabase
+      .from('roadmap_tasks')
+      .select('*')
+      .order('sort_order')
 
-function StatusBadge({ status }: { status: Status }) {
-  const cfg = statusConfig[status]
+    if (error) { console.error(error); setLoading(false); return }
+
+    if (!data || data.length === 0) {
+      // Seed on first load
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: seeded } = await (supabase as any)
+        .from('roadmap_tasks')
+        .insert(SEED_TASKS)
+        .select('*')
+        .order('sort_order')
+      setTasks((seeded as RoadmapTask[]) ?? [])
+    } else {
+      setTasks(data)
+    }
+    setLoading(false)
+  }
+
+  async function updateTask(id: string, changes: Partial<RoadmapTask>) {
+    setSaving(id)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await (supabase as any).from('roadmap_tasks').update({ ...changes, updated_at: new Date().toISOString() }).eq('id', id)
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, ...changes } : t))
+    setSaving(null)
+  }
+
+  async function deleteTask(id: string) {
+    if (!confirm('Remover esta tarefa?')) return
+    await supabase.from('roadmap_tasks').delete().eq('id', id)
+    setTasks(prev => prev.filter(t => t.id !== id))
+  }
+
+  async function addTask() {
+    setAdding(true)
+    const newTask: RoadmapInsert = {
+      area: 'Geral',
+      title: 'Nova tarefa',
+      description: null,
+      status: 'pending',
+      priority: 'média',
+      eta: null,
+      notes: null,
+      sort_order: tasks.length,
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await (supabase as any).from('roadmap_tasks').insert(newTask).select('*').single() as { data: RoadmapTask | null }
+    if (data) setTasks(prev => [...prev, data])
+    setAdding(false)
+  }
+
+  const areas = Array.from(new Set(tasks.map(t => t.area))).sort()
+  const stats = {
+    total: tasks.length,
+    done: tasks.filter(t => t.status === 'done').length,
+    in_progress: tasks.filter(t => t.status === 'in_progress').length,
+    blocked: tasks.filter(t => t.status === 'blocked').length,
+  }
+
   return (
-    <span style={{
-      display: 'inline-block',
-      padding: '0.2rem 0.625rem',
-      borderRadius: '999px',
-      fontSize: '0.75rem',
-      fontWeight: 600,
-      color: cfg.color,
-      background: cfg.bg,
-      whiteSpace: 'nowrap',
-    }}>
-      {cfg.label}
-    </span>
-  )
-}
-
-const done = tasks.filter(t => t.status === 'done').length
-const total = tasks.length
-const pct = Math.round((done / total) * 100)
-
-export default function RoadmapPage() {
-  return (
-    <div style={{ padding: '2rem', maxWidth: '1000px' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', color: '#0f172a', marginBottom: '0.375rem' }}>
-          Roadmap do Projeto
+    <div style={{ padding: '2rem', maxWidth: '900px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', color: 'var(--ocean-deep)', margin: 0 }}>
+          Roadmap
         </h1>
-        <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
-          Acalanto Turismo — v2 Next.js
-        </p>
-        {/* Progress bar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ flex: 1, height: '8px', background: '#e2e8f0', borderRadius: '999px', overflow: 'hidden' }}>
-            <div style={{ width: `${pct}%`, height: '100%', background: '#16a34a', borderRadius: '999px', transition: 'width 0.4s' }}/>
-          </div>
-          <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#16a34a', whiteSpace: 'nowrap' }}>
-            {done}/{total} ({pct}%)
-          </span>
+        <button
+          onClick={addTask}
+          disabled={adding}
+          style={{ padding: '0.5rem 1.25rem', background: 'var(--ocean-mid)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.875rem' }}
+        >
+          {adding ? 'Adicionando…' : '+ Nova tarefa'}
+        </button>
+      </div>
+
+      {/* Progress summary */}
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+        <div style={{ background: 'white', borderRadius: '10px', padding: '0.75rem 1.25rem', border: '1px solid var(--border)', fontSize: '0.875rem' }}>
+          <span style={{ color: 'var(--text-muted)' }}>Total: </span><strong>{stats.total}</strong>
         </div>
+        <div style={{ background: '#dcfce7', borderRadius: '10px', padding: '0.75rem 1.25rem', fontSize: '0.875rem', color: '#166534' }}>
+          ✓ Concluídas: <strong>{stats.done}</strong>
+        </div>
+        <div style={{ background: '#fef9c3', borderRadius: '10px', padding: '0.75rem 1.25rem', fontSize: '0.875rem', color: '#854d0e' }}>
+          ⟳ Em andamento: <strong>{stats.in_progress}</strong>
+        </div>
+        {stats.blocked > 0 && (
+          <div style={{ background: '#fee2e2', borderRadius: '10px', padding: '0.75rem 1.25rem', fontSize: '0.875rem', color: '#991b1b' }}>
+            ✕ Bloqueadas: <strong>{stats.blocked}</strong>
+          </div>
+        )}
       </div>
 
-      {/* Legend */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '2rem' }}>
-        {(Object.entries(statusConfig) as [Status, typeof statusConfig[Status]][]).map(([k, v]) => (
-          <span key={k} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.8125rem', color: '#475569' }}>
-            <span style={{ width: 10, height: 10, borderRadius: '50%', background: v.color, display: 'inline-block' }}/>
-            {v.label}
-          </span>
-        ))}
-      </div>
-
-      {/* Tasks by area */}
-      {areas.map(area => {
-        const areaTasks = tasks.filter(t => t.area === area)
-        return (
+      {loading ? (
+        <p style={{ color: 'var(--text-muted)' }}>Carregando…</p>
+      ) : (
+        areas.map(area => (
           <div key={area} style={{ marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#94a3b8', marginBottom: '0.75rem' }}>
+            <h2 style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
               {area}
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
-              {areaTasks.map(task => (
-                <div key={task.id} style={{
-                  background: 'white',
-                  border: `1px solid ${task.status === 'blocked' ? '#fca5a5' : '#e2e8f0'}`,
-                  borderRadius: '10px',
-                  padding: '1rem 1.25rem',
-                  display: 'grid',
-                  gridTemplateColumns: '1fr auto',
-                  gap: '0.75rem',
-                  alignItems: 'start',
-                }}>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexWrap: 'wrap', marginBottom: '0.25rem' }}>
-                      <span style={{ fontWeight: 600, fontSize: '0.9375rem', color: '#0f172a' }}>{task.title}</span>
-                      <span style={{ fontSize: '0.7rem', fontWeight: 700, color: priorityConfig[task.priority].color }}>
-                        ↑ {task.priority}
-                      </span>
-                    </div>
-                    <p style={{ fontSize: '0.8375rem', color: '#64748b', margin: '0 0 0.375rem' }}>{task.description}</p>
-                    {task.notes && (
-                      <p style={{ fontSize: '0.8rem', color: task.status === 'blocked' ? '#dc2626' : '#d97706', margin: 0, fontStyle: 'italic' }}>
-                        ⚠ {task.notes}
-                      </p>
-                    )}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.375rem' }}>
-                    <StatusBadge status={task.status} />
-                    {task.eta && (
-                      <span style={{ fontSize: '0.75rem', color: '#94a3b8', whiteSpace: 'nowrap' }}>{task.eta}</span>
-                    )}
-                  </div>
-                </div>
+              {tasks.filter(t => t.area === area).map(task => (
+                <TaskRow
+                  key={task.id}
+                  task={task}
+                  saving={saving === task.id}
+                  onUpdate={(changes) => updateTask(task.id, changes)}
+                  onDelete={() => deleteTask(task.id)}
+                />
               ))}
             </div>
           </div>
-        )
-      })}
+        ))
+      )}
+    </div>
+  )
+}
 
-      <p style={{ fontSize: '0.75rem', color: '#cbd5e1', marginTop: '2rem' }}>
-        Última atualização: maio 2026
-      </p>
+function TaskRow({
+  task, saving, onUpdate, onDelete
+}: {
+  task: RoadmapTask
+  saving: boolean
+  onUpdate: (changes: Partial<RoadmapTask>) => void
+  onDelete: () => void
+}) {
+  const [editingTitle, setEditingTitle] = useState(false)
+  const [editingNotes, setEditingNotes] = useState(false)
+  const titleRef = useRef<HTMLInputElement>(null)
+  const notesRef = useRef<HTMLTextAreaElement>(null)
+  const statusStyle = STATUS_COLORS[task.status] ?? STATUS_COLORS.pending
+  const priorityStyle = PRIORITY_COLORS[task.priority] ?? PRIORITY_COLORS['média']
+
+  // suppress unused-variable warnings for refs used via autoFocus pattern
+  void titleRef
+  void notesRef
+
+  return (
+    <div style={{
+      background: 'white', borderRadius: '10px', padding: '0.875rem 1rem',
+      border: '1px solid var(--border)', opacity: saving ? 0.7 : 1,
+      display: 'flex', gap: '0.75rem', alignItems: 'flex-start',
+    }}>
+      {/* Status dropdown */}
+      <select
+        value={task.status}
+        onChange={e => onUpdate({ status: e.target.value })}
+        style={{
+          background: statusStyle.bg, color: statusStyle.color,
+          border: 'none', borderRadius: '6px', padding: '0.25rem 0.5rem',
+          fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', flexShrink: 0,
+        }}
+      >
+        {STATUS_OPTIONS.map(s => (
+          <option key={s} value={s}>{STATUS_COLORS[s]?.label ?? s}</option>
+        ))}
+      </select>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {/* Title */}
+        {editingTitle ? (
+          <input
+            ref={titleRef}
+            defaultValue={task.title}
+            autoFocus
+            onBlur={e => { onUpdate({ title: e.target.value }); setEditingTitle(false) }}
+            onKeyDown={e => { if (e.key === 'Enter') { onUpdate({ title: (e.target as HTMLInputElement).value }); setEditingTitle(false) } }}
+            style={{ width: '100%', fontWeight: 600, fontSize: '0.9375rem', border: '1px solid var(--ocean-mid)', borderRadius: '4px', padding: '0.125rem 0.375rem' }}
+          />
+        ) : (
+          <p
+            onClick={() => setEditingTitle(true)}
+            style={{ fontWeight: 600, fontSize: '0.9375rem', marginBottom: '0.25rem', cursor: 'text', textDecoration: task.status === 'done' ? 'line-through' : 'none', color: task.status === 'done' ? 'var(--text-muted)' : 'var(--text-primary)' }}
+          >
+            {task.title}
+          </p>
+        )}
+
+        {task.description && (
+          <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginBottom: '0.375rem' }}>{task.description}</p>
+        )}
+
+        {/* Notes */}
+        {editingNotes ? (
+          <textarea
+            ref={notesRef}
+            defaultValue={task.notes ?? ''}
+            autoFocus
+            rows={2}
+            onBlur={e => { onUpdate({ notes: e.target.value || null }); setEditingNotes(false) }}
+            style={{ width: '100%', fontSize: '0.8125rem', border: '1px solid var(--ocean-mid)', borderRadius: '4px', padding: '0.25rem 0.375rem', resize: 'vertical' }}
+          />
+        ) : task.notes ? (
+          <p
+            onClick={() => setEditingNotes(true)}
+            style={{ fontSize: '0.8125rem', color: '#92400e', background: '#fef3c7', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'text', marginTop: '0.25rem' }}
+          >
+            📝 {task.notes}
+          </p>
+        ) : (
+          <button
+            onClick={() => setEditingNotes(true)}
+            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.75rem', cursor: 'pointer', padding: 0, marginTop: '0.125rem' }}
+          >
+            + nota
+          </button>
+        )}
+      </div>
+
+      {/* Right controls */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.375rem', flexShrink: 0 }}>
+        {/* Priority */}
+        <select
+          value={task.priority}
+          onChange={e => onUpdate({ priority: e.target.value })}
+          style={{
+            background: priorityStyle.bg, color: priorityStyle.color,
+            border: 'none', borderRadius: '6px', padding: '0.2rem 0.4rem',
+            fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer',
+          }}
+        >
+          {PRIORITY_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
+        </select>
+
+        {/* Area edit */}
+        <input
+          defaultValue={task.area}
+          onBlur={e => { if (e.target.value !== task.area) onUpdate({ area: e.target.value }) }}
+          style={{ width: '80px', fontSize: '0.7rem', border: '1px solid var(--border)', borderRadius: '4px', padding: '0.125rem 0.25rem', color: 'var(--text-muted)', textAlign: 'center' }}
+        />
+
+        {/* Delete */}
+        <button
+          onClick={onDelete}
+          style={{ background: 'none', border: 'none', color: '#fca5a5', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}
+        >
+          remover
+        </button>
+      </div>
     </div>
   )
 }
