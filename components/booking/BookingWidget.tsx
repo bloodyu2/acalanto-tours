@@ -292,7 +292,7 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
           fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em',
           color: 'var(--text-muted)', fontFamily: 'var(--font-mono)',
         }}>
-          Pagamento seguro via Infinity Pay
+          Pagamento seguro via ASAAS
         </p>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
           {[
