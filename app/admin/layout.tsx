@@ -63,9 +63,16 @@ const BlogIcon = () => (
     <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
   </svg>
 )
+const BriefcaseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2"/>
+    <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+  </svg>
+)
 
 const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin', label: 'Dashboard', icon: <DashboardIcon /> },
+  { href: '/admin/negocio', label: 'Negócios', icon: <BriefcaseIcon /> },
   { href: '/admin/reservas', label: 'Reservas', icon: <CalendarIcon /> },
   { href: '/admin/capacidade', label: 'Capacidade', icon: <AnchorNavIcon /> },
   { href: '/admin/repasses', label: 'Repasses', icon: <MoneyNavIcon /> },
