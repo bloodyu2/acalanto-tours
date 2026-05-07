@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function ServicosPage() {
   const supabase = await createClient()
   const { data: services } = await supabase
-    .from('services')
+    .from('acalanto_services')
     .select('id, slug, name, description, price_label, pricing_type, price_cents_per_person, price_cents_group, capacity_max')
     .eq('active', true)
     .order('display_order')
