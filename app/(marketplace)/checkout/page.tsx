@@ -233,7 +233,7 @@ export default function CheckoutPage() {
       // Store large PIX fields in sessionStorage to avoid URL length crash
       try {
         sessionStorage.setItem('acalanto_checkout_result', JSON.stringify({
-          paymentId: data.paymentId ?? '',
+          paymentId: data.bookingId ?? '',
           method: form.billingType,
           paymentUrl: data.paymentUrl ?? '',
           pixQrCode: data.pixQrCode ?? '',
@@ -242,7 +242,7 @@ export default function CheckoutPage() {
       } catch {}
       // Redirect to confirmation — only tiny params in URL
       const params = new URLSearchParams({
-        paymentId: data.paymentId ?? '',
+        paymentId: data.bookingId ?? '',
         method: form.billingType,
       })
       router.push(`/checkout/confirmacao?${params.toString()}`)
