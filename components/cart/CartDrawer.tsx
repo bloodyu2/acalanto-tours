@@ -1,6 +1,7 @@
 'use client'
 import { useCart } from './CartProvider'
 import { useRouter } from 'next/navigation'
+import PhotographerPicker from './PhotographerPicker'
 
 function formatBRL(cents: number) {
   return (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -127,6 +128,14 @@ export default function CartDrawer() {
                         ✕
                       </button>
                     </div>
+
+                    {/* Provider picker for fotografia items */}
+                    {item.type === 'fotografia' && (
+                      <PhotographerPicker
+                        cartItemId={item.id}
+                        selectedPackageId={item.photographerPackageId}
+                      />
+                    )}
                   </div>
                 )
               })}

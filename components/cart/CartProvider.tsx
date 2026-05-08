@@ -14,6 +14,8 @@ export type CartItem = {
   priceChildCents: number
   boatId?: string
   photographerPackageId?: string
+  providerName?: string
+  providerId?: string
   utmCampaign?: string | null
   // Serviço fields
   serviceId?: string
@@ -33,6 +35,7 @@ type CartContextType = {
   items: CartItem[]
   addItem: (item: CartItem) => void
   removeItem: (id: string) => void
+  updateItem: (id: string, patch: Partial<CartItem>) => void
   clearCart: () => void
   totalCents: number
   itemCount: number
@@ -91,6 +94,10 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     setItems(prev => prev.filter(i => i.id !== id))
   }, [])
 
+  const updateItem = useCallback((id: string, patch: Partial<CartItem>) => {
+    setItems(prev => prev.map(i => i.id === id ? { ...i, ...patch } : i))
+  }, [])
+
   const clearCart = useCallback(() => {
     setItems([])
     try { localStorage.removeItem(CART_KEY) } catch {}
@@ -102,7 +109,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider value={{
-      items, addItem, removeItem, clearCart,
+      items, addItem, removeItem, updateItem, clearCart,
       totalCents, itemCount,
       isOpen, openCart: () => setIsOpen(true), closeCart: () => setIsOpen(false),
     }}>
