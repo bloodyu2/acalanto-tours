@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import ImageUploader from '@/components/admin/ImageUploader'
+import GalleryManager from '@/components/admin/GalleryManager'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,7 +31,10 @@ async function updateService(id: string, formData: FormData) {
 export default async function EditServicoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createAdminClient()
-  const { data: s } = await supabase.from('services').select('*').eq('id', id).single()
+  const [{ data: s }, { data: galleryImages }] = await Promise.all([
+    supabase.from('services').select('*').eq('id', id).single(),
+    supabase.from('gallery').select('id, url, alt_text, display_order').eq('service_id', id).order('display_order'),
+  ])
   if (!s) notFound()
 
   const update = updateService.bind(null, id)
@@ -90,6 +94,11 @@ export default async function EditServicoPage({ params }: { params: Promise<{ id
           <Link href="/admin/negocio/servicos" className="btn-outline" style={{ textDecoration: 'none' }}>Cancelar</Link>
         </div>
       </form>
+
+      {/* Gallery — managed independently */}
+      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+        <GalleryManager entityField="service_id" entityId={id} initialImages={galleryImages ?? []} />
+      </div>
     </div>
   )
 }

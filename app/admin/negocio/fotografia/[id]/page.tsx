@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import ImageUploader from '@/components/admin/ImageUploader'
+import GalleryManager from '@/components/admin/GalleryManager'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,9 +31,10 @@ async function updatePackage(id: string, formData: FormData) {
 export default async function EditPacotePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createAdminClient()
-  const [{ data: pkg }, { data: partners }] = await Promise.all([
+  const [{ data: pkg }, { data: partners }, { data: galleryImages }] = await Promise.all([
     supabase.from('photographer_packages').select('*').eq('id', id).single(),
     supabase.from('partners').select('id, name').eq('active', true),
+    supabase.from('gallery').select('id, url, alt_text, display_order').eq('photographer_package_id', id).order('display_order'),
   ])
   if (!pkg) notFound()
 
@@ -93,6 +95,11 @@ export default async function EditPacotePage({ params }: { params: Promise<{ id:
           <Link href="/admin/negocio/fotografia" className="btn-outline" style={{ textDecoration: 'none' }}>Cancelar</Link>
         </div>
       </form>
+
+      {/* Gallery — managed independently */}
+      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+        <GalleryManager entityField="photographer_package_id" entityId={id} initialImages={galleryImages ?? []} label="Portfólio de fotos" />
+      </div>
     </div>
   )
 }
