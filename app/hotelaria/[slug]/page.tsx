@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation'
 import { getListingBySlug } from '@/lib/partner-listings'
 import { createClient } from '@/lib/supabase/server'
 import AccommodationBookingWidget from '@/components/hotelaria/AccommodationBookingWidget'
-import CalendarSyncBar from '@/components/hotelaria/CalendarSyncBar'
 import HotelPageClient from '@/components/hotelaria/HotelPageClient'
 import type { AccommodationRoom } from '@/lib/types/database'
 
@@ -145,8 +144,6 @@ export default async function HotelariaSlugPage({ params, searchParams }: Props)
                 <p style={{ color: 'var(--text-muted)', lineHeight: 1.75, whiteSpace: 'pre-line' }}>{policies}</p>
               </div>
             )}
-
-            <CalendarSyncBar slug={listing.slug} siteUrl={process.env.NEXT_PUBLIC_SITE_URL || 'https://acalantoturismo.com.br'} />
 
             <div style={{ marginTop: '1.25rem', padding: '1rem 1.25rem', background: 'white', border: '1px dashed var(--border)', borderRadius: '10px', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
               Este é o seu negócio?{' '}
