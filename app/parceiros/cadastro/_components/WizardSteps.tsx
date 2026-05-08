@@ -1,5 +1,5 @@
-export function WizardSteps({ current }: { current: 1 | 2 | 3 | 4 }) {
-  const steps = ['Conta', 'Tipo', 'Anúncio', 'Pronto']
+export function WizardSteps({ current }: { current: 1 | 2 | 3 | 4 | 5 }) {
+  const steps = ['Conta', 'Tipo', 'Dados', 'Anúncio', 'Pronto']
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: '2.5rem' }}>
       {steps.map((label, i) => {

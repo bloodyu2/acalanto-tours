@@ -112,7 +112,7 @@ export default function CadastroAnuncioPage() {
         </div>
 
         <div style={{ background: 'white', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
-          <WizardSteps current={3} />
+          <WizardSteps current={4} />
           <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Seu anúncio</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.75rem' }}>
             Tipo: <strong>{typeLabels[type]}</strong>

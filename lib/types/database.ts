@@ -25,7 +25,15 @@ export interface Database {
           internal_rating: number | null
           notes: string | null
           asaas_wallet_id:  string | null
+          asaas_account_id: string | null
           commission_pct:   number
+          cpf_cnpj:         string | null
+          birth_date:       string | null
+          mobile_phone:     string | null
+          address:          string | null
+          address_number:   string | null
+          province:         string | null
+          postal_code:      string | null
           created_at: string
           updated_at: string
         }

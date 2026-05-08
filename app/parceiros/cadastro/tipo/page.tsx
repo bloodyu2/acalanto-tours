@@ -60,7 +60,7 @@ export default function CadastroTipoPage() {
 
   function choose(value: string) {
     sessionStorage.setItem('onboarding_type', value)
-    router.push('/parceiros/cadastro/anuncio')
+    router.push('/parceiros/cadastro/dados-fiscais')
   }
 
   return (

@@ -1,4 +1,4 @@
-import type { AsaasCustomer, AsaasChargeRequest, AsaasCharge } from './types'
+import type { AsaasCustomer, AsaasChargeRequest, AsaasCharge, AsaasSubcontaRequest, AsaasSubcontaResponse } from './types'
 
 function getBaseUrl(): string {
   return process.env.ASAAS_ENVIRONMENT === 'production'
@@ -52,4 +52,20 @@ export async function createCharge(data: AsaasChargeRequest): Promise<AsaasCharg
 
 export async function getCharge(id: string): Promise<AsaasCharge> {
   return asaasFetch<AsaasCharge>(`/payments/${id}`)
+}
+
+export async function createSubconta(
+  data: AsaasSubcontaRequest
+): Promise<AsaasSubcontaResponse> {
+  return asaasFetch<AsaasSubcontaResponse>('/accounts', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function disableSubconta(asaasAccountId: string): Promise<void> {
+  await asaasFetch<unknown>(`/accounts/${asaasAccountId}/status`, {
+    method: 'POST',
+    body: JSON.stringify({ status: 'INACTIVE' }),
+  })
 }

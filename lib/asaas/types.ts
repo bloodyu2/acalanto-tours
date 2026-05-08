@@ -51,6 +51,26 @@ export interface AsaasCharge {
   }
 }
 
+export interface AsaasSubcontaRequest {
+  name: string
+  email: string
+  cpfCnpj: string
+  birthDate: string      // YYYY-MM-DD
+  mobilePhone: string    // apenas dígitos
+  address: string
+  addressNumber: string
+  province: string
+  postalCode: string     // apenas dígitos
+  companyType?: 'MEI' | 'LIMITED' | 'INDIVIDUAL' | 'ASSOCIATION'
+}
+
+export interface AsaasSubcontaResponse {
+  id: string             // asaas account ID — salvar como asaas_account_id
+  walletId: string       // salvar como asaas_wallet_id
+  name: string
+  email: string
+}
+
 export interface AsaasWebhookPayload {
   event: 'PAYMENT_RECEIVED' | 'PAYMENT_OVERDUE' | 'PAYMENT_REFUNDED' | 'PAYMENT_CONFIRMED'
   payment: {
