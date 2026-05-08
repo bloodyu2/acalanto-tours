@@ -116,7 +116,8 @@ export async function POST(request: NextRequest) {
     // 7. Determine primary date and boatId for the booking row
     const primaryItem = items[0]
     const tourDate = primaryItem.date ?? primaryItem.checkIn ?? new Date().toISOString().split('T')[0]
-    const boatId   = primaryItem.boatId ?? null
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    const boatId  = primaryItem.boatId && UUID_RE.test(primaryItem.boatId) ? primaryItem.boatId : null
 
     // 8. Insert booking
     const bookingPayload: BookingInsert = {
@@ -167,7 +168,7 @@ export async function POST(request: NextRequest) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[checkout] error message:', msg)
     return NextResponse.json(
-      { error: 'Erro ao processar pagamento. Tente novamente.', _debug: msg },
+      { error: 'Erro ao processar pagamento. Tente novamente.' },
       { status: 500 }
     )
   }
