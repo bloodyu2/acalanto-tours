@@ -234,7 +234,8 @@ export default async function FotografiaDetailPage({ params }: Props) {
                       fontSize: '0.9rem',
                     }}
                   >
-                    📷 Ver portfolio no Instagram
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    {' '}Ver portfolio no Instagram
                   </a>
                 )}
               </div>
@@ -291,7 +292,8 @@ export default async function FotografiaDetailPage({ params }: Props) {
                   border: '1px solid var(--border)', borderRadius: '0.625rem', background: 'white',
                 }}
               >
-                📷 Ver portfolio no Instagram
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                {' '}Ver portfolio no Instagram
               </a>
             )}
           </div>
