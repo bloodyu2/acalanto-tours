@@ -25,5 +25,7 @@ export type Presentation = {
   title: string
   tagline: string
   accentColor: string
+  repasse: string
+  repasseLabel?: string
   slides: Slide[]
 }

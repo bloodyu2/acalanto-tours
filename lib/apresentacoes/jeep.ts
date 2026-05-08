@@ -5,6 +5,8 @@ const presentation: Presentation = {
   title: 'Jeep & Transfer',
   tagline: 'Conecte turistas ao interior de Paraty com segurança e conforto',
   accentColor: '#16A34A',
+  repasse: '70%',
+  repasseLabel: 'do valor por traslado, via PIX',
   slides: [
     { type: 'cover' },
     { type: 'who-we-are' },

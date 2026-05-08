@@ -17,6 +17,19 @@ const GOLD = '#F4A623'
 const FONT_DISPLAY = 'var(--font-playfair)'
 const FONT_BODY = 'var(--font-jakarta)'
 
+// Returns a readable accent color for labels/hairlines inside a slide
+// whose background is `hex`. Gold looks great on dark backgrounds;
+// on light or gold-toned ones we fall back to white.
+function getInnerAccent(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  // Relative luminance (simplified)
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  // GOLD on GOLD would be invisible (lum ~0.67); on green (lum ~0.34) contrast ~2.4:1 — both too low
+  return lum > 0.25 ? 'rgba(255,255,255,0.9)' : GOLD
+}
+
 // ─── Animation helper ─────────────────────────────────────────────
 function fu(delay: number): React.CSSProperties {
   return { animation: `fadeUp .55s ${delay}s both` }
@@ -41,10 +54,12 @@ function SlideWrap({
   accent,
   slideNum,
   children,
+  innerAccent,
 }: {
   accent: string
   slideNum: string
   children: React.ReactNode
+  innerAccent?: string
 }) {
   return (
     <div
@@ -104,7 +119,7 @@ function SlideWrap({
 }
 
 // ─── SlideLabel — tiny-caps section indicator ─────────────────────
-function SlideLabel({ children }: { children: React.ReactNode }) {
+function SlideLabel({ children, ia = GOLD }: { children: React.ReactNode; ia?: string }) {
   return (
     <div
       style={{
@@ -113,7 +128,7 @@ function SlideLabel({ children }: { children: React.ReactNode }) {
         fontWeight: 700,
         letterSpacing: '0.2em',
         textTransform: 'uppercase',
-        color: GOLD,
+        color: ia,
         marginBottom: '0.875rem',
         ...fu(0),
       }}
@@ -124,13 +139,13 @@ function SlideLabel({ children }: { children: React.ReactNode }) {
 }
 
 // ─── Hairline ─────────────────────────────────────────────────────
-function Hairline() {
+function Hairline({ ia = GOLD }: { ia?: string }) {
   return (
     <div
       style={{
         width: '2.5rem',
         height: '1px',
-        background: GOLD,
+        background: ia,
         marginBottom: '1.5rem',
         ...fu(0.05),
       }}
@@ -270,15 +285,16 @@ function SlideCover({ p }: { p: Presentation }) {
 }
 
 function SlideWhoWeAre({ p }: { p: Presentation }) {
+  const ia = getInnerAccent(p.accentColor)
   const items = [
-    { label: 'O que fazemos', text: 'Acalanto é o marketplace de turismo de Paraty — onde turistas de todo o Brasil encontram passeios, pousadas e experiências locais.' },
-    { label: 'Onde estamos', text: 'No coração de Paraty, conectando visitantes a prestadores locais de confiança.' },
-    { label: 'Por que existimos', text: 'Valorizar quem faz Paraty ser o destino que é — gerando renda real para os locais.' },
+    { label: 'O que fazemos', text: 'Acalanto é o marketplace de turismo de Paraty. Turistas do Brasil inteiro encontram aqui passeios, pousadas e experiências com quem conhece a cidade de verdade.' },
+    { label: 'Onde estamos', text: 'Em Paraty, conectando visitantes a prestadores locais de confiança.' },
+    { label: 'Por que existimos', text: 'Valorizar quem faz Paraty ser o destino que é. Gerar renda real para quem vive aqui.' },
   ]
   return (
     <SlideWrap accent={p.accentColor} slideNum="02">
-      <SlideLabel>A empresa</SlideLabel>
-      <Hairline />
+      <SlideLabel ia={ia}>A empresa</SlideLabel>
+      <Hairline ia={ia} />
       <STitle>A Acalanto em 3 linhas.</STitle>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.375rem' }}>
         {items.map((item, i) => (
@@ -295,7 +311,7 @@ function SlideWhoWeAre({ p }: { p: Presentation }) {
               style={{
                 width: '3px',
                 alignSelf: 'stretch',
-                background: GOLD,
+                background: ia,
                 borderRadius: '2px',
                 flexShrink: 0,
                 minHeight: '2rem',
@@ -309,7 +325,7 @@ function SlideWhoWeAre({ p }: { p: Presentation }) {
                   fontWeight: 700,
                   letterSpacing: '0.15em',
                   textTransform: 'uppercase',
-                  color: GOLD,
+                  color: ia,
                   marginBottom: '0.3rem',
                 }}
               >
@@ -327,6 +343,7 @@ function SlideWhoWeAre({ p }: { p: Presentation }) {
 }
 
 function SlideHowItWorks({ p, middleStepLabel }: { p: Presentation; middleStepLabel: string }) {
+  const ia = getInnerAccent(p.accentColor)
   const steps = [
     { n: '01', label: 'Cliente reserva online' },
     { n: '02', label: middleStepLabel },
@@ -334,8 +351,8 @@ function SlideHowItWorks({ p, middleStepLabel }: { p: Presentation; middleStepLa
   ]
   return (
     <SlideWrap accent={p.accentColor} slideNum="03">
-      <SlideLabel>O processo</SlideLabel>
-      <Hairline />
+      <SlideLabel ia={ia}>O processo</SlideLabel>
+      <Hairline ia={ia} />
       <STitle>Como funciona.</STitle>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
         {steps.map((step, i) => (
@@ -354,7 +371,7 @@ function SlideHowItWorks({ p, middleStepLabel }: { p: Presentation; middleStepLa
                 fontStyle: 'italic',
                 fontSize: '3.5rem',
                 fontWeight: 700,
-                color: GOLD,
+                color: ia,
                 lineHeight: 1,
                 flexShrink: 0,
                 width: '4.5rem',
@@ -375,6 +392,7 @@ function SlideHowItWorks({ p, middleStepLabel }: { p: Presentation; middleStepLa
 }
 
 function SlideAdvantages({ p, extras }: { p: Presentation; extras: string[] }) {
+  const ia = getInnerAccent(p.accentColor)
   const bullets = [
     'Sem taxa de adesão',
     'Você decide sua disponibilidade',
@@ -384,8 +402,8 @@ function SlideAdvantages({ p, extras }: { p: Presentation; extras: string[] }) {
   ]
   return (
     <SlideWrap accent={p.accentColor} slideNum="04">
-      <SlideLabel>As vantagens</SlideLabel>
-      <Hairline />
+      <SlideLabel ia={ia}>As vantagens</SlideLabel>
+      <Hairline ia={ia} />
       <STitle>Por que se cadastrar?</STitle>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {bullets.map((b, i) => (
@@ -398,13 +416,12 @@ function SlideAdvantages({ p, extras }: { p: Presentation; extras: string[] }) {
               ...fu(0.18 + i * 0.07),
             }}
           >
-            {/* Gold circle bullet */}
             <div
               style={{
                 width: 18,
                 height: 18,
                 borderRadius: '50%',
-                border: `1.5px solid ${GOLD}`,
+                border: `1.5px solid ${ia}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -412,7 +429,7 @@ function SlideAdvantages({ p, extras }: { p: Presentation; extras: string[] }) {
                 marginTop: '3px',
               }}
             >
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: GOLD }} />
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: ia }} />
             </div>
             <span style={{ fontFamily: FONT_BODY, fontSize: '0.9375rem', lineHeight: 1.55, opacity: 0.92 }}>{b}</span>
           </div>
@@ -423,6 +440,7 @@ function SlideAdvantages({ p, extras }: { p: Presentation; extras: string[] }) {
 }
 
 function SlidePlatform({ p }: { p: Presentation }) {
+  const ia = getInnerAccent(p.accentColor)
   const tiles = [
     { label: 'Dashboard de reservas' },
     { label: 'Calendário de disponibilidade' },
@@ -431,8 +449,8 @@ function SlidePlatform({ p }: { p: Presentation }) {
   ]
   return (
     <SlideWrap accent={p.accentColor} slideNum="05">
-      <SlideLabel>A plataforma</SlideLabel>
-      <Hairline />
+      <SlideLabel ia={ia}>A plataforma</SlideLabel>
+      <Hairline ia={ia} />
       <STitle>Sua área de parceiro.</STitle>
       <div
         style={{
@@ -459,7 +477,7 @@ function SlidePlatform({ p }: { p: Presentation }) {
               style={{
                 width: '1.5rem',
                 height: '2px',
-                background: GOLD,
+                background: ia,
                 marginBottom: '0.75rem',
                 borderRadius: '1px',
               }}
@@ -475,23 +493,24 @@ function SlidePlatform({ p }: { p: Presentation }) {
 }
 
 function SlideRepasses({ p }: { p: Presentation }) {
+  const ia = getInnerAccent(p.accentColor)
   return (
     <SlideWrap accent={p.accentColor} slideNum="06">
-      <SlideLabel>Financeiro</SlideLabel>
-      <Hairline />
+      <SlideLabel ia={ia}>Financeiro</SlideLabel>
+      <Hairline ia={ia} />
       <div style={{ textAlign: 'center', ...fu(0.1) }}>
         <div
           style={{
             fontFamily: FONT_DISPLAY,
             fontStyle: 'italic',
-            fontSize: 'clamp(5rem, 18vw, 9rem)',
+            fontSize: 'clamp(4rem, 16vw, 8.5rem)',
             fontWeight: 700,
-            color: GOLD,
+            color: ia,
             lineHeight: 0.95,
             marginBottom: '1.25rem',
           }}
         >
-          [A DEFINIR]%
+          {p.repasse}
         </div>
         <div
           style={{
@@ -502,21 +521,23 @@ function SlideRepasses({ p }: { p: Presentation }) {
             ...fu(0.2),
           }}
         >
-          por reserva confirmada · prazo a definir · via PIX
+          {p.repasseLabel ?? 'por reserva confirmada, via PIX'}
         </div>
         <div
           style={{
             marginTop: '2rem',
+            padding: '0.75rem 1.5rem',
+            border: `1px solid ${ia}`,
+            borderRadius: '999px',
+            display: 'inline-block',
             fontFamily: FONT_BODY,
             fontSize: '0.8125rem',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: GOLD,
-            opacity: 0.7,
+            letterSpacing: '0.08em',
+            color: ia,
             ...fu(0.3),
           }}
         >
-          Valores finais em breve
+          Pagamento em até 2 dias uteis
         </div>
       </div>
     </SlideWrap>
@@ -524,6 +545,7 @@ function SlideRepasses({ p }: { p: Presentation }) {
 }
 
 function SlideAgreements({ p, extraItem }: { p: Presentation; extraItem?: string }) {
+  const ia = getInnerAccent(p.accentColor)
   const baseItems = [
     'Qualidade e pontualidade no serviço',
     'Fotos atualizadas do seu negócio',
@@ -533,8 +555,8 @@ function SlideAgreements({ p, extraItem }: { p: Presentation; extraItem?: string
   const items = extraItem ? [...baseItems.slice(0, 3), extraItem, baseItems[3]] : baseItems
   return (
     <SlideWrap accent={p.accentColor} slideNum="07">
-      <SlideLabel>O combinado</SlideLabel>
-      <Hairline />
+      <SlideLabel ia={ia}>O combinado</SlideLabel>
+      <Hairline ia={ia} />
       <STitle>O que pedimos.</STitle>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {items.map((item, i) => (
@@ -552,7 +574,7 @@ function SlideAgreements({ p, extraItem }: { p: Presentation; extraItem?: string
                 width: 18,
                 height: 18,
                 borderRadius: '50%',
-                border: `1.5px solid ${GOLD}`,
+                border: `1.5px solid ${ia}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -560,7 +582,7 @@ function SlideAgreements({ p, extraItem }: { p: Presentation; extraItem?: string
                 marginTop: '3px',
               }}
             >
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: GOLD }} />
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: ia }} />
             </div>
             <span style={{ fontFamily: FONT_BODY, fontSize: '0.9375rem', lineHeight: 1.55, opacity: 0.92 }}>{item}</span>
           </div>
@@ -571,6 +593,7 @@ function SlideAgreements({ p, extraItem }: { p: Presentation; extraItem?: string
 }
 
 function SlideGuarantees({ p }: { p: Presentation }) {
+  const ia = getInnerAccent(p.accentColor)
   const items = [
     'Pagamento seguro antes do serviço',
     'Suporte dedicado para parceiros',
@@ -579,8 +602,8 @@ function SlideGuarantees({ p }: { p: Presentation }) {
   ]
   return (
     <SlideWrap accent={p.accentColor} slideNum="08">
-      <SlideLabel>As garantias</SlideLabel>
-      <Hairline />
+      <SlideLabel ia={ia}>As garantias</SlideLabel>
+      <Hairline ia={ia} />
       <STitle>O que garantimos.</STitle>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {items.map((item, i) => (
@@ -598,7 +621,7 @@ function SlideGuarantees({ p }: { p: Presentation }) {
                 width: 18,
                 height: 18,
                 borderRadius: '50%',
-                border: `1.5px solid ${GOLD}`,
+                border: `1.5px solid ${ia}`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -606,7 +629,7 @@ function SlideGuarantees({ p }: { p: Presentation }) {
                 marginTop: '3px',
               }}
             >
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: GOLD }} />
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: ia }} />
             </div>
             <span style={{ fontFamily: FONT_BODY, fontSize: '0.9375rem', lineHeight: 1.55, opacity: 0.92 }}>{item}</span>
           </div>
@@ -617,6 +640,9 @@ function SlideGuarantees({ p }: { p: Presentation }) {
 }
 
 function SlideCta({ p }: { p: Presentation }) {
+  const ia = getInnerAccent(p.accentColor)
+  // For light accent backgrounds the button needs dark text, not the accent color
+  const btnTextColor = ia === GOLD ? p.accentColor : '#0A3D5C'
   return (
     <div
       style={{
@@ -653,14 +679,14 @@ function SlideCta({ p }: { p: Presentation }) {
             fontWeight: 700,
             letterSpacing: '0.2em',
             textTransform: 'uppercase',
-            color: GOLD,
+            color: ia,
             marginBottom: '1.25rem',
             ...fu(0),
           }}
         >
           Próximo passo
         </div>
-        <div style={{ width: '2.5rem', height: '1px', background: GOLD, marginBottom: '2rem', ...fu(0.05) }} />
+        <div style={{ width: '2.5rem', height: '1px', background: ia, marginBottom: '2rem', ...fu(0.05) }} />
         <h2
           style={{
             fontFamily: FONT_DISPLAY,
@@ -694,7 +720,7 @@ function SlideCta({ p }: { p: Presentation }) {
             alignItems: 'center',
             gap: '0.5rem',
             background: 'white',
-            color: p.accentColor,
+            color: btnTextColor,
             fontFamily: FONT_BODY,
             fontWeight: 700,
             fontSize: '0.875rem',

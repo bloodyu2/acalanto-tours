@@ -5,6 +5,8 @@ const presentation: Presentation = {
   title: 'Fotografia',
   tagline: 'Transforme momentos de viagem em memórias eternas',
   accentColor: '#7C3AED',
+  repasse: '70%',
+  repasseLabel: 'do valor por sessão, via PIX',
   slides: [
     { type: 'cover' },
     { type: 'who-we-are' },
