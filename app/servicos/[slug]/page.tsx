@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import ServiceBookingWidget from '@/components/booking/ServiceBookingWidget'
@@ -59,6 +60,12 @@ export default async function ServicoPage({ params }: Props) {
     .single()
   if (!svc) notFound()
 
+  const { data: photos } = await supabase
+    .from('gallery')
+    .select('url, alt_text')
+    .eq('service_id', svc.id)
+    .order('display_order', { ascending: true })
+
   const { data: unavailRows } = await supabase
     .from('service_availability')
     .select('date')
@@ -91,6 +98,38 @@ export default async function ServicoPage({ params }: Props) {
           )}
         </div>
       </section>
+
+      {/* Photo gallery */}
+      {photos && photos.length > 0 && (
+        <section style={{ padding: '2rem 0 3rem', background: 'white' }}>
+          <div className="container">
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: photos.length === 1 ? '1fr' : photos.length === 2 ? '1fr 1fr' : 'repeat(3, 1fr)',
+              gap: '0.75rem',
+            }}>
+              {photos.map((p, i) => (
+                <div key={i} style={{
+                  position: 'relative',
+                  aspectRatio: photos.length === 1 ? '16/7' : '4/3',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  background: 'var(--sand)',
+                  gridColumn: photos.length >= 4 && i === 0 ? 'span 2' : undefined,
+                }}>
+                  <Image
+                    src={p.url}
+                    alt={p.alt_text ?? svc.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Content */}
       <section style={{ padding: '4rem 0 5rem' }}>

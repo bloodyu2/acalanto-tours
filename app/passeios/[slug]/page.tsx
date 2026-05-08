@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { ItineraryStop } from '@/lib/types/database'
@@ -32,6 +33,12 @@ export default async function PasseioDetailPage({ params }: Props) {
   const itinerary: ItineraryStop[] = Array.isArray(boat.itinerary) ? boat.itinerary as ItineraryStop[] : []
 
   // Dates where this boat is fully booked (sum of passengers >= capacity_max)
+  const { data: photos } = await supabase
+    .from('gallery')
+    .select('url, alt_text')
+    .eq('boat_id', boat.id)
+    .order('display_order', { ascending: true })
+
   const { data: bookingCounts } = await supabase
     .from('bookings')
     .select('tour_date, adults, children')
@@ -68,6 +75,38 @@ export default async function PasseioDetailPage({ params }: Props) {
           {boat.tagline && <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.125rem' }}>{boat.tagline}</p>}
         </div>
       </section>
+
+      {/* Photo gallery */}
+      {photos && photos.length > 0 && (
+        <section style={{ padding: '2rem 0 3rem', background: 'white' }}>
+          <div className="container">
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: photos.length === 1 ? '1fr' : photos.length === 2 ? '1fr 1fr' : 'repeat(3, 1fr)',
+              gap: '0.75rem',
+            }}>
+              {photos.map((p, i) => (
+                <div key={i} style={{
+                  position: 'relative',
+                  aspectRatio: photos.length === 1 ? '16/7' : '4/3',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  background: 'var(--sand)',
+                  gridColumn: photos.length >= 4 && i === 0 ? 'span 2' : undefined,
+                }}>
+                  <Image
+                    src={p.url}
+                    alt={p.alt_text ?? boat.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section style={{ padding: '4rem 0 5rem' }}>
         <div className="container">
