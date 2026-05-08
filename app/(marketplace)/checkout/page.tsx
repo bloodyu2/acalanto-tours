@@ -266,7 +266,9 @@ export default function CheckoutPage() {
     return (
       <main style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
         <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛒</div>
+          <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)' }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+          </div>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--ocean-deep)' }}>
             Seu carrinho está vazio
           </h2>
@@ -496,7 +498,10 @@ export default function CheckoutPage() {
                   color: '#dc2626',
                   fontSize: '0.9rem',
                 }}>
-                  ⚠️ {apiError}
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    {apiError}
+                  </span>
                 </div>
               )}
 
@@ -530,7 +535,8 @@ export default function CheckoutPage() {
                   </>
                 ) : (
                   <>
-                    🔒 CONFIRMAR RESERVA
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    {' '}CONFIRMAR RESERVA
                   </>
                 )}
               </button>
@@ -562,7 +568,15 @@ export default function CheckoutPage() {
                             justifyContent: 'center',
                             fontSize: '1.25rem',
                           }}>
-                            {item.type === 'passeio' ? '⛵' : item.type === 'fotografia' ? '📸' : item.type === 'hospedagem' ? '🏠' : '✨'}
+                            {item.type === 'passeio' ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1 2.4 2.4 0 0 0 2 1 2.4 2.4 0 0 0 2-1 2.4 2.4 0 0 1 2-1 2.4 2.4 0 0 1 2 1"/><path d="M4 18l-2-5h20l-2 5"/><path d="M12 2v3"/><path d="M3 13l3-8 6 2 6-2 3 8"/></svg>
+                            ) : item.type === 'fotografia' ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                            ) : item.type === 'hospedagem' ? (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                            )}
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '0.125rem', lineHeight: '1.3' }}>
@@ -611,13 +625,13 @@ export default function CheckoutPage() {
                   gap: '0.5rem',
                 }}>
                   {[
-                    '🔒 Pagamento seguro e criptografado',
-                    '🛡️ Proteção total via LGPD',
-                    '✅ ASAAS — fintech regulamentada pelo Banco Central',
-                  ].map(line => (
-                    <p key={line} style={{ fontSize: '0.78125rem', color: '#166534', margin: 0, fontWeight: 500 }}>
-                      {line}
-                    </p>
+                    { icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, text: 'Pagamento seguro e criptografado' },
+                    { icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, text: 'Proteção total via LGPD' },
+                    { icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>, text: 'ASAAS — fintech regulamentada pelo Banco Central' },
+                  ].map((item, i) => (
+                    <span key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.78125rem', color: '#166534', fontWeight: 500 }}>
+                      {item.icon} {item.text}
+                    </span>
                   ))}
                 </div>
               </div>
