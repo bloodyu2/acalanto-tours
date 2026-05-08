@@ -1,9 +1,9 @@
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import ServiceBookingWidget from '@/components/booking/ServiceBookingWidget'
+import GalleryLightbox from '@/components/ui/GalleryLightbox'
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -103,30 +103,7 @@ export default async function ServicoPage({ params }: Props) {
       {photos && photos.length > 0 && (
         <section style={{ padding: '2rem 0 3rem', background: 'white' }}>
           <div className="container">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: photos.length === 1 ? '1fr' : photos.length === 2 ? '1fr 1fr' : 'repeat(3, 1fr)',
-              gap: '0.75rem',
-            }}>
-              {photos.map((p, i) => (
-                <div key={i} style={{
-                  position: 'relative',
-                  aspectRatio: photos.length === 1 ? '16/7' : '4/3',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  background: 'var(--sand)',
-                  gridColumn: photos.length >= 4 && i === 0 ? 'span 2' : undefined,
-                }}>
-                  <Image
-                    src={p.url}
-                    alt={p.alt_text ?? svc.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-              ))}
-            </div>
+            <GalleryLightbox images={photos} title={svc.name} />
           </div>
         </section>
       )}

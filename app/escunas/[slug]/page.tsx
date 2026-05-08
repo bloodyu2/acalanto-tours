@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import BookingWidget from '@/components/booking/BookingWidget'
 import { formatCents } from '@/lib/booking/pricing'
 import { FEATURE_LABELS } from '@/lib/constants'
+import GalleryLightbox from '@/components/ui/GalleryLightbox'
 
 // Force dynamic rendering — Supabase env vars may not be present at build time
 export const dynamic = 'force-dynamic'
@@ -182,12 +183,7 @@ export default async function TourPage({ params }: Props) {
                   <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.5rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
                     Galeria
                   </h2>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.625rem' }}>
-                    {gallery.map(img => (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img key={img.id} src={img.url} alt={img.alt_text || boat.name} style={{ width: '100%', height: '130px', objectFit: 'cover', borderRadius: '0.625rem' }} />
-                    ))}
-                  </div>
+                  <GalleryLightbox images={gallery} title={boat.name} />
                 </div>
               )}
             </div>

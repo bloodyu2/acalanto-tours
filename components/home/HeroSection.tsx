@@ -92,67 +92,65 @@ export default function HeroSection({ slides = [] }: HeroSectionProps) {
             fontFamily: 'var(--font-mono)',
             color: 'rgba(255,255,255,0.75)', fontSize: '0.7rem',
             letterSpacing: '0.2em', textTransform: 'uppercase',
-            marginBottom: hasSlides ? '0' : '1.75rem',
+            marginBottom: '0',
             textShadow: hasSlides ? '0 1px 8px rgba(0,0,0,0.8)' : 'none',
           }}>
             <span style={{ display: 'inline-block', width: '20px', height: '1px', background: 'rgba(255,255,255,0.3)' }} />
             Paraty, Rio de Janeiro
           </div>
 
-          {/* H1 + subtitle + CTAs — only when no photo slides */}
-          {!hasSlides && (
-            <>
-              <h1 style={{
-                fontFamily: 'var(--font-playfair)',
-                fontSize: 'clamp(2.75rem, 6.5vw, 4.5rem)',
-                fontWeight: 700,
-                color: 'white',
-                lineHeight: 1.02,
-                letterSpacing: '-0.035em',
-                marginBottom: '1.5rem',
-                marginTop: '1.75rem',
-              }}>
-                Tudo para seu{' '}
-                <span style={{
-                  background: 'linear-gradient(135deg, #F5EDD8 0%, #F4A623 60%, #2E9CBF 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}>
-                  turismo em Paraty
-                </span>
-              </h1>
+          {/* H1 + subtitle + CTAs — always visible */}
+          <h1 style={{
+            fontFamily: 'var(--font-playfair)',
+            fontSize: 'clamp(2.75rem, 6.5vw, 4.5rem)',
+            fontWeight: 700,
+            color: 'white',
+            lineHeight: 1.02,
+            letterSpacing: '-0.035em',
+            marginBottom: '1.5rem',
+            marginTop: '1.75rem',
+            textShadow: hasSlides ? '0 2px 12px rgba(0,0,0,0.6)' : 'none',
+          }}>
+            Tudo para seu{' '}
+            <span style={{
+              background: 'linear-gradient(135deg, #F5EDD8 0%, #F4A623 60%, #2E9CBF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              turismo em Paraty
+            </span>
+          </h1>
 
-              <p style={{
-                fontSize: 'clamp(1rem, 1.8vw, 1.125rem)',
-                color: 'rgba(255,255,255,0.65)',
-                lineHeight: 1.7, marginBottom: '2.25rem',
-                maxWidth: '520px', fontWeight: 400,
-                fontFamily: 'var(--font-jakarta)',
-              }}>
-                Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços — tudo num só lugar, com quem conhece Paraty de verdade.
-              </p>
+          <p style={{
+            fontSize: 'clamp(1rem, 1.8vw, 1.125rem)',
+            color: 'rgba(255,255,255,0.65)',
+            lineHeight: 1.7, marginBottom: '2.25rem',
+            maxWidth: '520px', fontWeight: 400,
+            fontFamily: 'var(--font-jakarta)',
+            textShadow: hasSlides ? '0 1px 8px rgba(0,0,0,0.5)' : 'none',
+          }}>
+            Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços — tudo num só lugar, com quem conhece Paraty de verdade.
+          </p>
 
-              <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
-                <Link href="/passeios" className="btn-primary" style={{
-                  fontSize: '0.9375rem', padding: '0.9375rem 2rem',
-                  background: 'var(--sunset)', color: 'var(--ocean-deep)',
-                  boxShadow: '0 4px 20px rgba(244,166,35,0.35)',
-                }}>
-                  Ver Passeios
-                </Link>
-                <Link href="/quem-somos" className="btn-white" style={{
-                  fontSize: '0.9375rem', padding: '0.9375rem 2rem',
-                }}>
-                  Conheça a Acalanto
-                </Link>
-              </div>
-            </>
-          )}
+          <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
+            <Link href="/passeios" className="btn-primary" style={{
+              fontSize: '0.9375rem', padding: '0.9375rem 2rem',
+              background: 'var(--sunset)', color: 'var(--ocean-deep)',
+              boxShadow: '0 4px 20px rgba(244,166,35,0.35)',
+            }}>
+              Ver Passeios
+            </Link>
+            <Link href="/quem-somos" className="btn-white" style={{
+              fontSize: '0.9375rem', padding: '0.9375rem 2rem',
+            }}>
+              Conheça a Acalanto
+            </Link>
+          </div>
 
           {/* Trust row — always visible */}
           <div style={{
-            display: 'flex', gap: '0', marginTop: hasSlides ? '1.5rem' : '3rem',
+            display: 'flex', gap: '0', marginTop: '1.5rem',
             flexWrap: 'wrap', rowGap: '1rem',
             borderTop: `1px solid ${hasSlides ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)'}`, paddingTop: '1.75rem',
           }}>
