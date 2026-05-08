@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import HeroCarousel from './HeroCarousel'
+import type { HeroSlide } from './HeroCarousel'
 
 const trustItems = [
   { number: '4',  sub: 'passeios',   svg: null as React.ReactNode },
@@ -56,87 +58,103 @@ function BoatOnWave() {
   )
 }
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  slides?: HeroSlide[]
+}
+
+export default function HeroSection({ slides = [] }: HeroSectionProps) {
+  const hasSlides = slides.length > 0
+
   return (
     <section className="hero-section" style={{ paddingTop: '3rem', paddingBottom: '6rem' }}>
 
-      {/* Radial glow — tons oceânicos, sem vermelho/wine */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
-        backgroundImage: [
-          'radial-gradient(ellipse at 15% 75%, rgba(46,156,191,0.18) 0%, transparent 50%)',
-          'radial-gradient(ellipse at 85% 20%, rgba(26,107,138,0.22) 0%, transparent 50%)',
-          'radial-gradient(ellipse at 50% 110%, rgba(10,61,92,0.4) 0%, transparent 55%)',
-        ].join(', '),
-      }} />
+      {/* Photo carousel when listings have images */}
+      {hasSlides && <HeroCarousel slides={slides} />}
+
+      {/* Radial glow — used as sole background when no photos, or as subtle depth layer */}
+      {!hasSlides && (
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+          backgroundImage: [
+            'radial-gradient(ellipse at 15% 75%, rgba(46,156,191,0.18) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 85% 20%, rgba(26,107,138,0.22) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 50% 110%, rgba(10,61,92,0.4) 0%, transparent 55%)',
+          ].join(', '),
+        }} />
+      )}
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '700px' }}>
 
-          {/* Localização */}
+          {/* Localização — always visible */}
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
             fontFamily: 'var(--font-mono)',
-            color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem',
+            color: 'rgba(255,255,255,0.75)', fontSize: '0.7rem',
             letterSpacing: '0.2em', textTransform: 'uppercase',
-            marginBottom: '1.75rem',
+            marginBottom: hasSlides ? '0' : '1.75rem',
+            textShadow: hasSlides ? '0 1px 8px rgba(0,0,0,0.8)' : 'none',
           }}>
             <span style={{ display: 'inline-block', width: '20px', height: '1px', background: 'rgba(255,255,255,0.3)' }} />
             Paraty, Rio de Janeiro
           </div>
 
-          {/* H1 */}
-          <h1 style={{
-            fontFamily: 'var(--font-playfair)',
-            fontSize: 'clamp(2.75rem, 6.5vw, 4.5rem)',
-            fontWeight: 700,
-            color: 'white',
-            lineHeight: 1.02,
-            letterSpacing: '-0.035em',
-            marginBottom: '1.5rem',
-          }}>
-            Tudo para seu{' '}
-            <span style={{
-              background: 'linear-gradient(135deg, #F5EDD8 0%, #F4A623 60%, #2E9CBF 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              turismo em Paraty
-            </span>
-          </h1>
+          {/* H1 + subtitle + CTAs — only when no photo slides */}
+          {!hasSlides && (
+            <>
+              <h1 style={{
+                fontFamily: 'var(--font-playfair)',
+                fontSize: 'clamp(2.75rem, 6.5vw, 4.5rem)',
+                fontWeight: 700,
+                color: 'white',
+                lineHeight: 1.02,
+                letterSpacing: '-0.035em',
+                marginBottom: '1.5rem',
+                marginTop: '1.75rem',
+              }}>
+                Tudo para seu{' '}
+                <span style={{
+                  background: 'linear-gradient(135deg, #F5EDD8 0%, #F4A623 60%, #2E9CBF 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}>
+                  turismo em Paraty
+                </span>
+              </h1>
 
-          {/* Subtítulo */}
-          <p style={{
-            fontSize: 'clamp(1rem, 1.8vw, 1.125rem)',
-            color: 'rgba(255,255,255,0.65)',
-            lineHeight: 1.7, marginBottom: '2.25rem',
-            maxWidth: '520px', fontWeight: 400,
-            fontFamily: 'var(--font-jakarta)',
-          }}>
-            Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços exclusivos — tudo num só lugar, com quem conhece Paraty de verdade.
-          </p>
+              <p style={{
+                fontSize: 'clamp(1rem, 1.8vw, 1.125rem)',
+                color: 'rgba(255,255,255,0.65)',
+                lineHeight: 1.7, marginBottom: '2.25rem',
+                maxWidth: '520px', fontWeight: 400,
+                fontFamily: 'var(--font-jakarta)',
+              }}>
+                Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços — tudo num só lugar, com quem conhece Paraty de verdade.
+              </p>
 
-          {/* CTAs */}
-          <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
-            <Link href="/passeios" className="btn-primary" style={{
-              fontSize: '0.9375rem', padding: '0.9375rem 2rem',
-              background: 'var(--sunset)', color: 'var(--ocean-deep)',
-              boxShadow: '0 4px 20px rgba(244,166,35,0.35)',
-            }}>
-              Ver Passeios
-            </Link>
-            <Link href="/quem-somos" className="btn-white" style={{
-              fontSize: '0.9375rem', padding: '0.9375rem 2rem',
-            }}>
-              Conheça a Acalanto
-            </Link>
-          </div>
+              <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap' }}>
+                <Link href="/passeios" className="btn-primary" style={{
+                  fontSize: '0.9375rem', padding: '0.9375rem 2rem',
+                  background: 'var(--sunset)', color: 'var(--ocean-deep)',
+                  boxShadow: '0 4px 20px rgba(244,166,35,0.35)',
+                }}>
+                  Ver Passeios
+                </Link>
+                <Link href="/quem-somos" className="btn-white" style={{
+                  fontSize: '0.9375rem', padding: '0.9375rem 2rem',
+                }}>
+                  Conheça a Acalanto
+                </Link>
+              </div>
+            </>
+          )}
 
-          {/* Trust row */}
+          {/* Trust row — always visible */}
           <div style={{
-            display: 'flex', gap: '0', marginTop: '3rem', flexWrap: 'wrap', rowGap: '1rem',
-            borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.75rem',
+            display: 'flex', gap: '0', marginTop: hasSlides ? '1.5rem' : '3rem',
+            flexWrap: 'wrap', rowGap: '1rem',
+            borderTop: `1px solid ${hasSlides ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)'}`, paddingTop: '1.75rem',
           }}>
             {trustItems.map(({ svg, number, sub }, i) => (
               <div key={sub} style={{
@@ -152,13 +170,17 @@ export default function HeroSection() {
                   fontFamily: 'var(--font-playfair)',
                   fontSize: '1.625rem', fontWeight: 700, color: 'white',
                   letterSpacing: '-0.03em',
+                  textShadow: hasSlides ? '0 1px 10px rgba(0,0,0,0.9)' : 'none',
+                  filter: hasSlides ? 'drop-shadow(0 1px 4px rgba(0,0,0,0.7))' : 'none',
                 }}>
                   {number ?? svg}
                 </div>
                 <div style={{
                   fontFamily: 'var(--font-mono)', fontSize: '0.65rem',
-                  color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em',
+                  color: hasSlides ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.4)',
+                  letterSpacing: '0.1em',
                   textTransform: 'uppercase', marginTop: '0.35rem',
+                  textShadow: hasSlides ? '0 1px 6px rgba(0,0,0,0.8)' : 'none',
                 }}>
                   {sub}
                 </div>
@@ -169,37 +191,30 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll down hint — hidden on mobile to avoid overlapping trust bar */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          bottom: '96px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4px',
-          animation: 'scrollHintBounce 2s ease-in-out infinite',
-          cursor: 'default',
-        }}
-        className="hero-scroll-hint"
-      >
-        <span style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '0.6rem',
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.45)',
-        }}>
-          role
-        </span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sunset)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </div>
+      {/* Scroll hint — only without slides to avoid overlapping the carousel card */}
+      {!hasSlides && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute', bottom: '96px', left: '50%',
+            transform: 'translateX(-50%)', zIndex: 2,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+            animation: 'scrollHintBounce 2s ease-in-out infinite', cursor: 'default',
+          }}
+          className="hero-scroll-hint"
+        >
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: '0.6rem',
+            letterSpacing: '0.15em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.45)',
+          }}>
+            role
+          </span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sunset)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+      )}
 
       {/* Bottom wave */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0 }}>

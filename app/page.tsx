@@ -6,11 +6,52 @@ import VerticalsSection from '@/components/home/VerticalsSection'
 import ToursSection from '@/components/home/ToursSection'
 import ServicesSection from '@/components/home/ServicesSection'
 import TestimonialsSection from '@/components/home/TestimonialsSection'
+import { createClient } from '@/lib/supabase/server'
+import type { HeroSlide } from '@/components/home/HeroCarousel'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const sb = await createClient()
+
+  // Boats with cover_image or first gallery photo as fallback
+  const { data: boats } = await sb
+    .from('boats')
+    .select('id, slug, name, tagline, price_adult, cover_image')
+    .eq('active', true)
+    .order('display_order', { ascending: true })
+
+  const { data: galleryRows } = await sb
+    .from('gallery')
+    .select('boat_id, url')
+    .not('boat_id', 'is', null)
+    .order('display_order', { ascending: true })
+
+  // Build first-gallery-photo lookup per boat
+  const firstGallery: Record<string, string> = {}
+  for (const g of galleryRows ?? []) {
+    if (g.boat_id && !firstGallery[g.boat_id]) firstGallery[g.boat_id] = g.url
+  }
+
+  const heroSlides: HeroSlide[] = (boats ?? [])
+    .map(b => {
+      const photo = b.cover_image ?? firstGallery[b.id] ?? null
+      if (!photo) return null
+      const priceFormatted = b.price_adult
+        ? `A partir de R$${(b.price_adult / 100).toFixed(0)}/adulto`
+        : undefined
+      return {
+        url: photo,
+        alt: `${b.name} — passeio em Paraty`,
+        href: `/passeios/${b.slug}`,
+        name: b.name,
+        tagline: b.tagline ?? '',
+        priceLabel: priceFormatted,
+      } satisfies HeroSlide
+    })
+    .filter((s): s is HeroSlide => s !== null)
+
   return (
     <>
-      <HeroSection />
+      <HeroSection slides={heroSlides} />
       <VerticalsSection />
       <ToursSection />
       <ServicesSection />
