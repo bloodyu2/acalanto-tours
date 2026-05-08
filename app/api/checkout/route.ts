@@ -11,10 +11,12 @@ type BookingInsert = Database['public']['Tables']['bookings']['Insert']
 
 const CheckoutSchema = z.object({
   billingType: z.enum(['PIX', 'CREDIT_CARD', 'BOLETO', 'DEBIT_CARD']),
-  customerName:  z.string().min(3).max(120),
-  customerEmail: z.string().email(),
-  customerPhone: z.string().min(10).max(20),
-  cpf:           z.string().refine(isValidCpf, { message: 'CPF inválido' }),
+  customer: z.object({
+    name:  z.string().min(3).max(120),
+    email: z.string().email(),
+    phone: z.string().min(10).max(20),
+    cpf:   z.string().refine(isValidCpf, { message: 'CPF inválido' }),
+  }),
   items: z.array(z.object({
     id:                       z.string(),
     type:                     z.enum(['passeio', 'fotografia', 'servico', 'hospedagem']),
@@ -62,10 +64,15 @@ export async function POST(request: NextRequest) {
 
   const parsed = CheckoutSchema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
+    const msgs = parsed.error.issues.map(i => i.message).join(', ')
+    return NextResponse.json({ error: msgs || 'Dados inválidos' }, { status: 400 })
   }
 
-  const { billingType, customerName, customerEmail, customerPhone, cpf, items } = parsed.data
+  const { billingType, customer, items } = parsed.data
+  const customerName  = customer.name
+  const customerEmail = customer.email
+  const customerPhone = customer.phone
+  const cpf           = customer.cpf
 
   // Server-side price recalculation — never trust client total
   const totalCents = items.reduce((sum, item) => sum + calcItemCents(item), 0)
