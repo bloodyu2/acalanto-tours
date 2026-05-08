@@ -167,7 +167,7 @@ export async function POST(request: NextRequest) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[checkout] error message:', msg)
     return NextResponse.json(
-      { error: 'Erro ao processar pagamento. Tente novamente.', _debug: msg },
+      { error: 'Erro ao processar pagamento. Tente novamente.' },
       { status: 500 }
     )
   }
