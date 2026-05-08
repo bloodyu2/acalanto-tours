@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       if (nights.length > 0) {
         const { error: availError } = await supabase
           .from('accommodation_availability')
-          .upsert(nights, { onConflict: 'room_id,date' })
+          .upsert(nights, { onConflict: 'room_id,date', ignoreDuplicates: false })
 
         if (availError) {
           console.error('[webhook/asaas] availability upsert error:', availError)
