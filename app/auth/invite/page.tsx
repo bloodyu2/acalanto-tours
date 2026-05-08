@@ -56,7 +56,9 @@ function InviteAcceptForm() {
   if (status === 'success') {
     return (
       <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
+        <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)' }}>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5.8 11.3-2 5.4a.5.5 0 0 0 .6.6l5.4-2 8-8a2 2 0 0 0-3-3l-9 7Z"/><path d="m14 7 3 3"/></svg>
+        </div>
         <h1 style={{ fontFamily: 'var(--font-playfair)', color: 'var(--ocean-deep)', marginBottom: '0.75rem' }}>
           Conta ativada!
         </h1>
@@ -73,7 +75,9 @@ function InviteAcceptForm() {
   if (status === 'error') {
     return (
       <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
+        <div style={{ marginBottom: '1rem', color: '#f59e0b' }}>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
         <h1 style={{ fontFamily: 'var(--font-playfair)', color: 'var(--ocean-deep)', marginBottom: '0.75rem' }}>
           Link inválido
         </h1>
