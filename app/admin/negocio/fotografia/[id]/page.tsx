@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import ImageUploader from '@/components/admin/ImageUploader'
 
 export const dynamic = 'force-dynamic'
 
@@ -75,10 +76,7 @@ export default async function EditPacotePage({ params }: { params: Promise<{ id:
           <label className="form-label">O que inclui (um item por linha)</label>
           <textarea className="form-input" name="includes" rows={4} style={{ resize: 'vertical' }} defaultValue={includesStr} />
         </div>
-        <div className="form-group">
-          <label className="form-label">Imagem de capa (URL)</label>
-          <input className="form-input" name="cover_image" type="url" defaultValue={pkg.cover_image ?? ''} />
-        </div>
+        <ImageUploader name="cover_image" currentUrl={pkg.cover_image} />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div className="form-group">
             <label className="form-label">Ordem de exibição</label>

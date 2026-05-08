@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import ImageUploader from '@/components/admin/ImageUploader'
 
 export const dynamic = 'force-dynamic'
 
@@ -78,10 +79,7 @@ export default async function EditServicoPage({ params }: { params: Promise<{ id
             <input className="form-input" name="display_order" type="number" defaultValue={s.display_order} />
           </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Imagem de capa (URL)</label>
-          <input className="form-input" name="cover_image" type="url" defaultValue={s.cover_image ?? ''} />
-        </div>
+        <ImageUploader name="cover_image" currentUrl={s.cover_image} />
         <div className="form-group">
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
             <input type="checkbox" name="active" defaultChecked={s.active} /> Ativo

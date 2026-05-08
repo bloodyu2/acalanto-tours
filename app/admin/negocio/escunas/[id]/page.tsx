@@ -2,6 +2,8 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { FEATURE_LABELS } from '@/lib/constants'
 import Link from 'next/link'
+import ImageUploader from '@/components/admin/ImageUploader'
+import BoatGallery from '@/components/admin/BoatGallery'
 
 export const dynamic = 'force-dynamic'
 
@@ -37,7 +39,10 @@ async function updateBoat(id: string, formData: FormData) {
 export default async function EditEscunaPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createAdminClient()
-  const { data: boat } = await supabase.from('boats').select('*').eq('id', id).single()
+  const [{ data: boat }, { data: galleryImages }] = await Promise.all([
+    supabase.from('boats').select('*').eq('id', id).single(),
+    supabase.from('gallery').select('id, url, alt_text, display_order').eq('boat_id', id).order('display_order'),
+  ])
   if (!boat) notFound()
 
   const itineraryStr = Array.isArray(boat.itinerary) ? JSON.stringify(boat.itinerary, null, 2) : '[]'
@@ -100,10 +105,7 @@ export default async function EditEscunaPage({ params }: { params: Promise<{ id:
             <input className="form-input" name="child_half_until_age" type="number" defaultValue={boat.child_half_until_age} />
           </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Imagem de capa (URL)</label>
-          <input className="form-input" name="cover_image" type="url" defaultValue={boat.cover_image ?? ''} />
-        </div>
+        <ImageUploader name="cover_image" currentUrl={boat.cover_image} />
         <div className="form-group">
           <label className="form-label">Destaques</label>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.75rem', border: '1px solid var(--border)', borderRadius: '8px' }}>
@@ -134,6 +136,11 @@ export default async function EditEscunaPage({ params }: { params: Promise<{ id:
           <Link href="/admin/negocio/escunas" className="btn-outline" style={{ textDecoration: 'none' }}>Cancelar</Link>
         </div>
       </form>
+
+      {/* Gallery — managed independently (no page reload needed) */}
+      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+        <BoatGallery boatId={id} initialImages={galleryImages ?? []} />
+      </div>
     </div>
   )
 }
