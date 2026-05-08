@@ -12,7 +12,12 @@ export default function NotFound() {
       padding: '2rem',
       background: 'var(--sand)',
     }}>
-      <div style={{ fontSize: '5rem', marginBottom: '1rem' }}>🌊</div>
+      <div style={{ marginBottom: '1.5rem', color: 'var(--ocean-mid)' }}>
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 12c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0"/>
+          <path d="M2 17c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0"/>
+        </svg>
+      </div>
       <h1 style={{
         fontFamily: 'var(--font-playfair)',
         fontSize: 'clamp(2rem, 5vw, 3rem)',
