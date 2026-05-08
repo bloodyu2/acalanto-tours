@@ -15,6 +15,17 @@ type Listing = {
   description: string | null
   cover_image: string | null
   active: boolean
+  slug: string
+}
+
+type IcalSource = {
+  id: string
+  label: string
+  url: string
+  active: boolean
+  last_synced_at: string | null
+  sync_status: string | null
+  error_message: string | null
 }
 
 type Partner = {
@@ -51,6 +62,16 @@ export default function MeusAnunciosPage() {
   const [error, setError] = useState<string | null>(null)
   const [notFound, setNotFound] = useState(false)
 
+  // iCal sync state — keyed by listing id
+  const [icalSources, setIcalSources] = useState<Record<string, IcalSource[]>>({})
+  const [icalOpen, setIcalOpen] = useState<Record<string, boolean>>({})
+  const [icalAddingFor, setIcalAddingFor] = useState<string | null>(null)
+  const [icalNewLabel, setIcalNewLabel] = useState('')
+  const [icalNewUrl, setIcalNewUrl] = useState('')
+  const [icalSaving, setIcalSaving] = useState(false)
+  const [icalSyncing, setIcalSyncing] = useState<Record<string, boolean>>({})
+  const [icalCopied, setIcalCopied] = useState<Record<string, boolean>>({})
+
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
@@ -67,7 +88,7 @@ export default function MeusAnunciosPage() {
 
       const { data: rows } = await supabase
         .from('partner_listings')
-        .select('id, title, type, status, rejection_reason, price_label, description, cover_image, active')
+        .select('id, title, type, status, rejection_reason, price_label, description, cover_image, active, slug')
         .eq('partner_id', partnerRow.id)
         .order('created_at', { ascending: false })
 
@@ -120,7 +141,7 @@ export default function MeusAnunciosPage() {
     // Refresh listings
     const { data: rows } = await supabase
       .from('partner_listings')
-      .select('id, title, type, status, rejection_reason, price_label, description, cover_image, active')
+      .select('id, title, type, status, rejection_reason, price_label, description, cover_image, active, slug')
       .eq('partner_id', partner!.id)
       .order('created_at', { ascending: false })
 
@@ -128,6 +149,58 @@ export default function MeusAnunciosPage() {
     setEditingId(null)
     setEditForm({})
     setSaving(false)
+  }
+
+  async function loadIcalSources(listingId: string) {
+    const { data } = await supabase
+      .from('ical_sources')
+      .select('id, label, url, active, last_synced_at, sync_status, error_message')
+      .eq('listing_id', listingId)
+      .eq('direction', 'import')
+      .order('created_at')
+    setIcalSources(prev => ({ ...prev, [listingId]: data ?? [] }))
+  }
+
+  function toggleIcalSection(listingId: string) {
+    const opening = !icalOpen[listingId]
+    setIcalOpen(prev => ({ ...prev, [listingId]: opening }))
+    if (opening && !icalSources[listingId]) loadIcalSources(listingId)
+  }
+
+  async function addIcalSource(listingId: string) {
+    if (!icalNewLabel.trim() || !icalNewUrl.trim()) return
+    setIcalSaving(true)
+    await supabase.from('ical_sources').insert({
+      listing_id: listingId,
+      label: icalNewLabel.trim(),
+      url: icalNewUrl.trim(),
+      direction: 'import',
+      active: true,
+    })
+    setIcalNewLabel('')
+    setIcalNewUrl('')
+    setIcalAddingFor(null)
+    await loadIcalSources(listingId)
+    setIcalSaving(false)
+  }
+
+  async function deleteIcalSource(listingId: string, sourceId: string) {
+    await supabase.from('ical_sources').delete().eq('id', sourceId)
+    await loadIcalSources(listingId)
+  }
+
+  async function syncNow(listingId: string) {
+    setIcalSyncing(prev => ({ ...prev, [listingId]: true }))
+    await fetch(`/api/ical/sync-partner/${listingId}`, { method: 'POST' })
+    await loadIcalSources(listingId)
+    setIcalSyncing(prev => ({ ...prev, [listingId]: false }))
+  }
+
+  async function copyIcalUrl(listingId: string, slug: string) {
+    const url = `${window.location.origin}/api/ical/${slug}.ics`
+    await navigator.clipboard.writeText(url)
+    setIcalCopied(prev => ({ ...prev, [listingId]: true }))
+    setTimeout(() => setIcalCopied(prev => ({ ...prev, [listingId]: false })), 2000)
   }
 
   if (loading) {
@@ -327,6 +400,150 @@ export default function MeusAnunciosPage() {
                           Cancelar
                         </button>
                       </div>
+                    </div>
+                  )}
+
+                  {/* iCal Sync — only for approved hospedagem */}
+                  {listing.type === 'hospedagem' && listing.status === 'approved' && (
+                    <div style={{ borderTop: '1px solid var(--border)' }}>
+                      <button
+                        type="button"
+                        onClick={() => toggleIcalSection(listing.id)}
+                        style={{ width: '100%', padding: '0.875rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600, color: 'var(--ocean-deep)', textAlign: 'left' }}
+                      >
+                        <span>🔄 Sincronização de calendário</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          {icalOpen[listing.id] ? '▲ Fechar' : '▼ Abrir'}
+                        </span>
+                      </button>
+
+                      {icalOpen[listing.id] && (
+                        <div style={{ padding: '0 1.5rem 1.5rem', background: '#f9fafb' }}>
+
+                          {/* Export: Seu calendário no Acalanto */}
+                          <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'white', borderRadius: '0.625rem', border: '1px solid var(--border)' }}>
+                            <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--ocean-deep)', marginBottom: '0.35rem', marginTop: 0 }}>
+                              Seu calendário no Acalanto
+                            </p>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
+                              Cole esta URL no seu Google Calendar, Airbnb ou Booking.com para que eles vejam as reservas do Acalanto automaticamente.
+                            </p>
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                              <code style={{ flex: 1, fontSize: '0.7rem', background: '#f1f5f9', padding: '0.5rem 0.75rem', borderRadius: '0.375rem', overflowX: 'auto', whiteSpace: 'nowrap', display: 'block' }}>
+                                {`${typeof window !== 'undefined' ? window.location.origin : ''}/api/ical/${listing.slug}.ics`}
+                              </code>
+                              <button
+                                type="button"
+                                onClick={() => copyIcalUrl(listing.id, listing.slug)}
+                                style={{ flexShrink: 0, padding: '0.5rem 0.875rem', background: icalCopied[listing.id] ? '#dcfce7' : 'var(--ocean-deep)', color: icalCopied[listing.id] ? '#166534' : 'white', border: 'none', borderRadius: '0.375rem', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                              >
+                                {icalCopied[listing.id] ? 'Copiado!' : 'Copiar'}
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Import: Calendários externos */}
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                              <p style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--ocean-deep)', margin: 0 }}>
+                                Calendários externos
+                              </p>
+                              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => syncNow(listing.id)}
+                                  disabled={icalSyncing[listing.id]}
+                                  style={{ padding: '0.375rem 0.75rem', background: 'white', border: '1.5px solid var(--border)', borderRadius: '0.375rem', fontSize: '0.75rem', fontWeight: 600, cursor: icalSyncing[listing.id] ? 'not-allowed' : 'pointer', opacity: icalSyncing[listing.id] ? 0.6 : 1 }}
+                                >
+                                  {icalSyncing[listing.id] ? 'Sincronizando...' : '↺ Sincronizar agora'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => { setIcalAddingFor(listing.id); setIcalNewLabel(''); setIcalNewUrl('') }}
+                                  style={{ padding: '0.375rem 0.75rem', background: 'var(--ocean-deep)', color: 'white', border: 'none', borderRadius: '0.375rem', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer' }}
+                                >
+                                  + Adicionar
+                                </button>
+                              </div>
+                            </div>
+
+                            {icalAddingFor === listing.id && (
+                              <div style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '0.625rem', padding: '1rem', marginBottom: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+                                <input
+                                  type="text"
+                                  placeholder="Nome (ex: Airbnb, Google Calendar)"
+                                  value={icalNewLabel}
+                                  onChange={e => setIcalNewLabel(e.target.value)}
+                                  style={{ border: '1.5px solid var(--border)', borderRadius: '0.375rem', padding: '0.5rem 0.75rem', fontSize: '0.85rem', outline: 'none' }}
+                                />
+                                <input
+                                  type="url"
+                                  placeholder="URL iCal (começa com https://...)"
+                                  value={icalNewUrl}
+                                  onChange={e => setIcalNewUrl(e.target.value)}
+                                  style={{ border: '1.5px solid var(--border)', borderRadius: '0.375rem', padding: '0.5rem 0.75rem', fontSize: '0.85rem', outline: 'none' }}
+                                />
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => addIcalSource(listing.id)}
+                                    disabled={icalSaving || !icalNewLabel.trim() || !icalNewUrl.trim()}
+                                    style={{ padding: '0.5rem 1rem', background: 'var(--ocean-deep)', color: 'white', border: 'none', borderRadius: '0.375rem', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', opacity: icalSaving ? 0.6 : 1 }}
+                                  >
+                                    {icalSaving ? 'Salvando...' : 'Salvar'}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setIcalAddingFor(null)}
+                                    style={{ padding: '0.5rem 1rem', background: 'white', border: '1.5px solid var(--border)', borderRadius: '0.375rem', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', color: 'var(--text-muted)' }}
+                                  >
+                                    Cancelar
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+
+                            {(icalSources[listing.id] ?? []).length === 0 ? (
+                              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                                Nenhum calendário externo cadastrado ainda.
+                              </p>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                {(icalSources[listing.id] ?? []).map(src => (
+                                  <div key={src.id} style={{ background: 'white', border: '1px solid var(--border)', borderRadius: '0.625rem', padding: '0.75rem 1rem', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                      <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: '0 0 0.2rem' }}>{src.label}</p>
+                                      <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '0 0 0.25rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        {src.url}
+                                      </p>
+                                      {src.sync_status === 'error' ? (
+                                        <p style={{ fontSize: '0.7rem', color: '#dc2626', margin: 0 }}>
+                                          Erro na última sync: {src.error_message ?? 'desconhecido'}
+                                        </p>
+                                      ) : src.last_synced_at ? (
+                                        <p style={{ fontSize: '0.7rem', color: '#16a34a', margin: 0 }}>
+                                          Última sync: {new Date(src.last_synced_at).toLocaleString('pt-BR')}
+                                        </p>
+                                      ) : (
+                                        <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0, fontStyle: 'italic' }}>
+                                          Ainda não sincronizado
+                                        </p>
+                                      )}
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => deleteIcalSource(listing.id, src.id)}
+                                      style={{ flexShrink: 0, padding: '0.375rem 0.625rem', background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca', borderRadius: '0.375rem', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}
+                                    >
+                                      Remover
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
