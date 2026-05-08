@@ -54,6 +54,14 @@ export async function getCharge(id: string): Promise<AsaasCharge> {
   return asaasFetch<AsaasCharge>(`/payments/${id}`)
 }
 
+export async function getPixQrCode(paymentId: string): Promise<{ encodedImage: string; payload: string } | null> {
+  try {
+    return await asaasFetch<{ encodedImage: string; payload: string }>(`/payments/${paymentId}/pixQrCode`)
+  } catch {
+    return null
+  }
+}
+
 export async function createSubconta(
   data: AsaasSubcontaRequest
 ): Promise<AsaasSubcontaResponse> {

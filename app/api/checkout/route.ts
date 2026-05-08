@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/server'
-import { createOrFindCustomer, createCharge } from '@/lib/asaas/client'
+import { createOrFindCustomer, createCharge, getPixQrCode } from '@/lib/asaas/client'
 import { buildSplit, type CartItemWithPartner } from '@/lib/asaas/split'
 import { hashCpf, isValidCpf, cleanCpf } from '@/lib/crypto/cpf'
 import type { AsaasBillingType } from '@/lib/asaas/types'
@@ -111,6 +111,12 @@ export async function POST(request: NextRequest) {
       split,
     })
 
+    // 5b. For PIX, fetch QR code separately (not returned in charge creation)
+    let pixQrCodeData: { encodedImage: string; payload: string } | null = null
+    if (billingType === 'PIX') {
+      pixQrCodeData = await getPixQrCode(charge.id)
+    }
+
     // 6. Hash CPF — raw CPF never touches the DB
     const cpfHash = hashCpf(cpf)
 
@@ -136,8 +142,8 @@ export async function POST(request: NextRequest) {
       payment_method:           billingType,
       payment_status:           'pending',
       payment_url:              charge.invoiceUrl ?? charge.bankSlipUrl,
-      pix_qr_code:              charge.pixQrCode?.encodedImage ?? null,
-      pix_copy_paste:           charge.pixQrCode?.payload ?? null,
+      pix_qr_code:              pixQrCodeData?.encodedImage ?? null,
+      pix_copy_paste:           pixQrCodeData?.payload ?? null,
       accommodation_room_id:    primaryItem.accommodationRoomId ?? null,
       check_out:                primaryItem.checkOut ?? null,
       status:                   'pending',
@@ -163,8 +169,8 @@ export async function POST(request: NextRequest) {
       billingType,
       totalCents,
       paymentUrl:   charge.invoiceUrl ?? charge.bankSlipUrl,
-      pixQrCode:    charge.pixQrCode?.encodedImage ?? null,
-      pixCopyPaste: charge.pixQrCode?.payload ?? null,
+      pixQrCode:    pixQrCodeData?.encodedImage ?? null,
+      pixCopyPaste: pixQrCodeData?.payload ?? null,
     })
 
   } catch (err) {
