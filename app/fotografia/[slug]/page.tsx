@@ -201,8 +201,8 @@ export default async function FotografiaDetailPage({ params }: Props) {
               </div>
             )}
 
-            {/* Photographer bio */}
-            {partnerPage?.bio && (
+            {/* Photographer info */}
+            {partnerPage?.bio ? (
               <div className="card" style={{ padding: '1.75rem' }}>
                 <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, margin: '0 0 1rem', color: 'var(--text-primary)' }}>
                   Sobre o fotógrafo
@@ -239,6 +239,32 @@ export default async function FotografiaDetailPage({ params }: Props) {
                   </a>
                 )}
               </div>
+            ) : (
+              <div className="card" style={{ padding: '1.75rem' }}>
+                <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, margin: '0 0 1rem', color: 'var(--text-primary)' }}>
+                  Quem fotografa
+                </h2>
+                <p style={{ margin: '0 0 1rem', color: 'var(--text-muted)', lineHeight: 1.75 }}>
+                  Este pacote é realizado pelos <strong>Fotógrafos de Paraty</strong> — um coletivo de fotógrafos profissionais especializados em passeios náuticos na baía de Paraty. Um fotógrafo embarca junto com você e registra toda a experiência.
+                </p>
+                <a
+                  href="https://www.instagram.com/fotografosdeparaty"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    color: 'var(--ocean-mid)',
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                  @fotografosdeparaty no Instagram
+                </a>
+              </div>
             )}
 
             {/* How delivery works */}
@@ -248,8 +274,8 @@ export default async function FotografiaDetailPage({ params }: Props) {
               </h2>
               <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1rem', counterReset: 'steps' }}>
                 {[
-                  'O fotógrafo embarca junto com você na escuna no dia do passeio.',
-                  'Durante todo o passeio, ele registra os momentos mais especiais.',
+                  'Um fotógrafo profissional embarca junto com você na escuna no dia do passeio.',
+                  'Durante todo o passeio, os melhores momentos são registrados — das baías às praias.',
                   'As fotos são editadas profissionalmente após o passeio.',
                   'Você recebe um link privado de download em até 48 horas.',
                 ].map((step, idx) => (
