@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 export interface HeroSlide {
@@ -56,18 +55,14 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
     >
       {/* Slides */}
       {slides.map((slide, i) => (
-        <Link
+        <div
           key={slide.href}
-          href={slide.href}
-          aria-label={`Ver ${slide.name}`}
           style={{
             position: 'absolute',
             inset: 0,
-            display: 'block',
             opacity: i === current ? 1 : 0,
             transition: 'opacity 1.2s ease-in-out',
-            pointerEvents: i === current ? 'auto' : 'none',
-            cursor: 'pointer',
+            pointerEvents: 'none',
           }}
         >
           <Image
@@ -84,88 +79,11 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
             position: 'absolute',
             inset: 0,
             background: [
-              'linear-gradient(to top, rgba(10,61,92,0.95) 0%, rgba(10,61,92,0.65) 28%, rgba(10,61,92,0.2) 60%, transparent 100%)',
-              'linear-gradient(to right, rgba(5,30,55,0.72) 0%, rgba(5,30,55,0.4) 40%, transparent 70%)',
+              'linear-gradient(to top, rgba(10,61,92,0.9) 0%, rgba(10,61,92,0.55) 25%, rgba(10,61,92,0.15) 55%, transparent 100%)',
+              'linear-gradient(to right, rgba(5,30,55,0.65) 0%, rgba(5,30,55,0.3) 40%, transparent 70%)',
             ].join(', '),
           }} />
-
-          {/* slide ad card — bottom left */}
-          <div style={{
-            position: 'absolute',
-            bottom: '5.5rem',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '100%',
-            maxWidth: '680px',
-            padding: '0 1.5rem',
-            boxSizing: 'border-box',
-          }}>
-            <div style={{
-              background: 'rgba(10,61,92,0.55)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              border: '1px solid rgba(245,237,216,0.15)',
-              borderRadius: '1rem',
-              padding: '1.25rem 1.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '1rem',
-            }}>
-              <div>
-                <div style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.62rem',
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  color: 'var(--sunset)',
-                  marginBottom: '0.35rem',
-                }}>
-                  {slide.priceLabel ?? 'Ver passeio'}
-                </div>
-                <div style={{
-                  fontFamily: 'var(--font-playfair)',
-                  fontSize: 'clamp(1.2rem, 3vw, 1.6rem)',
-                  fontWeight: 700,
-                  color: 'white',
-                  lineHeight: 1.1,
-                  marginBottom: '0.3rem',
-                }}>
-                  {slide.name}
-                </div>
-                <div style={{
-                  fontFamily: 'var(--font-jakarta)',
-                  fontSize: '0.875rem',
-                  color: 'rgba(255,255,255,0.7)',
-                  lineHeight: 1.4,
-                }}>
-                  {slide.tagline}
-                </div>
-              </div>
-
-              <div style={{
-                flexShrink: 0,
-                background: 'var(--sunset)',
-                color: 'var(--ocean-deep)',
-                fontFamily: 'var(--font-jakarta)',
-                fontWeight: 700,
-                fontSize: '0.8125rem',
-                padding: '0.7rem 1.2rem',
-                borderRadius: '0.5rem',
-                whiteSpace: 'nowrap',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-              }}>
-                Reservar
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </Link>
+        </div>
       ))}
 
       {/* nav dots */}
