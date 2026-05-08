@@ -4,6 +4,7 @@ import { FEATURE_LABELS } from '@/lib/constants'
 import Link from 'next/link'
 import ImageUploader from '@/components/admin/ImageUploader'
 import BoatGallery from '@/components/admin/BoatGallery'
+import DepartureTimesManager from '@/components/admin/DepartureTimesManager'
 
 export const dynamic = 'force-dynamic'
 
@@ -136,6 +137,11 @@ export default async function EditEscunaPage({ params }: { params: Promise<{ id:
           <Link href="/admin/negocio/escunas" className="btn-outline" style={{ textDecoration: 'none' }}>Cancelar</Link>
         </div>
       </form>
+
+      {/* Horários de saída */}
+      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+        <DepartureTimesManager entityField="boat_id" entityId={id} />
+      </div>
 
       {/* Gallery — managed independently (no page reload needed) */}
       <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>

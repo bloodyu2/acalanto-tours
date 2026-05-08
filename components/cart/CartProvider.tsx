@@ -17,6 +17,9 @@ export type CartItem = {
   providerName?: string
   providerId?: string
   utmCampaign?: string | null
+  // Departure time fields (passeio + servico)
+  departureTimeId?: string
+  departureTimeLabel?: string // e.g. "10:30" or "Manhã — 10:30"
   // Serviço fields
   serviceId?: string
   pricingType?: 'per_person' | 'per_group'

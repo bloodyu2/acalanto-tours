@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
 import ImageUploader from '@/components/admin/ImageUploader'
 import GalleryManager from '@/components/admin/GalleryManager'
+import DepartureTimesManager from '@/components/admin/DepartureTimesManager'
 
 export const dynamic = 'force-dynamic'
 
@@ -94,6 +95,11 @@ export default async function EditServicoPage({ params }: { params: Promise<{ id
           <Link href="/admin/negocio/servicos" className="btn-outline" style={{ textDecoration: 'none' }}>Cancelar</Link>
         </div>
       </form>
+
+      {/* Horários */}
+      <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
+        <DepartureTimesManager entityField="service_id" entityId={id} />
+      </div>
 
       {/* Gallery — managed independently */}
       <div style={{ background: 'white', padding: '1.5rem', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: '1.5rem' }}>
