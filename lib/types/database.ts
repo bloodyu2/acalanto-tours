@@ -106,6 +106,7 @@ export interface Database {
           date: string
           status: 'available' | 'blocked' | 'booked'
           source: 'manual' | 'ical' | 'acalanto'
+          room_id: string | null
           created_at: string
         }
         Insert: Omit<Database['public']['Tables']['accommodation_availability']['Row'], 'id' | 'created_at'>
@@ -131,6 +132,9 @@ export interface Database {
           id: string
           boat_id: string | null
           service_id: string | null
+          listing_id: string | null
+          room_id: string | null
+          photographer_package_id: string | null
           url: string
           alt_text: string | null
           display_order: number
@@ -191,7 +195,9 @@ export interface Database {
           payment_status:     string
           payment_url:        string | null
           pix_qr_code:        string | null
-          pix_copy_paste:     string | null
+          pix_copy_paste:        string | null
+          accommodation_room_id: string | null
+          check_out:             string | null
           created_at: string
         }
         Insert: Omit<Database['public']['Tables']['bookings']['Row'], 'id' | 'created_at'>
@@ -380,6 +386,25 @@ export interface Database {
         }
         Update: Partial<Database['public']['Tables']['service_providers']['Insert']>
       }
+      accommodation_rooms: {
+        Row: {
+          id: string
+          listing_id: string
+          name: string
+          description: string | null
+          price_per_night_cents: number
+          price_extra_guest_cents: number
+          max_guests: number
+          min_nights: number
+          amenities: string[]
+          cover_image: string | null
+          display_order: number
+          active: boolean
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['accommodation_rooms']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['accommodation_rooms']['Insert']>
+      }
       roadmap_tasks: {
         Row: {
           id:          string
@@ -427,6 +452,7 @@ export type AccommodationAvailability = Database['public']['Tables']['accommodat
 export type ICalSource = Database['public']['Tables']['ical_sources']['Row']
 export type BlogPost = Database['public']['Tables']['blog_posts']['Row']
 export type RoadmapTask = Database['public']['Tables']['roadmap_tasks']['Row']
+export type AccommodationRoom = Database['public']['Tables']['accommodation_rooms']['Row']
 export type ServiceProvider = {
   id: string
   partner_id: string

@@ -87,7 +87,20 @@ export default function CadastroAnuncioPage() {
       return
     }
 
-    router.push('/parceiros/cadastro/aguardando')
+    if (type === 'hospedagem') {
+      const { data: created } = await supabase
+        .from('partner_listings')
+        .select('id')
+        .eq('partner_id', partnerId)
+        .eq('type', 'hospedagem')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+      if (created) sessionStorage.setItem('onboarding_listing_id', created.id)
+      router.push('/parceiros/cadastro/quartos')
+    } else {
+      router.push('/parceiros/cadastro/aguardando')
+    }
   }
 
   if (!type) return null
@@ -112,7 +125,12 @@ export default function CadastroAnuncioPage() {
         </div>
 
         <div style={{ background: 'white', borderRadius: '20px', padding: '2.5rem', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
-          <WizardSteps current={4} />
+          <WizardSteps
+            current={4}
+            steps={type === 'hospedagem'
+              ? ['Conta', 'Tipo', 'Dados', 'Anúncio', 'Quartos', 'Pronto']
+              : undefined}
+          />
           <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Seu anúncio</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '1.75rem' }}>
             Tipo: <strong>{typeLabels[type]}</strong>

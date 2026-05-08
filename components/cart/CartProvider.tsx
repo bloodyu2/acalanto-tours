@@ -21,6 +21,7 @@ export type CartItem = {
   groupSize?: number
   // Hospedagem fields
   accommodationListingId?: string
+  accommodationRoomId?: string
   checkIn?: string    // YYYY-MM-DD
   checkOut?: string   // YYYY-MM-DD
   nights?: number

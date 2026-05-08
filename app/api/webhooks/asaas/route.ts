@@ -35,14 +35,58 @@ export async function POST(request: NextRequest) {
     update.status  = 'confirmed'
   }
 
-  const { error } = await supabase
+  const { data: booking, error } = await supabase
     .from('bookings')
     .update(update)
     .eq('asaas_payment_id', payload.payment.id)
+    .select('id, vertical, accommodation_room_id, tour_date, check_out')
+    .single()
 
   if (error) {
     console.error('[webhook/asaas] DB update error:', error)
-    // Return 200 so ASAAS does not retry — issue will be investigated from logs
+    return NextResponse.json({ received: true })
+  }
+
+  // Block accommodation dates when payment is confirmed
+  if (
+    newStatus === 'confirmed' &&
+    booking?.vertical === 'hospedagem' &&
+    booking.accommodation_room_id &&
+    booking.tour_date &&
+    booking.check_out
+  ) {
+    const { data: room } = await supabase
+      .from('accommodation_rooms')
+      .select('listing_id')
+      .eq('id', booking.accommodation_room_id)
+      .single()
+
+    if (room) {
+      const nights: { listing_id: string; room_id: string; date: string; status: string; source: string }[] = []
+      const end = new Date(booking.check_out)
+      const current = new Date(booking.tour_date) // tour_date = check_in
+
+      while (current < end) {
+        nights.push({
+          listing_id: room.listing_id,
+          room_id:    booking.accommodation_room_id,
+          date:       current.toISOString().split('T')[0],
+          status:     'booked',
+          source:     'acalanto',
+        })
+        current.setDate(current.getDate() + 1)
+      }
+
+      if (nights.length > 0) {
+        const { error: availError } = await supabase
+          .from('accommodation_availability')
+          .upsert(nights, { onConflict: 'room_id,date' })
+
+        if (availError) {
+          console.error('[webhook/asaas] availability upsert error:', availError)
+        }
+      }
+    }
   }
 
   return NextResponse.json({ received: true })

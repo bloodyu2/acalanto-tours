@@ -1,5 +1,6 @@
-export function WizardSteps({ current }: { current: 1 | 2 | 3 | 4 | 5 }) {
-  const steps = ['Conta', 'Tipo', 'Dados', 'Anúncio', 'Pronto']
+const DEFAULT_STEPS = ['Conta', 'Tipo', 'Dados', 'Anúncio', 'Pronto']
+
+export function WizardSteps({ current, steps = DEFAULT_STEPS }: { current: number; steps?: string[] }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 0, marginBottom: '2.5rem' }}>
       {steps.map((label, i) => {
@@ -8,7 +9,7 @@ export function WizardSteps({ current }: { current: 1 | 2 | 3 | 4 | 5 }) {
         const active = n === current
         return (
           <div key={label} style={{ display: 'flex', alignItems: 'center', flex: n < steps.length ? 1 : 'none' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '3rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '2.5rem' }}>
               <div style={{
                 width: '2rem', height: '2rem', borderRadius: '50%',
                 background: done ? 'var(--ocean-mid)' : active ? 'var(--sunset)' : 'var(--border)',
@@ -21,7 +22,7 @@ export function WizardSteps({ current }: { current: 1 | 2 | 3 | 4 | 5 }) {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 ) : n}
               </div>
-              <span style={{ fontSize: '0.65rem', color: active ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: active ? 600 : 400, marginTop: '0.25rem', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: '0.6rem', color: active ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: active ? 600 : 400, marginTop: '0.25rem', whiteSpace: 'nowrap' }}>
                 {label}
               </span>
             </div>
