@@ -6,6 +6,7 @@ import type { CartItem } from '@/components/cart/CartProvider'
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 function formatBRL(cents: number) {
+  if (!cents || isNaN(cents)) return 'R$ 0,00'
   return (cents / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
@@ -20,9 +21,9 @@ function formatDate(iso: string) {
 }
 
 function itemTotal(item: CartItem): number {
-  if (item.type === 'hospedagem') return (item.pricePerNightCents ?? 0) * (item.nights ?? 1)
-  if (item.type === 'servico' && item.pricingType === 'per_group') return item.priceAdultCents
-  return item.priceAdultCents * item.adults + item.priceChildCents * item.children
+  if (item.type === 'hospedagem') return ((item.pricePerNightCents ?? 0) * (item.nights ?? 1))
+  if (item.type === 'servico' && item.pricingType === 'per_group') return item.priceAdultCents ?? 0
+  return (item.priceAdultCents ?? 0) * (item.adults ?? 0) + (item.priceChildCents ?? 0) * (item.children ?? 0)
 }
 
 function itemDetails(item: CartItem): string {
