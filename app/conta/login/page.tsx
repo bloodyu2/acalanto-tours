@@ -47,7 +47,12 @@ export default function ContaLoginPage() {
 
         {sent ? (
           <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
-            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📬</div>
+            <div style={{ marginBottom: '1rem', color: 'var(--ocean-mid)' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </div>
             <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', color: 'var(--ocean-deep)', marginBottom: '0.75rem' }}>
               Verifique seu email
             </h2>
