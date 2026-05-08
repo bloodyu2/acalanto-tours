@@ -1,5 +1,7 @@
 'use client'
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react'
+
+const CART_KEY = 'acalanto_cart'
 
 export type CartItem = {
   id: string
@@ -57,8 +59,23 @@ function itemTotal(item: CartItem): number {
 }
 
 export default function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([])
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === 'undefined') return []
+    try {
+      const raw = localStorage.getItem(CART_KEY)
+      if (!raw) return []
+      const parsed = JSON.parse(raw) as CartItem[]
+      // Ignore legacy items missing priceAdultCents
+      return parsed.filter(i => typeof i.priceAdultCents === 'number')
+    } catch { return [] }
+  })
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(items))
+    } catch {}
+  }, [items])
 
   const addItem = useCallback((item: CartItem) => {
     setItems(prev => {
@@ -73,7 +90,10 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     setItems(prev => prev.filter(i => i.id !== id))
   }, [])
 
-  const clearCart = useCallback(() => setItems([]), [])
+  const clearCart = useCallback(() => {
+    setItems([])
+    try { localStorage.removeItem(CART_KEY) } catch {}
+  }, [])
 
   const totalCents = items.reduce((sum, item) => sum + itemTotal(item), 0)
 
