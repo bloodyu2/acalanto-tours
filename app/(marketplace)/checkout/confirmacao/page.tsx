@@ -7,9 +7,20 @@ function ConfirmacaoContent() {
   const searchParams = useSearchParams()
   const paymentId = searchParams.get('paymentId') || ''
   const method = searchParams.get('method') || ''
-  const paymentUrl = searchParams.get('paymentUrl') || ''
-  const pixQrCode = searchParams.get('pixQrCode') || ''
-  const pixCopyPaste = searchParams.get('pixCopyPaste') || ''
+
+  // Read large fields from sessionStorage (stored before redirect to avoid URL crash)
+  let paymentUrl = ''
+  let pixQrCode = ''
+  let pixCopyPaste = ''
+  try {
+    const stored = sessionStorage.getItem('acalanto_checkout_result')
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      paymentUrl = parsed.paymentUrl || ''
+      pixQrCode = parsed.pixQrCode || ''
+      pixCopyPaste = parsed.pixCopyPaste || ''
+    }
+  } catch {}
 
   const [copied, setCopied] = useState(false)
 

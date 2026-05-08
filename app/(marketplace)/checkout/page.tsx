@@ -230,13 +230,20 @@ export default function CheckoutPage() {
       }
       // Clear cart
       localStorage.removeItem('acalanto_cart')
-      // Redirect to confirmation
+      // Store large PIX fields in sessionStorage to avoid URL length crash
+      try {
+        sessionStorage.setItem('acalanto_checkout_result', JSON.stringify({
+          paymentId: data.paymentId ?? '',
+          method: form.billingType,
+          paymentUrl: data.paymentUrl ?? '',
+          pixQrCode: data.pixQrCode ?? '',
+          pixCopyPaste: data.pixCopyPaste ?? '',
+        }))
+      } catch {}
+      // Redirect to confirmation — only tiny params in URL
       const params = new URLSearchParams({
         paymentId: data.paymentId ?? '',
         method: form.billingType,
-        ...(data.paymentUrl ? { paymentUrl: data.paymentUrl } : {}),
-        ...(data.pixQrCode ? { pixQrCode: data.pixQrCode } : {}),
-        ...(data.pixCopyPaste ? { pixCopyPaste: data.pixCopyPaste } : {}),
       })
       router.push(`/checkout/confirmacao?${params.toString()}`)
     } catch {
