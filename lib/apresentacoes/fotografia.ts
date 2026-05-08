@@ -9,7 +9,7 @@ const presentation: Presentation = {
     { type: 'cover' },
     { type: 'who-we-are' },
     { type: 'how-it-works', middleStepLabel: 'Você realiza o ensaio' },
-    { type: 'advantages', extras: ['Clientes já chegam com expectativas alinhadas', 'Entrega digital direto pelo app'] },
+    { type: 'advantages', extras: ['Seu portfólio fica visível para todos os turistas da plataforma', 'Clientes já chegam com expectativas alinhadas', 'Entrega digital direto pelo app'] },
     { type: 'platform' },
     { type: 'repasses' },
     { type: 'agreements', extraItem: 'Portfolio atualizado na plataforma' },

@@ -9,7 +9,7 @@ const presentation: Presentation = {
     { type: 'cover' },
     { type: 'who-we-are' },
     { type: 'how-it-works', middleStepLabel: 'Você executa o passeio' },
-    { type: 'advantages', extras: ['Pagamento garantido antes do embarque', 'Licenças e rotas de navegação respeitadas'] },
+    { type: 'advantages', extras: ['Ensaio fotográfico do seu negócio incluso ao fechar parceria', 'Pagamento garantido antes do embarque', 'Licenças e rotas de navegação respeitadas'] },
     { type: 'platform' },
     { type: 'repasses' },
     { type: 'agreements', extraItem: 'Licenças de navegação em dia' },
