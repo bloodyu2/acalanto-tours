@@ -69,6 +69,22 @@ const BriefcaseIcon = () => (
     <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
   </svg>
 )
+const SlidesIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="3" width="20" height="14" rx="2"/>
+    <line x1="8" y1="21" x2="16" y2="21"/>
+    <line x1="12" y1="17" x2="12" y2="21"/>
+  </svg>
+)
+const PaletteIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+  </svg>
+)
 
 const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin', label: 'Dashboard', icon: <DashboardIcon /> },
@@ -81,7 +97,9 @@ const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin/parceiros', label: 'Parceiros', icon: <HandshakeIcon /> },
   { href: '/admin/depoimentos', label: 'Depoimentos', icon: <ChatIcon /> },
   { href: '/admin/blog', label: 'Blog', icon: <BlogIcon /> },
-  { href: '/admin/roadmap', label: 'Roadmap', icon: <RoadmapIcon /> },
+  { href: '/admin/roadmap',       label: 'Roadmap',          icon: <RoadmapIcon /> },
+  { href: '/admin/apresentacoes', label: 'Apresentações',    icon: <SlidesIcon /> },
+  { href: '/admin/identidade',    label: 'Identidade Visual', icon: <PaletteIcon /> },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
