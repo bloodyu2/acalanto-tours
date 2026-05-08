@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       name:    customerName,
       cpfCnpj: cleanCpf(cpf),
       email:   customerEmail,
-      phone:   customerPhone,
+      phone:   customerPhone.replace(/\D/g, ''),
     })
 
     // 2. Due date: today for PIX/card, +3 business days for boleto
