@@ -56,7 +56,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
       {/* Slides */}
       {slides.map((slide, i) => (
         <div
-          key={slide.href}
+          key={slide.url}
           style={{
             position: 'absolute',
             inset: 0,
@@ -97,9 +97,9 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
           gap: '0.5rem',
           zIndex: 2,
         }}>
-          {slides.map((_, i) => (
+          {slides.map((slide, i) => (
             <button
-              key={i}
+              key={slide.url}
               aria-label={`Slide ${i + 1}`}
               onClick={e => { e.preventDefault(); go(i) }}
               style={{

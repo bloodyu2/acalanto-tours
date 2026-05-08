@@ -25,29 +25,42 @@ export default async function HomePage() {
     .not('boat_id', 'is', null)
     .order('display_order', { ascending: true })
 
-  // Build first-gallery-photo lookup per boat
-  const firstGallery: Record<string, string> = {}
+  // Group gallery photos per boat (up to 4 each)
+  const galleryByBoat: Record<string, string[]> = {}
   for (const g of galleryRows ?? []) {
-    if (g.boat_id && !firstGallery[g.boat_id]) firstGallery[g.boat_id] = g.url
+    if (!g.boat_id) continue
+    if (!galleryByBoat[g.boat_id]) galleryByBoat[g.boat_id] = []
+    if (galleryByBoat[g.boat_id].length < 4) galleryByBoat[g.boat_id].push(g.url)
   }
 
-  const heroSlides: HeroSlide[] = (boats ?? [])
-    .map(b => {
-      const photo = b.cover_image ?? firstGallery[b.id] ?? null
-      if (!photo) return null
-      const priceFormatted = b.price_adult
-        ? `A partir de R$${(b.price_adult / 100).toFixed(0)}/adulto`
-        : undefined
-      return {
+  // Build slides: cover first, then remaining gallery photos, interleaved across boats
+  const heroSlides: HeroSlide[] = []
+  const boatList = boats ?? []
+
+  // Round-robin: first photo of each boat, then second, third, fourth
+  for (let round = 0; round < 4; round++) {
+    for (const b of boatList) {
+      const photos: string[] = []
+      if (b.cover_image) photos.push(b.cover_image)
+      for (const url of galleryByBoat[b.id] ?? []) {
+        if (!photos.includes(url)) photos.push(url)
+      }
+      const photo = photos[round] ?? null
+      if (!photo) continue
+      // Skip duplicate URLs already added
+      if (heroSlides.some(s => s.url === photo)) continue
+      heroSlides.push({
         url: photo,
         alt: `${b.name} — passeio em Paraty`,
         href: `/passeios/${b.slug}`,
         name: b.name,
         tagline: b.tagline ?? '',
-        priceLabel: priceFormatted,
-      } satisfies HeroSlide
-    })
-    .filter((s): s is HeroSlide => s !== null)
+        priceLabel: b.price_adult
+          ? `A partir de R$${(b.price_adult / 100).toFixed(0)}/adulto`
+          : undefined,
+      } satisfies HeroSlide)
+    }
+  }
 
   return (
     <>
