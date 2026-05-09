@@ -113,10 +113,8 @@ export default function HeroSection({ slides = [] }: HeroSectionProps) {
           }}>
             Tudo para seu{' '}
             <span style={{
-              background: 'linear-gradient(135deg, #F5EDD8 0%, #F4A623 60%, #2E9CBF 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
+              color: 'white',
+              WebkitTextStroke: '1px rgba(255,255,255,0.6)',
             }}>
               turismo em Paraty
             </span>
