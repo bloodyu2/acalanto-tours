@@ -6,6 +6,19 @@ import { WizardSteps } from '../_components/WizardSteps'
 
 const types = [
   {
+    value: 'barco',
+    label: 'Embarcação',
+    desc: 'Sou dono de um barco cadastrado na Acalanto e quero reivindicá-lo',
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 20a2.4 2.4 0 002 1 2.4 2.4 0 002-1 2.4 2.4 0 012-1 2.4 2.4 0 012 1 2.4 2.4 0 002 1 2.4 2.4 0 002-1 2.4 2.4 0 012-1 2.4 2.4 0 012 1"/>
+        <path d="M4 18l-1-5h18l-2 5"/>
+        <path d="M12 2v8"/>
+        <path d="M6.76 9.62L12 2l5.24 7.62"/>
+      </svg>
+    ),
+  },
+  {
     value: 'fotografia',
     label: 'Fotógrafo',
     desc: 'Fotografia profissional de passeios e retratos em Paraty',

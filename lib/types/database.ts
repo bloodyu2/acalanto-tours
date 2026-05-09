@@ -424,6 +424,60 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['roadmap_tasks']['Row'], 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Database['public']['Tables']['roadmap_tasks']['Insert']>
       }
+      partner_listings: {
+        Row: {
+          id:               string
+          partner_id:       string
+          type:             'hospedagem' | 'fotografia' | 'jeep' | 'guia' | 'barco'
+          title:            string
+          slug:             string
+          description:      string | null
+          price_label:      string | null
+          cover_image:      string | null
+          gallery:          string[]
+          metadata:         Json
+          boat_id:          string | null
+          status:           'pending' | 'approved' | 'rejected'
+          rejection_reason: string | null
+          active:           boolean
+          created_at:       string
+          updated_at:       string
+        }
+        Insert: {
+          id?:              string
+          partner_id:       string
+          type:             'hospedagem' | 'fotografia' | 'jeep' | 'guia' | 'barco'
+          title:            string
+          slug:             string
+          description?:     string | null
+          price_label?:     string | null
+          cover_image?:     string | null
+          gallery?:         string[]
+          metadata?:        Json
+          boat_id?:         string | null
+          status?:          'pending' | 'approved' | 'rejected'
+          rejection_reason?: string | null
+          active?:          boolean
+          created_at?:      string
+          updated_at?:      string
+        }
+        Update: {
+          partner_id?:      string
+          type?:            'hospedagem' | 'fotografia' | 'jeep' | 'guia' | 'barco'
+          title?:           string
+          slug?:            string
+          description?:     string | null
+          price_label?:     string | null
+          cover_image?:     string | null
+          gallery?:         string[]
+          metadata?:        Json
+          boat_id?:         string | null
+          status?:          'pending' | 'approved' | 'rejected'
+          rejection_reason?: string | null
+          active?:          boolean
+          updated_at?:      string
+        }
+      }
     }
   }
 }

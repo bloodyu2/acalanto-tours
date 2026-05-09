@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { WizardSteps } from '../_components/WizardSteps'
 
-type ListingType = 'fotografia' | 'hospedagem' | 'jeep' | 'guia'
+type ListingType = 'fotografia' | 'hospedagem' | 'jeep' | 'guia' | 'barco'
 
 function slugify(text: string) {
   return text
@@ -19,6 +19,8 @@ function slugify(text: string) {
     .slice(0, 60)
     + '-' + Math.random().toString(36).slice(2, 7)
 }
+
+type AvailableBoat = { id: string; name: string; tagline: string | null; capacity_max: number }
 
 export default function CadastroAnuncioPage() {
   const router = useRouter()
@@ -40,12 +42,28 @@ export default function CadastroAnuncioPage() {
   const [capacidade, setCapacidade] = useState('')
   const [lingua, setLingua] = useState('')
 
+  // barco-specific state
+  const [availableBoats, setAvailableBoats] = useState<AvailableBoat[]>([])
+  const [selectedBoatId, setSelectedBoatId] = useState<string>('')
+
   useEffect(() => {
     const t = sessionStorage.getItem('onboarding_type') as ListingType | null
     const pid = sessionStorage.getItem('onboarding_partner_id')
     if (!t || !pid) { router.push('/parceiros/cadastro'); return }
     setType(t)
     setPartnerId(pid)
+
+    // For barco type, load unclaimed boats
+    if (t === 'barco') {
+      const supabase = createClient()
+      supabase
+        .from('boats')
+        .select('id, name, tagline, capacity_max')
+        .is('partner_id', null)
+        .eq('active', true)
+        .order('display_order')
+        .then(({ data }) => setAvailableBoats((data ?? []) as AvailableBoat[]))
+    }
   }, [router])
 
   const amenityOptions = ['Piscina', 'Estacionamento', 'Café da manhã', 'Wi-Fi', 'Ar-condicionado', 'Pet-friendly', 'Academia', 'Churrasqueira']
@@ -57,10 +75,45 @@ export default function CadastroAnuncioPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     if (!type || !partnerId) return
+
+    // Barco: require boat selection
+    if (type === 'barco' && !selectedBoatId) {
+      setError('Selecione a embarcação que você deseja reivindicar.')
+      return
+    }
+
     setLoading(true)
     setError('')
 
     const supabase = createClient()
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = supabase as any
+
+    if (type === 'barco') {
+      // For boat claims: create a pending listing linked to the selected boat
+      const selectedBoat = availableBoats.find(b => b.id === selectedBoatId)
+      const { error: listingError } = await db
+        .from('partner_listings')
+        .insert({
+          partner_id: partnerId,
+          type: 'barco',
+          title: selectedBoat?.name ?? 'Embarcação',
+          slug: slugify((selectedBoat?.name ?? 'barco') + '-' + partnerId.slice(0, 8)),
+          description: null,
+          price_label: null,
+          metadata: { whatsapp },
+          boat_id: selectedBoatId,
+          status: 'pending',
+        })
+      if (listingError) {
+        setError('Erro ao enviar reivindicação. Tente novamente.')
+        setLoading(false)
+        return
+      }
+      router.push('/parceiros/cadastro/aguardando')
+      return
+    }
 
     const metadata: Record<string, unknown> = { whatsapp }
     if (type === 'fotografia') { metadata.especialidade = especialidade; metadata.instagram = instagram }
@@ -68,7 +121,7 @@ export default function CadastroAnuncioPage() {
     if (type === 'jeep') { metadata.servico_tipo = servicoTipo; metadata.capacidade = capacidade }
     if (type === 'guia') { metadata.lingua = lingua; metadata.instagram = instagram }
 
-    const { error: listingError } = await supabase
+    const { error: listingError } = await db
       .from('partner_listings')
       .insert({
         partner_id: partnerId,
@@ -88,7 +141,7 @@ export default function CadastroAnuncioPage() {
     }
 
     if (type === 'hospedagem') {
-      const { data: created } = await supabase
+      const { data: created } = await db
         .from('partner_listings')
         .select('id')
         .eq('partner_id', partnerId)
@@ -96,7 +149,7 @@ export default function CadastroAnuncioPage() {
         .order('created_at', { ascending: false })
         .limit(1)
         .single()
-      if (created) sessionStorage.setItem('onboarding_listing_id', created.id)
+      if (created?.id) sessionStorage.setItem('onboarding_listing_id', created.id)
       router.push('/parceiros/cadastro/quartos')
     } else {
       router.push('/parceiros/cadastro/aguardando')
@@ -109,6 +162,7 @@ export default function CadastroAnuncioPage() {
   const labelStyle: React.CSSProperties = { display: 'block', fontSize: '0.8125rem', fontWeight: 600, marginBottom: '0.375rem' }
 
   const typeLabels: Record<ListingType, string> = {
+    barco: 'Embarcação',
     fotografia: 'Fotógrafo',
     hospedagem: 'Hospedagem',
     jeep: 'Jeep / Transfer',
@@ -137,6 +191,56 @@ export default function CadastroAnuncioPage() {
           </p>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.125rem' }}>
+
+            {/* ---- BARCO: boat picker ---- */}
+            {type === 'barco' && (
+              <div>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                  Selecione a embarcação que você é proprietário. Após aprovação, você receberá os repasses automaticamente pelo Asaas.
+                </p>
+                {availableBoats.length === 0 ? (
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', background: 'var(--sand)', padding: '1rem', borderRadius: '8px', textAlign: 'center' }}>
+                    Nenhuma embarcação disponível para reivindicação no momento.
+                  </p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {availableBoats.map(boat => (
+                      <label
+                        key={boat.id}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '1rem',
+                          padding: '1rem 1.125rem', borderRadius: '12px', cursor: 'pointer',
+                          border: `1.5px solid ${selectedBoatId === boat.id ? 'var(--ocean-mid)' : 'var(--border)'}`,
+                          background: selectedBoatId === boat.id ? 'rgba(14,116,144,0.06)' : 'white',
+                          transition: 'border-color 0.15s, background 0.15s',
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="boat"
+                          value={boat.id}
+                          checked={selectedBoatId === boat.id}
+                          onChange={() => setSelectedBoatId(boat.id)}
+                          style={{ accentColor: 'var(--ocean-mid)', width: '18px', height: '18px', flexShrink: 0 }}
+                        />
+                        <div>
+                          <p style={{ fontWeight: 700, fontSize: '0.9375rem', marginBottom: '0.2rem' }}>{boat.name}</p>
+                          {boat.tagline && <p style={{ color: 'var(--text-muted)', fontSize: '0.825rem' }}>{boat.tagline}</p>}
+                          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.2rem' }}>Capacidade: {boat.capacity_max} pessoas</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                )}
+                <div style={{ marginTop: '1rem' }}>
+                  <label style={labelStyle}>Seu WhatsApp</label>
+                  <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="5524999XXXXXX" style={inputStyle}/>
+                </div>
+              </div>
+            )}
+
+            {/* ---- Campos genéricos (não barco) ---- */}
+            {type !== 'barco' && (<>
             <div>
               <label style={labelStyle}>Título do anúncio *</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} required placeholder="Ex: Pousada Canto do Mar" style={inputStyle}/>
@@ -227,6 +331,7 @@ export default function CadastroAnuncioPage() {
                 </div>
               </>
             )}
+            </>)}
 
             {error && (
               <p style={{ color: '#dc2626', fontSize: '0.875rem', background: '#fef2f2', padding: '0.75rem 1rem', borderRadius: '8px', margin: 0 }}>
@@ -240,7 +345,7 @@ export default function CadastroAnuncioPage() {
               disabled={loading}
               style={{ padding: '1rem', fontSize: '1rem', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
             >
-              {loading ? 'Salvando...' : 'Enviar para análise'}
+              {loading ? 'Enviando...' : type === 'barco' ? 'Reivindicar embarcação' : 'Enviar para análise'}
             </button>
           </form>
         </div>

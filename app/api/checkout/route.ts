@@ -154,7 +154,16 @@ export async function POST(request: NextRequest) {
       const item = items[idx]
       let partnerId: string | null = null
 
-      if (item.type === 'fotografia' && item.photographerPackageId && UUID_RE.test(item.photographerPackageId)) {
+      if (item.type === 'passeio' && item.boatId && UUID_RE.test(item.boatId)) {
+        // Barco reivindicado: boats.partner_id → partners.asaas_wallet_id
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: boat } = await (supabase as any)
+          .from('boats')
+          .select('partner_id')
+          .eq('id', item.boatId)
+          .maybeSingle() as { data: { partner_id: string | null } | null; error: unknown }
+        partnerId = boat?.partner_id ?? null
+      } else if (item.type === 'fotografia' && item.photographerPackageId && UUID_RE.test(item.photographerPackageId)) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { data: pkg } = await (supabase as any)
           .from('photographer_packages')
