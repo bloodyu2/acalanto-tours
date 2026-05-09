@@ -101,6 +101,21 @@ function ConfirmacaoContent() {
           </p>
         )}
 
+        {/* Email notice */}
+        <p style={{
+          fontFamily: 'var(--font-jakarta, sans-serif)',
+          color: '#166534',
+          fontSize: '0.875rem',
+          textAlign: 'center',
+          marginBottom: '1.25rem',
+          background: '#f0fdf4',
+          border: '1px solid #bbf7d0',
+          borderRadius: '0.625rem',
+          padding: '0.625rem 1rem',
+        }}>
+          📧 Um e-mail de confirmação foi enviado para você. Verifique sua caixa de entrada (e o spam).
+        </p>
+
         {/* PIX content */}
         {isPix && (
           <div className="flex flex-col items-center gap-4">

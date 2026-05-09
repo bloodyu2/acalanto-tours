@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { formatCents } from '@/lib/booking/pricing'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,7 +47,9 @@ export default async function AdminReservasPage() {
               {bookings?.map((b, i) => (
                 <tr key={b.id} style={{ borderTop: '1px solid var(--border)', background: i % 2 === 0 ? 'white' : '#fafbfc' }}>
                   <td style={{ padding: '0.875rem 1rem', fontWeight: 600, color: 'var(--ocean-deep)' }}>
-                    {(b.boats as { name: string } | null)?.name || '—'}
+                    <Link href={`/admin/reservas/${b.id}`} style={{ color: 'var(--ocean-deep)', textDecoration: 'none' }}>
+                      {(b.boats as { name: string } | null)?.name || '—'}
+                    </Link>
                   </td>
                   <td style={{ padding: '0.875rem 1rem', whiteSpace: 'nowrap' }}>{b.tour_date}</td>
                   <td style={{ padding: '0.875rem 1rem', textAlign: 'center' }}>{b.adults}</td>

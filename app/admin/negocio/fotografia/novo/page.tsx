@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import ImageUploader from '@/components/admin/ImageUploader'
 
 export const dynamic = 'force-dynamic'
 
@@ -74,10 +75,7 @@ export default async function NovoPacotePage() {
           <textarea className="form-input" name="includes" rows={4} style={{ resize: 'vertical' }}
             placeholder={"30 fotos editadas\nEntrega em 7 dias\nArquivo digital em alta resolução"} />
         </div>
-        <div className="form-group">
-          <label className="form-label">Imagem de capa (URL)</label>
-          <input className="form-input" name="cover_image" type="url" placeholder="https://..." />
-        </div>
+        <ImageUploader name="cover_image" />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <div className="form-group">
             <label className="form-label">Ordem de exibição</label>

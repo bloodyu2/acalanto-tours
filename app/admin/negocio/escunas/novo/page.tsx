@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { FEATURE_LABELS } from '@/lib/constants'
 import Link from 'next/link'
+import ImageUploader from '@/components/admin/ImageUploader'
 
 export const dynamic = 'force-dynamic'
 
@@ -95,10 +96,7 @@ export default function NovaEscunaPage() {
             <input className="form-input" name="child_half_until_age" type="number" defaultValue="12" />
           </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Imagem de capa (URL)</label>
-          <input className="form-input" name="cover_image" type="url" placeholder="https://..." />
-        </div>
+        <ImageUploader name="cover_image" />
         <div className="form-group">
           <label className="form-label">Destaques</label>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.75rem', border: '1px solid var(--border)', borderRadius: '8px' }}>

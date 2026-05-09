@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import ImageUploader from '@/components/admin/ImageUploader'
 
 export const dynamic = 'force-dynamic'
 
@@ -76,10 +77,7 @@ export default function NovoServicoPage() {
             <input className="form-input" name="display_order" type="number" defaultValue="99" />
           </div>
         </div>
-        <div className="form-group">
-          <label className="form-label">Imagem de capa (URL)</label>
-          <input className="form-input" name="cover_image" type="url" placeholder="https://..." />
-        </div>
+        <ImageUploader name="cover_image" />
         <div className="form-group">
           <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
             <input type="checkbox" name="active" defaultChecked /> Ativo

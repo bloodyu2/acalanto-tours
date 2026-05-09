@@ -17,6 +17,8 @@ interface Props {
 export default function GalleryLightbox({ images, title }: Props) {
   const [open, setOpen] = useState(false)
   const [idx, setIdx] = useState(0)
+  const [failedIds, setFailedIds] = useState<Set<string>>(new Set())
+  const markFailed = (id: string) => setFailedIds(prev => new Set(prev).add(id))
 
   const close = useCallback(() => setOpen(false), [])
 
@@ -53,7 +55,7 @@ export default function GalleryLightbox({ images, title }: Props) {
         gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
         gap: '0.625rem',
       }}>
-        {images.map((img, i) => (
+        {images.filter(img => !failedIds.has(img.id)).map((img, i) => (
           <button
             key={img.id}
             onClick={() => openAt(i)}
@@ -78,6 +80,7 @@ export default function GalleryLightbox({ images, title }: Props) {
               style={{ objectFit: 'cover', transition: 'transform 0.25s ease' }}
               onMouseOver={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)' }}
               onMouseOut={e => { (e.currentTarget as HTMLImageElement).style.transform = '' }}
+              onError={() => markFailed(img.id)}
             />
             <div style={{
               position: 'absolute', inset: 0,
@@ -132,6 +135,7 @@ export default function GalleryLightbox({ images, title }: Props) {
                 display: 'block',
                 boxShadow: '0 8px 48px rgba(0,0,0,0.6)',
               }}
+              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
             />
 
             {/* Counter */}

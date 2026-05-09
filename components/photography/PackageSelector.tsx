@@ -98,11 +98,9 @@ export default function PackageSelector({ packages }: PackageSelectorProps) {
             <p style={{ margin: '0 0 0.15rem', fontWeight: 600, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
               {pkg.name}
             </p>
-            {pkg.partners?.name && (
-              <p style={{ margin: '0 0 0.25rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                {pkg.partners.name}
-              </p>
-            )}
+            <p style={{ margin: '0 0 0.25rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              Fotógrafos de Parati
+            </p>
             {pkg.duration_label && (
               <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                 {pkg.duration_label}
