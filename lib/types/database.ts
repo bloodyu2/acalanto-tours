@@ -61,6 +61,7 @@ export interface Database {
           cover_image: string | null
           active: boolean
           display_order: number
+          commission_pct: number
           created_at: string
           updated_at: string
         }
@@ -84,6 +85,7 @@ export interface Database {
           price_cents_per_person: number | null
           price_cents_group: number | null
           capacity_max: number | null
+          commission_pct: number
         }
         Insert: Omit<Database['public']['Tables']['services']['Row'], 'id' | 'created_at'>
         Update: Partial<Database['public']['Tables']['services']['Insert']>

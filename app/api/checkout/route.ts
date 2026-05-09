@@ -107,25 +107,93 @@ export async function POST(request: NextRequest) {
 
     let commissionPct = 70 // baseline: Acalanto fica com 30%
     if (boatId) {
-      const { data: boat } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: boat } = await (supabase as any)
         .from('boats')
         .select('commission_pct')
         .eq('id', boatId)
-        .maybeSingle()
+        .maybeSingle() as { data: { commission_pct: number } | null; error: unknown }
       if (boat?.commission_pct != null) commissionPct = boat.commission_pct
     } else if (primaryItem.serviceId && UUID_RE.test(primaryItem.serviceId)) {
-      const { data: svc } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: svc } = await (supabase as any)
         .from('services')
         .select('commission_pct')
         .eq('id', primaryItem.serviceId)
-        .maybeSingle()
+        .maybeSingle() as { data: { commission_pct: number } | null; error: unknown }
       if (svc?.commission_pct != null) commissionPct = svc.commission_pct
+    } else if (
+      primaryItem.type === 'fotografia' &&
+      primaryItem.photographerPackageId &&
+      UUID_RE.test(primaryItem.photographerPackageId)
+    ) {
+      // fotografiaPackage → partner → commission_pct
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: pkg } = await (supabase as any)
+        .from('photographer_packages')
+        .select('partner_id')
+        .eq('id', primaryItem.photographerPackageId)
+        .maybeSingle() as { data: { partner_id: string } | null; error: unknown }
+      if (pkg?.partner_id) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: partner } = await (supabase as any)
+          .from('partners')
+          .select('commission_pct')
+          .eq('id', pkg.partner_id)
+          .maybeSingle() as { data: { commission_pct: number } | null; error: unknown }
+        if (partner?.commission_pct != null) commissionPct = partner.commission_pct
+      }
     }
 
-    // 4. Optional split — usa commission_pct lido do banco (server-side)
-    const itemsWithCommission: CartItemWithPartner[] = items.map((item, idx) =>
-      idx === 0 ? { ...(item as CartItemWithPartner), commissionPct } : (item as CartItemWithPartner)
-    )
+    // 4. Server-side lookup do asaas_wallet_id do parceiro (nunca confiar no cliente)
+    // Fotografia: photographerPackageId → photographer_packages.partner_id → partners.asaas_wallet_id
+    // Serviço:    serviceId            → services.partner_id             → partners.asaas_wallet_id
+    const walletByItem = new Map<number, string>() // index → partnerWalletId
+
+    for (let idx = 0; idx < items.length; idx++) {
+      const item = items[idx]
+      let partnerId: string | null = null
+
+      if (item.type === 'fotografia' && item.photographerPackageId && UUID_RE.test(item.photographerPackageId)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: pkg } = await (supabase as any)
+          .from('photographer_packages')
+          .select('partner_id')
+          .eq('id', item.photographerPackageId)
+          .maybeSingle() as { data: { partner_id: string } | null; error: unknown }
+        partnerId = pkg?.partner_id ?? null
+      } else if (item.type === 'servico' && item.serviceId && UUID_RE.test(item.serviceId)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: svc } = await (supabase as any)
+          .from('services')
+          .select('partner_id')
+          .eq('id', item.serviceId)
+          .maybeSingle() as { data: { partner_id: string | null } | null; error: unknown }
+        partnerId = svc?.partner_id ?? null
+      }
+
+      if (partnerId) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { data: partner } = await (supabase as any)
+          .from('partners')
+          .select('asaas_wallet_id')
+          .eq('id', partnerId)
+          .maybeSingle() as { data: { asaas_wallet_id: string | null } | null; error: unknown }
+        if (partner?.asaas_wallet_id) {
+          walletByItem.set(idx, partner.asaas_wallet_id)
+        }
+      }
+    }
+
+    // 4b. Build items array with wallet IDs and commission_pct for split
+    const itemsWithCommission: CartItemWithPartner[] = items.map((item, idx) => {
+      const partnerWalletId = walletByItem.get(idx)
+      const base = item as CartItemWithPartner
+      if (idx === 0) {
+        return { ...base, commissionPct, ...(partnerWalletId ? { partnerWalletId } : {}) }
+      }
+      return partnerWalletId ? { ...base, partnerWalletId } : base
+    })
     const split = buildSplit(itemsWithCommission)
 
     // 5. Create ASAAS charge
