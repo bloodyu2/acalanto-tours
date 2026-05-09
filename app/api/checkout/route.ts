@@ -99,8 +99,34 @@ export async function POST(request: NextRequest) {
     // 3. Description from cart item names
     const description = items.map(i => i.name).join(' + ')
 
-    // 4. Optional split (inactive until ASAAS_SPLIT_ENABLED env var is set)
-    const split = buildSplit(items as CartItemWithPartner[])
+    // 3b. Lookup commission_pct server-side — nunca confiar no valor do cliente.
+    // commission_pct = % que o PARCEIRO recebe.  Acalanto fica com (100 - commission_pct)%.
+    const UUID_RE    = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    const primaryItem = items[0]
+    const boatId      = primaryItem.boatId && UUID_RE.test(primaryItem.boatId) ? primaryItem.boatId : null
+
+    let commissionPct = 70 // baseline: Acalanto fica com 30%
+    if (boatId) {
+      const { data: boat } = await supabase
+        .from('boats')
+        .select('commission_pct')
+        .eq('id', boatId)
+        .maybeSingle()
+      if (boat?.commission_pct != null) commissionPct = boat.commission_pct
+    } else if (primaryItem.serviceId && UUID_RE.test(primaryItem.serviceId)) {
+      const { data: svc } = await supabase
+        .from('services')
+        .select('commission_pct')
+        .eq('id', primaryItem.serviceId)
+        .maybeSingle()
+      if (svc?.commission_pct != null) commissionPct = svc.commission_pct
+    }
+
+    // 4. Optional split — usa commission_pct lido do banco (server-side)
+    const itemsWithCommission: CartItemWithPartner[] = items.map((item, idx) =>
+      idx === 0 ? { ...(item as CartItemWithPartner), commissionPct } : (item as CartItemWithPartner)
+    )
+    const split = buildSplit(itemsWithCommission)
 
     // 5. Create ASAAS charge
     const charge = await createCharge({
@@ -121,11 +147,8 @@ export async function POST(request: NextRequest) {
     // 6. Hash CPF — raw CPF never touches the DB
     const cpfHash = hashCpf(cpf)
 
-    // 7. Determine primary date and boatId for the booking row
-    const primaryItem = items[0]
+    // 7. Determine primary date for the booking row (primaryItem/boatId já definidos acima)
     const tourDate = primaryItem.date ?? primaryItem.checkIn ?? new Date().toISOString().split('T')[0]
-    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-    const boatId  = primaryItem.boatId && UUID_RE.test(primaryItem.boatId) ? primaryItem.boatId : null
 
     // 8. Insert booking
     const bookingPayload: BookingInsert = {
@@ -149,7 +172,7 @@ export async function POST(request: NextRequest) {
       check_out:                primaryItem.checkOut ?? null,
       status:                   'pending',
       vertical:                 primaryItem.type,
-      commission_rate:          10,
+      commission_rate:          100 - commissionPct, // % que a Acalanto retém
       notes:                    null,
       photographer_package_id:  primaryItem.photographerPackageId ?? null,
       utm_campaign:             null,
