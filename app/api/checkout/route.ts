@@ -6,6 +6,7 @@ import { buildSplit, type CartItemWithPartner } from '@/lib/asaas/split'
 import { hashCpf, isValidCpf, cleanCpf } from '@/lib/crypto/cpf'
 import type { AsaasBillingType } from '@/lib/asaas/types'
 import type { Database } from '@/lib/types/database'
+import { sendBookingConfirmation } from '@/lib/email/mailer'
 
 type BookingInsert = Database['public']['Tables']['bookings']['Insert']
 
@@ -163,6 +164,35 @@ export async function POST(request: NextRequest) {
       .single() as { data: { id: string } | null; error: Error | null }
 
     if (bookingError || !booking) throw bookingError ?? new Error('Booking insert returned null')
+
+    // 9. Send confirmation email (fire-and-forget — never block the response)
+    sendBookingConfirmation({
+      bookingId:    booking.id,
+      customerName:  customerName,
+      customerEmail: customerEmail,
+      billingType:   billingType as 'PIX' | 'CREDIT_CARD' | 'BOLETO' | 'DEBIT_CARD',
+      totalCents,
+      items: items.map(i => ({
+        name:        i.name,
+        type:        i.type,
+        date:        i.date,
+        checkIn:     i.checkIn,
+        checkOut:    i.checkOut,
+        adults:      i.adults,
+        children:    i.children,
+        nights:      i.nights,
+        guests:      i.guests,
+        pricingType: i.pricingType,
+        groupSize:   i.groupSize,
+        totalCents:  (() => {
+          if (i.type === 'hospedagem') return (i.pricePerNightCents ?? 0) * (i.nights ?? 1)
+          if (i.type === 'servico' && i.pricingType === 'per_group') return i.priceAdultCents
+          return i.priceAdultCents * (i.adults ?? 0) + i.priceChildCents * (i.children ?? 0)
+        })(),
+      })),
+      paymentUrl:   charge.invoiceUrl ?? charge.bankSlipUrl ?? null,
+      pixCopyPaste: pixQrCodeData?.payload ?? null,
+    }).catch(err => console.error('[email] failed to send booking confirmation:', err))
 
     return NextResponse.json({
       bookingId:    booking.id,
