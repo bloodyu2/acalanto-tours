@@ -1,0 +1,483 @@
+'use client'
+import { useState } from 'react'
+import { formatCents } from '@/lib/booking/pricing'
+import { BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
+
+export interface PdvBoat {
+  id: string
+  name: string
+  price_adult: number
+  price_child: number
+  slug: string
+}
+
+interface Props {
+  boats: PdvBoat[]
+}
+
+type Step = 'tour' | 'passengers' | 'customer' | 'payment' | 'done'
+
+interface PdvResult {
+  bookingId: string
+  totalCents: number
+  paymentUrl: string | null
+  pixQrCode: string | null
+  pixCopyPaste: string | null
+  asaasChargeId: string | null
+  asaasError: string | null
+}
+
+const cardStyle: React.CSSProperties = {
+  background: 'white', borderRadius: '1rem', padding: '1.75rem',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.05)', maxWidth: '560px',
+}
+const fieldStyle: React.CSSProperties = {
+  width: '100%', padding: '0.625rem 0.875rem', border: '1.5px solid var(--border)',
+  borderRadius: '0.625rem', fontSize: '0.9rem', outline: 'none', boxSizing: 'border-box',
+}
+const labelStyle: React.CSSProperties = {
+  display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--ocean-deep)', marginBottom: '0.375rem',
+}
+
+const stepLabel: Record<Step, string> = {
+  tour: 'Passeio', passengers: 'Pax', customer: 'Cliente', payment: 'Pagamento', done: 'OK',
+}
+const stepOrder: Step[] = ['tour', 'passengers', 'customer', 'payment']
+
+export default function PdvWizard({ boats }: Props) {
+  const [step, setStep] = useState<Step>('tour')
+
+  const [boatId, setBoatId] = useState('')
+  const [tourDate, setTourDate] = useState('')
+  const [adults, setAdults] = useState(1)
+  const [children, setChildren] = useState(0)
+  const [photographerAddon, setPhotographerAddon] = useState(false)
+
+  const [customerName, setCustomerName] = useState('')
+  const [customerEmail, setCustomerEmail] = useState('')
+  const [customerPhone, setCustomerPhone] = useState('')
+  const [customerCpf, setCustomerCpf] = useState('')
+
+  const [billingType, setBillingType] = useState<'PIX' | 'CREDIT_CARD'>('PIX')
+  const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<PdvResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  const selectedBoat = boats.find(b => b.id === boatId)
+  const totalCents = selectedBoat
+    ? adults * selectedBoat.price_adult +
+      children * (selectedBoat.price_child || Math.round(selectedBoat.price_adult / 2)) +
+      (photographerAddon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0)
+    : 0
+
+  async function handleSubmit() {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/admin/pdv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          boat_id: boatId,
+          tour_date: tourDate,
+          adults,
+          children,
+          photographer_addon: photographerAddon,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          customer_phone: customerPhone || null,
+          customer_cpf: customerCpf || null,
+          billing_type: billingType,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error))
+      setResult(data as PdvResult)
+      setStep('done')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function reset() {
+    setStep('tour'); setBoatId(''); setTourDate(''); setAdults(1); setChildren(0)
+    setPhotographerAddon(false); setCustomerName(''); setCustomerEmail('')
+    setCustomerPhone(''); setCustomerCpf(''); setBillingType('PIX')
+    setResult(null); setError(null)
+  }
+
+  const currentIdx = stepOrder.indexOf(step as Step)
+
+  return (
+    <div>
+      {step !== 'done' && (
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.75rem', gap: 0 }}>
+          {stepOrder.map((s, i) => (
+            <div key={s} style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+              <div style={{
+                width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
+                background: i <= currentIdx ? 'var(--ocean-mid)' : 'var(--border)',
+                color: i <= currentIdx ? 'white' : 'var(--text-muted)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '0.75rem', fontWeight: 700,
+              }}>
+                {i < currentIdx ? '✓' : i + 1}
+              </div>
+              <span style={{
+                marginLeft: '0.5rem', fontSize: '0.78rem',
+                fontWeight: i === currentIdx ? 700 : 500,
+                color: i === currentIdx ? 'var(--ocean-deep)' : 'var(--text-muted)',
+              }}>
+                {stepLabel[s]}
+              </span>
+              {i < stepOrder.length - 1 && (
+                <div style={{
+                  flex: 1, height: '2px', margin: '0 0.5rem',
+                  background: i < currentIdx ? 'var(--ocean-mid)' : 'var(--border)',
+                }} />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {step === 'tour' && (
+        <div style={cardStyle}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
+            Selecione o passeio
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: '1.25rem' }}>
+            {boats.map(boat => (
+              <button
+                key={boat.id}
+                type="button"
+                onClick={() => setBoatId(boat.id)}
+                style={{
+                  padding: '0.875rem 1rem',
+                  border: `2px solid ${boatId === boat.id ? 'var(--ocean-mid)' : 'var(--border)'}`,
+                  borderRadius: '0.75rem',
+                  background: boatId === boat.id ? 'rgba(26,107,138,0.06)' : 'white',
+                  cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
+                }}
+              >
+                <p style={{ fontWeight: 700, color: 'var(--ocean-deep)', margin: '0 0 0.2rem' }}>{boat.name}</p>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0 }}>
+                  {formatCents(boat.price_adult)}/adulto · {formatCents(boat.price_child || Math.round(boat.price_adult / 2))}/criança
+                </p>
+              </button>
+            ))}
+            {boats.length === 0 && (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Nenhuma embarcação ativa cadastrada.</p>
+            )}
+          </div>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <label style={labelStyle}>Data do passeio</label>
+            <input
+              type="date"
+              value={tourDate}
+              onChange={e => setTourDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
+              style={fieldStyle}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setStep('passengers')}
+            disabled={!boatId || !tourDate}
+            className="btn-primary"
+            style={{ justifyContent: 'center', width: '100%', opacity: !boatId || !tourDate ? 0.5 : 1 }}
+          >
+            Próximo →
+          </button>
+        </div>
+      )}
+
+      {step === 'passengers' && (
+        <div style={cardStyle}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
+            Passageiros e add-ons
+          </h2>
+          {[
+            { label: 'Adultos (13+ anos)', value: adults, set: setAdults, min: 1 },
+            { label: 'Crianças', value: children, set: setChildren, min: 0 },
+          ].map(({ label: l, value, set, min }) => (
+            <div key={l} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.875rem' }}>
+              <span style={{ fontWeight: 600, color: 'var(--ocean-deep)', fontSize: '0.95rem' }}>{l}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                <button
+                  type="button"
+                  onClick={() => set(v => Math.max(min, v - 1))}
+                  style={{
+                    width: '32px', height: '32px', borderRadius: '50%',
+                    border: '1.5px solid var(--border)', background: 'white',
+                    cursor: 'pointer', fontWeight: 700, fontSize: '1.1rem',
+                  }}
+                >
+                  −
+                </button>
+                <span style={{ fontWeight: 700, fontSize: '1.05rem', minWidth: '24px', textAlign: 'center' }}>
+                  {value}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => set(v => v + 1)}
+                  style={{
+                    width: '32px', height: '32px', borderRadius: '50%',
+                    background: 'var(--ocean-mid)', border: 'none', color: 'white',
+                    cursor: 'pointer', fontWeight: 700, fontSize: '1.1rem',
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <div
+            onClick={() => setPhotographerAddon(v => !v)}
+            role="checkbox"
+            aria-checked={photographerAddon}
+            tabIndex={0}
+            style={{
+              padding: '0.875rem 1rem',
+              border: `2px solid ${photographerAddon ? 'var(--ocean-mid)' : 'var(--border)'}`,
+              borderRadius: '0.75rem', cursor: 'pointer', marginBottom: '1.25rem',
+              background: photographerAddon ? 'rgba(26,107,138,0.06)' : 'white',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: 700 }}>📷 Fotógrafo a bordo</span>
+              <span style={{ fontWeight: 700, color: 'var(--ocean-mid)' }}>
+                + {formatCents(BOAT_PHOTOGRAPHER_ADDON_CENTS)}
+              </span>
+            </div>
+          </div>
+
+          <div style={{
+            background: 'var(--sand, #fdf8f0)', borderRadius: '0.75rem', padding: '0.875rem 1rem',
+            marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          }}>
+            <span style={{ fontWeight: 600, color: 'var(--ocean-deep)' }}>Total estimado</span>
+            <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--ocean-deep)' }}>
+              {formatCents(totalCents)}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.625rem' }}>
+            <button
+              type="button"
+              onClick={() => setStep('tour')}
+              style={{
+                flex: 1, padding: '0.75rem', border: '1.5px solid var(--border)', borderRadius: '0.75rem',
+                background: 'white', cursor: 'pointer', fontWeight: 600,
+              }}
+            >
+              ← Voltar
+            </button>
+            <button
+              type="button"
+              onClick={() => setStep('customer')}
+              className="btn-primary"
+              style={{ flex: 2, justifyContent: 'center' }}
+            >
+              Próximo →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 'customer' && (
+        <div style={cardStyle}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
+            Dados do cliente
+          </h2>
+          {[
+            { l: 'Nome completo *', v: customerName, set: setCustomerName, type: 'text', placeholder: 'João Silva' },
+            { l: 'E-mail *', v: customerEmail, set: setCustomerEmail, type: 'email', placeholder: 'joao@email.com' },
+            { l: 'WhatsApp (opcional)', v: customerPhone, set: setCustomerPhone, type: 'tel', placeholder: '(24) 99999-9999' },
+            { l: 'CPF (opcional — para nota fiscal)', v: customerCpf, set: setCustomerCpf, type: 'text', placeholder: '000.000.000-00' },
+          ].map(({ l, v, set, type, placeholder }) => (
+            <div key={l} style={{ marginBottom: '0.875rem' }}>
+              <label style={labelStyle}>{l}</label>
+              <input
+                type={type}
+                value={v}
+                onChange={e => set(e.target.value)}
+                placeholder={placeholder}
+                style={fieldStyle}
+              />
+            </div>
+          ))}
+          <div style={{ display: 'flex', gap: '0.625rem', marginTop: '1rem' }}>
+            <button
+              type="button"
+              onClick={() => setStep('passengers')}
+              style={{
+                flex: 1, padding: '0.75rem', border: '1.5px solid var(--border)', borderRadius: '0.75rem',
+                background: 'white', cursor: 'pointer', fontWeight: 600,
+              }}
+            >
+              ← Voltar
+            </button>
+            <button
+              type="button"
+              onClick={() => setStep('payment')}
+              disabled={!customerName || !customerEmail}
+              className="btn-primary"
+              style={{ flex: 2, justifyContent: 'center', opacity: !customerName || !customerEmail ? 0.5 : 1 }}
+            >
+              Próximo →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 'payment' && (
+        <div style={cardStyle}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
+            Pagamento
+          </h2>
+
+          <div style={{ background: 'var(--sand, #fdf8f0)', borderRadius: '0.75rem', padding: '0.875rem 1rem', marginBottom: '1.25rem' }}>
+            <p style={{ fontWeight: 600, margin: '0 0 0.25rem', color: 'var(--ocean-deep)' }}>
+              {selectedBoat?.name} — {tourDate}
+            </p>
+            <p style={{ margin: '0 0 0.2rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              {adults}A{children > 0 ? ` ${children}C` : ''}{photographerAddon ? ' · Fotógrafo' : ''}
+              {' · '}
+              {customerName}
+            </p>
+            <p style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--ocean-deep)', margin: 0 }}>
+              {formatCents(totalCents)}
+            </p>
+          </div>
+
+          <p style={labelStyle}>Forma de pagamento</p>
+          <div style={{ display: 'flex', gap: '0.625rem', marginBottom: '1.25rem' }}>
+            {(['PIX', 'CREDIT_CARD'] as const).map(type => (
+              <button
+                key={type}
+                type="button"
+                onClick={() => setBillingType(type)}
+                style={{
+                  flex: 1, padding: '0.875rem',
+                  border: `2px solid ${billingType === type ? 'var(--ocean-mid)' : 'var(--border)'}`,
+                  borderRadius: '0.75rem',
+                  background: billingType === type ? 'rgba(26,107,138,0.06)' : 'white',
+                  cursor: 'pointer', fontWeight: 700, transition: 'all 0.15s',
+                }}
+              >
+                {type === 'PIX' ? '⚡ PIX' : '💳 Cartão'}
+              </button>
+            ))}
+          </div>
+
+          {billingType === 'CREDIT_CARD' && (
+            <p style={{ background: '#fffaf0', border: '1px solid #fed7aa', borderRadius: '0.625rem', padding: '0.75rem', fontSize: '0.8rem', color: '#9c4221', marginBottom: '1rem' }}>
+              Para cartão presencial, oriente o cliente a usar o link ASAAS que será aberto após criar o pedido (mais seguro que digitar o cartão aqui).
+            </p>
+          )}
+
+          {error && (
+            <div style={{ background: '#fff5f5', border: '1px solid #fed7d7', borderRadius: '0.75rem', padding: '0.75rem', marginBottom: '1rem', color: '#9b2c2c', fontSize: '0.85rem' }}>
+              {error}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '0.625rem' }}>
+            <button
+              type="button"
+              onClick={() => setStep('customer')}
+              style={{
+                flex: 1, padding: '0.75rem', border: '1.5px solid var(--border)', borderRadius: '0.75rem',
+                background: 'white', cursor: 'pointer', fontWeight: 600,
+              }}
+            >
+              ← Voltar
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="btn-primary"
+              style={{ flex: 2, justifyContent: 'center', opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+            >
+              {loading ? 'Processando…' : `Cobrar ${formatCents(totalCents)}`}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 'done' && result && (
+        <div style={{ ...cardStyle, textAlign: 'center' }}>
+          <div style={{ fontSize: '2.75rem', marginBottom: '0.75rem' }}>
+            {result.pixQrCode ? '📱' : result.paymentUrl ? '💳' : '✅'}
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.35rem', color: 'var(--ocean-deep)', marginBottom: '0.5rem' }}>
+            {result.pixQrCode ? 'QR Code PIX gerado!' : result.asaasChargeId ? 'Cobrança criada!' : 'Reserva registrada!'}
+          </h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '1.25rem', fontSize: '0.875rem' }}>
+            Reserva #{result.bookingId.slice(0, 8)}… · Total: {formatCents(result.totalCents)}
+          </p>
+
+          {result.asaasError && (
+            <p style={{ background: '#fffaf0', border: '1px solid #fed7aa', borderRadius: '0.5rem', padding: '0.625rem', fontSize: '0.8rem', color: '#9c4221', margin: '0 0 1rem' }}>
+              ASAAS off — reserva registrada como confirmada manualmente. ({result.asaasError.slice(0, 100)})
+            </p>
+          )}
+
+          {result.pixQrCode && (
+            <div style={{ marginBottom: '1.25rem' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={result.pixQrCode}
+                alt="QR Code PIX"
+                style={{ width: '200px', height: '200px', margin: '0 auto 0.75rem', display: 'block', borderRadius: '0.75rem' }}
+              />
+              {result.pixCopyPaste && (
+                <button
+                  type="button"
+                  onClick={() => navigator.clipboard.writeText(result.pixCopyPaste!)}
+                  style={{
+                    padding: '0.5rem 1rem', border: '1.5px solid var(--border)', borderRadius: '0.625rem',
+                    background: 'white', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600,
+                  }}
+                >
+                  📋 Copiar código PIX
+                </button>
+              )}
+            </div>
+          )}
+
+          {result.paymentUrl && (
+            <a
+              href={result.paymentUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{ display: 'inline-block', marginBottom: '1.25rem', color: 'var(--ocean-mid)', fontWeight: 600, fontSize: '0.875rem' }}
+            >
+              Abrir fatura ASAAS ↗
+            </a>
+          )}
+
+          <div style={{ display: 'flex', gap: '0.625rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a
+              href="/admin/reservas"
+              style={{
+                padding: '0.625rem 1.25rem', border: '1.5px solid var(--border)', borderRadius: '0.75rem',
+                background: 'white', textDecoration: 'none', color: 'var(--ocean-deep)', fontWeight: 600, fontSize: '0.875rem',
+              }}
+            >
+              Ver reservas
+            </a>
+            <button type="button" onClick={reset} className="btn-primary" style={{ justifyContent: 'center' }}>
+              + Nova venda
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

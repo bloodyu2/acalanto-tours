@@ -478,9 +478,25 @@ export interface Database {
           updated_at?:      string
         }
       }
+      admin_users: {
+        Row: {
+          id: string
+          role: 'super_admin' | 'pdv' | 'tripulacao' | 'fotografo'
+          display_name: string | null
+          created_at: string
+        }
+        Insert: {
+          id: string
+          role: 'super_admin' | 'pdv' | 'tripulacao' | 'fotografo'
+          display_name?: string | null
+        }
+        Update: Partial<Database['public']['Tables']['admin_users']['Insert']>
+      }
     }
   }
 }
+
+export type AdminUserRow = Database['public']['Tables']['admin_users']['Row']
 
 // Existing aliases
 export type Profile = Database['public']['Tables']['profiles']['Row']

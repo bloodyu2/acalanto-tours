@@ -71,6 +71,20 @@ export interface AsaasSubcontaResponse {
   email: string
 }
 
+export interface AsaasTransferRequest {
+  value: number          // valor em R$ (ex: 245.00)
+  walletId: string       // wallet ID do parceiro destino
+  description?: string
+}
+
+export interface AsaasTransfer {
+  id: string
+  value: number
+  status: 'PENDING' | 'DONE' | 'CANCELLED' | 'FAILED' | string
+  transferDate?: string
+  description?: string
+}
+
 export interface AsaasWebhookPayload {
   event: 'PAYMENT_RECEIVED' | 'PAYMENT_OVERDUE' | 'PAYMENT_REFUNDED' | 'PAYMENT_CONFIRMED'
   payment: {

@@ -1,4 +1,12 @@
-import type { AsaasCustomer, AsaasChargeRequest, AsaasCharge, AsaasSubcontaRequest, AsaasSubcontaResponse } from './types'
+import type {
+  AsaasCustomer,
+  AsaasChargeRequest,
+  AsaasCharge,
+  AsaasSubcontaRequest,
+  AsaasSubcontaResponse,
+  AsaasTransferRequest,
+  AsaasTransfer,
+} from './types'
 
 function getBaseUrl(): string {
   return process.env.ASAAS_ENVIRONMENT === 'production'
@@ -75,5 +83,12 @@ export async function disableSubconta(asaasAccountId: string): Promise<void> {
   await asaasFetch<unknown>(`/accounts/${asaasAccountId}/status`, {
     method: 'POST',
     body: JSON.stringify({ status: 'INACTIVE' }),
+  })
+}
+
+export async function createTransfer(data: AsaasTransferRequest): Promise<AsaasTransfer> {
+  return asaasFetch<AsaasTransfer>('/transfers', {
+    method: 'POST',
+    body: JSON.stringify(data),
   })
 }
