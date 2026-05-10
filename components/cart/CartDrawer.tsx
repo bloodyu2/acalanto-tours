@@ -114,7 +114,7 @@ export default function CartDrawer() {
                         {item.boatPhotographerAddon && (
                           <div style={{ marginTop: '0.375rem' }}>
                             <p style={{ fontSize: '0.8125rem', color: 'var(--ocean-deep)', fontWeight: 600, margin: 0 }}>
-                              📷 Fotógrafo a bordo — +R$ 350,00
+                              📷 Fotógrafo a bordo — +R$ 250,00
                             </p>
                             <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: '0.1rem 0 0' }}>
                               A Calanto confirmará o fotógrafo após a reserva
@@ -246,18 +246,4 @@ export default function CartDrawer() {
                     <rect x="1" y="4" width="22" height="16" rx="2"/>
                     <line x1="1" y1="10" x2="23" y2="10"/>
                     <circle cx="7" cy="15" r="1" fill="currentColor"/>
-                  </svg>
-                  Débito
-                </div>
-              </div>
-            </div>
-
-            <p style={{ textAlign: 'center', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.375rem' }}>
-              Pagamento seguro via ASAAS · protegido pela LGPD
-            </p>
-          </div>
-        )}
-      </div>
-    </>
-  )
-}
+                 

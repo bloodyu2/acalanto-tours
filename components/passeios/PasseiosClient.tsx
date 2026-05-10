@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import BoatSheet from '@/components/booking/BoatSheet'
 import type { Boat } from '@/lib/types/database'
 
@@ -59,8 +60,13 @@ function BoatCard({ boat, onReservar }: { boat: Boat; onReservar: () => void }) 
           overflow: 'hidden',
         }}>
           {boat.cover_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={boat.cover_image} alt={boat.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <Image
+              src={boat.cover_image}
+              alt={boat.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              style={{ objectFit: 'cover' }}
+            />
           ) : (
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -144,9 +150,4 @@ function BoatCard({ boat, onReservar }: { boat: Boat; onReservar: () => void }) 
             style={{ fontSize: '0.8rem', color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none', padding: '0.5rem', whiteSpace: 'nowrap' }}
           >
             Ver detalhes →
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
-}
+       

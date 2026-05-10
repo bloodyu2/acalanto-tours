@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Boat } from '@/lib/types/database'
 import { formatCents } from '@/lib/booking/pricing'
 import { FEATURE_LABELS } from '@/lib/constants'
@@ -23,11 +24,12 @@ export default function TourCard({ boat }: Props) {
         overflow: 'hidden',
       }}>
         {boat.cover_image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={boat.cover_image}
             alt={boat.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            style={{ objectFit: 'cover' }}
           />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -118,8 +120,4 @@ export default function TourCard({ boat }: Props) {
           style={{ justifyContent: 'center', fontSize: '0.875rem', borderRadius: '10px' }}
         >
           Ver Passeio e Reservar
-        </Link>
-      </div>
-    </div>
-  )
-}
+        </Link
