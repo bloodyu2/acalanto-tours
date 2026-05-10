@@ -22,7 +22,7 @@ function formatDate(iso: string) {
 function itemTotal(item: CartItem): number {
   if (item.type === 'hospedagem') return ((item.pricePerNightCents ?? 0) * (item.nights ?? 1))
   if (item.type === 'servico' && item.pricingType === 'per_group') return item.priceAdultCents ?? 0
-  return (item.priceAdultCents ?? 0) * (item.adults ?? 0) + (item.priceChildCents ?? 0) * (item.children ?? 0)
+  return (item.priceAdultCents ?? 0) * (item.adults ?? 0) + (item.priceChildCents ?? 0) * (item.children ?? 0) + (item.boatPhotographerAddon ? (item.boatPhotographerAddonCents ?? 0) : 0)
 }
 
 function itemDetails(item: CartItem): string {
@@ -967,6 +967,11 @@ export default function CheckoutPage() {
                             <p style={{ fontSize: '0.78125rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
                               {itemDetails(item)}
                             </p>
+                            {item.boatPhotographerAddon && (
+                              <p style={{ fontSize: '0.75rem', color: 'var(--ocean-mid)', marginTop: '0.25rem', lineHeight: '1.4' }}>
+                                📷 Fotógrafo a bordo +{formatBRL(item.boatPhotographerAddonCents ?? 0)}
+                              </p>
+                            )}
                           </div>
                           <div style={{ fontWeight: 700, fontSize: '0.9375rem', flexShrink: 0, whiteSpace: 'nowrap', color: 'var(--ocean-deep)' }}>
                             {formatBRL(total)}
