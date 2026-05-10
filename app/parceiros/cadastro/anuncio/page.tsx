@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { WizardSteps } from '../_components/WizardSteps'
+import { PartnerCalculator } from '../_components/PartnerCalculator'
 
 type ListingType = 'fotografia' | 'hospedagem' | 'jeep' | 'guia' | 'barco'
 
@@ -253,6 +254,9 @@ export default function CadastroAnuncioPage() {
               <label style={labelStyle}>Preço (texto livre)</label>
               <input type="text" value={priceLabel} onChange={e => setPriceLabel(e.target.value)} placeholder="Ex: A partir de R$150/pessoa" style={inputStyle}/>
             </div>
+
+            <PartnerCalculator />
+
             <div>
               <label style={labelStyle}>WhatsApp</label>
               <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="5524999XXXXXX" style={inputStyle}/>

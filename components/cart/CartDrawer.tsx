@@ -89,6 +89,7 @@ export default function CartDrawer() {
                   displayDetails = `Grupo de ${item.groupSize ?? item.adults} pessoas · ${formatDate(item.date)}`
                 } else {
                   displayTotal = item.adults * item.priceAdultCents + item.children * item.priceChildCents
+                    + (item.boatPhotographerAddon ? (item.boatPhotographerAddonCents ?? 0) : 0)
                   displayDetails = `${item.adults} adulto${item.adults !== 1 ? 's' : ''}${item.children > 0 ? ` · ${item.children} criança${item.children !== 1 ? 's' : ''}` : ''} · ${formatDate(item.date)}`
                 }
                 return (
@@ -111,6 +112,16 @@ export default function CartDrawer() {
                         <p style={{ fontWeight: 700, marginTop: '0.5rem', color: 'var(--text-primary)' }}>
                           {formatBRL(displayTotal)}
                         </p>
+                        {item.boatPhotographerAddon && (
+                          <div style={{ marginTop: '0.375rem' }}>
+                            <p style={{ fontSize: '0.8125rem', color: 'var(--ocean-deep)', fontWeight: 600, margin: 0 }}>
+                              📷 Fotógrafo a bordo — +R$ 350,00
+                            </p>
+                            <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: '0.1rem 0 0' }}>
+                              A Calanto confirmará o fotógrafo após a reserva
+                            </p>
+                          </div>
+                        )}
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}

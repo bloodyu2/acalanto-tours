@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import type { Boat } from '@/lib/types/database'
 import { calculateTotal, formatCents } from '@/lib/booking/pricing'
-import { CANCELLATION_POLICY, BOOKING_ADVANCE_MIN_DAYS } from '@/lib/constants'
+import { CANCELLATION_POLICY, BOOKING_ADVANCE_MIN_DAYS, BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
 import { useCart } from '@/components/cart/CartProvider'
 import { createClient } from '@/lib/supabase/client'
 import CapacityBar from './CapacityBar'
@@ -82,6 +82,7 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
   const [children, setChildren] = useState(0)
   const [infants, setInfants] = useState(0)
   const [name, setName] = useState('')
+  const [photographerAddon, setPhotographerAddon] = useState(false)
 
   const [departureTimes, setDepartureTimes] = useState<DepartureTime[]>([])
   const [selectedTimeId, setSelectedTimeId] = useState<string | null>(null)
@@ -102,7 +103,7 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
 
   const selectedTime = departureTimes.find(t => t.id === selectedTimeId)
   const totalPassengers = adults + children + infants
-  const total = calculateTotal(boat, { adults, children })
+  const total = calculateTotal(boat, { adults, children }) + (photographerAddon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0)
 
   const handleAddToCart = () => {
     if (!date) { alert('Selecione uma data para o passeio.'); return }
@@ -128,6 +129,8 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
       utmCampaign: typeof window !== 'undefined'
         ? (() => { try { return sessionStorage.getItem('utm_campaign') } catch { return null } })()
         : null,
+      boatPhotographerAddon: photographerAddon,
+      boatPhotographerAddonCents: photographerAddon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0,
     })
     openCart()
   }
@@ -208,6 +211,59 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
         <Counter label="Bebês" sublabel="Até 5 anos — gratuito, conta na lotação" value={infants} onChange={setInfants} min={0} max={boat.capacity_max} />
       </div>
 
+      {/* Fotógrafo a bordo */}
+      <div
+        onClick={() => setPhotographerAddon(v => !v)}
+        style={{
+          marginTop: '1rem',
+          border: `2px solid ${photographerAddon ? 'var(--ocean-deep)' : 'var(--border)'}`,
+          borderRadius: '0.875rem',
+          padding: '0.875rem 1rem',
+          cursor: 'pointer',
+          background: photographerAddon ? 'rgba(10,61,92,0.04)' : 'white',
+          transition: 'border-color 0.15s, background 0.15s',
+          display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+        }}
+      >
+        <div style={{
+          width: '2.25rem', height: '2.25rem', flexShrink: 0,
+          borderRadius: '50%', background: photographerAddon ? 'var(--ocean-deep)' : 'var(--border)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'background 0.15s',
+        }}>
+          <svg width="16" height="16" fill="none" stroke="white" strokeWidth={1.75} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)', margin: 0, fontFamily: 'var(--font-jakarta)' }}>
+              Fotógrafo a bordo
+            </p>
+            <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--ocean-deep)', fontFamily: 'var(--font-playfair)' }}>
+              +{formatCents(BOAT_PHOTOGRAPHER_ADDON_CENTS)}
+            </span>
+          </div>
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '0.25rem 0 0', fontFamily: 'var(--font-jakarta)', lineHeight: 1.5 }}>
+            Registre o passeio com fotos profissionais. A Calanto confirmará o fotógrafo da Associação de Fotógrafos de Paraty em contato após a reserva.
+          </p>
+        </div>
+        <div style={{
+          width: '1.25rem', height: '1.25rem', flexShrink: 0, marginTop: '0.1rem',
+          border: `2px solid ${photographerAddon ? 'var(--ocean-deep)' : 'var(--border)'}`,
+          borderRadius: '4px', background: photographerAddon ? 'var(--ocean-deep)' : 'white',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'all 0.15s',
+        }}>
+          {photographerAddon && (
+            <svg width="10" height="10" fill="none" stroke="white" strokeWidth={2.5} viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          )}
+        </div>
+      </div>
+
       {/* Nome opcional */}
       <div className="form-group" style={{ marginTop: '0.875rem' }}>
         <label className="form-label">Seu nome <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>(opcional)</span></label>
@@ -234,6 +290,7 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
             {adults > 0 && <div>{adults} adulto{adults !== 1 ? 's' : ''}</div>}
             {children > 0 && <div>{children} criança{children !== 1 ? 's' : ''}</div>}
             {infants > 0 && <div>{infants} bebê{infants !== 1 ? 's' : ''} (grátis)</div>}
+            {photographerAddon && <div>📷 Fotógrafo</div>}
           </div>
         </div>
       )}

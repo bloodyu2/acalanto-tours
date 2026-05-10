@@ -48,7 +48,7 @@ export default async function ParceiroFinanceiroPage() {
         Receita, comissões e repasses
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
         {[
           { label: 'Receita bruta total', value: fmtCents(totalGross), color: '#0f172a' },
           { label: 'Comissão Acalanto', value: `-${fmtCents(totalCommission)}`, color: '#dc2626' },
@@ -60,6 +60,12 @@ export default async function ParceiroFinanceiroPage() {
             <p style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, color: k.color, fontFamily: 'var(--font-playfair)' }}>{k.value}</p>
           </div>
         ))}
+      </div>
+
+      <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '0.75rem 1rem', marginBottom: '2rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+        <span style={{ fontSize: '0.8rem', color: '#1e40af', lineHeight: 1.5 }}>
+          <strong>ℹ️</strong> Lembre-se: você deve emitir nota fiscal no seu CNPJ para cada serviço prestado. Os valores aqui refletidos são brutos antes de impostos.
+        </span>
       </div>
 
       <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden', marginBottom: '2rem' }}>

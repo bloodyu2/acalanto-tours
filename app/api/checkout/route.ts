@@ -41,6 +41,8 @@ const CheckoutSchema = z.object({
     pricePerNightCents:       z.number().optional(),
     partnerWalletId:          z.string().optional(),
     commissionPct:            z.number().optional(),
+    boatPhotographerAddon:    z.boolean().optional(),
+    boatPhotographerAddonCents: z.number().int().min(0).optional(),
   })).min(1),
 })
 
@@ -54,6 +56,7 @@ function calcItemCents(item: CheckoutItem): number {
     return item.priceAdultCents
   }
   return item.priceAdultCents * (item.adults ?? 0) + item.priceChildCents * (item.children ?? 0)
+    + (item.boatPhotographerAddon ? (item.boatPhotographerAddonCents ?? 0) : 0)
 }
 
 export async function POST(request: NextRequest) {
@@ -250,7 +253,9 @@ export async function POST(request: NextRequest) {
       status:                   'pending',
       vertical:                 primaryItem.type,
       commission_rate:          100 - commissionPct, // % que a Acalanto retém
-      notes:                    null,
+      notes:                    primaryItem.boatPhotographerAddon
+        ? 'Fotógrafo a bordo solicitado - aguarda confirmação da Calanto'
+        : null,
       photographer_package_id:  primaryItem.photographerPackageId ?? null,
       utm_campaign:             null,
       paid_at:                  null,

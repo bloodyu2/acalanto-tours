@@ -32,6 +32,9 @@ export type CartItem = {
   nights?: number
   guests?: number
   pricePerNightCents?: number
+  // Add-ons
+  boatPhotographerAddon?: boolean
+  boatPhotographerAddonCents?: number
 }
 
 type CartContextType = {
@@ -62,7 +65,9 @@ function itemTotal(item: CartItem): number {
   if (item.type === 'servico' && item.pricingType === 'per_group') {
     return item.priceAdultCents
   }
-  return item.priceAdultCents * item.adults + item.priceChildCents * item.children
+  let total = item.priceAdultCents * item.adults + item.priceChildCents * item.children
+  if (item.boatPhotographerAddon) total += (item.boatPhotographerAddonCents ?? 0)
+  return total
 }
 
 export default function CartProvider({ children }: { children: ReactNode }) {

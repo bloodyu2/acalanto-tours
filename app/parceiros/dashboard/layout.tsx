@@ -2,6 +2,7 @@ import React from 'react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import OnboardingModal from './_components/OnboardingModal'
 
 export default async function ParceiroDashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -93,6 +94,7 @@ export default async function ParceiroDashboardLayout({ children }: { children: 
 
       {/* Main */}
       <main style={{ flex: 1, background: '#f7f9fc', overflow: 'auto' }}>
+        <OnboardingModal partnerId={profile.partner_id} />
         {children}
       </main>
     </div>

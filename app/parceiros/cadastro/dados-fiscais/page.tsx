@@ -220,6 +220,16 @@ export default function DadosFiscaisPage() {
               </p>
             )}
 
+            <div style={{ background: '#fefce8', border: '1px solid #fde68a', borderRadius: '10px', padding: '1rem 1.125rem' }}>
+              <p style={{ margin: '0 0 0.375rem', fontSize: '0.8125rem', fontWeight: 700, color: '#92400e' }}>
+                ⚠️ Emissão de Nota Fiscal
+              </p>
+              <p style={{ margin: 0, fontSize: '0.8125rem', color: '#92400e', lineHeight: 1.6 }}>
+                Você é responsável por emitir suas próprias notas fiscais no seu CNPJ/CPF para cada serviço prestado.
+                A Acalanto repassa os valores brutos conforme o split acordado — a tributação e emissão de NF é de sua responsabilidade como prestador independente.
+              </p>
+            </div>
+
             <button
               type="submit"
               className="btn-primary"

@@ -31,6 +31,8 @@ export default async function AdminDashboard() {
     { data: npsData },
     { data: recentBookings },
     { data: recentContacts },
+    { data: allPayments },
+    { count: confirmedCount },
   ] = await Promise.all([
     supabase.from('bookings').select('*', { count: 'exact', head: true }),
     supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('created_at', monthStart),
@@ -42,9 +44,13 @@ export default async function AdminDashboard() {
     supabase.from('nps_surveys').select('score').not('score', 'is', null),
     supabase.from('bookings').select('*, boats(name)').order('created_at', { ascending: false }).limit(5),
     supabase.from('contacts').select('*').order('created_at', { ascending: false }).limit(5),
+    supabase.from('payments').select('amount_cents').eq('status', 'paid'),
+    supabase.from('bookings').select('*', { count: 'exact', head: true }).in('status', ['confirmed', 'paid']),
   ])
 
   const revenueMonth = (monthPayments ?? []).reduce((sum, p) => sum + (p.amount_cents ?? 0), 0)
+  const revenueAllTime = (allPayments ?? []).reduce((sum, p) => sum + (p.amount_cents ?? 0), 0)
+  const ticketMedio = confirmedCount && confirmedCount > 0 ? Math.round(revenueAllTime / confirmedCount) : 0
 
   const scores = (npsData ?? []).map(s => s.score as number)
   const promoters = scores.filter(s => s >= 9).length
@@ -71,6 +77,8 @@ export default async function AdminDashboard() {
   const kpis = [
     { icon: <KpiCalendar />, label: 'Reservas totais', value: totalBookings ?? 0, sub: `${monthBookings ?? 0} este mês`, color: 'var(--ocean-mid)' },
     { icon: <KpiCard />, label: 'Receita este mês', value: formatCents(revenueMonth), sub: 'pagamentos confirmados', color: '#38a169' },
+    { icon: <KpiCard />, label: 'Receita total acumulada', value: formatCents(revenueAllTime), sub: 'todos os pagamentos confirmados', color: '#059669' },
+    { icon: <KpiCalendar />, label: 'Ticket médio', value: ticketMedio > 0 ? formatCents(ticketMedio) : '—', sub: 'por reserva confirmada', color: 'var(--ocean-mid)' },
     { icon: <KpiClock />, label: 'Reservas pendentes', value: pendingBookings ?? 0, sub: 'aguardando confirmação', color: '#d69e2e' },
     { icon: <KpiStar />, label: 'NPS médio', value: npsScore !== null ? npsScore : '-', sub: `${scores.length} respostas`, color: npsScore !== null && npsScore >= 50 ? '#38a169' : '#d69e2e' },
     { icon: <KpiMail />, label: 'Contatos não lidos', value: contacts ?? 0, sub: 'mensagens novas', color: '#e53e3e' },
