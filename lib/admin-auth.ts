@@ -1,6 +1,9 @@
+// Server-only helpers. Do NOT import this from a Client Component — it pulls
+// in next/headers via the supabase server client.
 import { createAdminClient, createClient } from '@/lib/supabase/server'
+import type { AdminRole } from './admin-roles'
 
-export type AdminRole = 'super_admin' | 'pdv' | 'tripulacao' | 'fotografo'
+export { ROLE_NAV, canAccessRoute, type AdminRole } from './admin-roles'
 
 export interface AdminUser {
   id: string
@@ -47,31 +50,4 @@ export async function getAdminUser(): Promise<AdminUser | null> {
   }
 
   return null
-}
-
-export const ROLE_NAV: Record<AdminRole, string[]> = {
-  super_admin: [
-    '/admin',
-    '/admin/negocio',
-    '/admin/reservas',
-    '/admin/vendas',
-    '/admin/capacidade',
-    '/admin/repasses',
-    '/admin/contatos',
-    '/admin/nps',
-    '/admin/parceiros',
-    '/admin/depoimentos',
-    '/admin/blog',
-    '/admin/roadmap',
-    '/admin/apresentacoes',
-    '/admin/identidade',
-  ],
-  pdv: ['/admin/vendas'],
-  tripulacao: ['/admin/capacidade', '/admin/reservas'],
-  fotografo: ['/admin/capacidade'],
-}
-
-export function canAccessRoute(role: AdminRole, pathname: string): boolean {
-  const allowed = ROLE_NAV[role] ?? []
-  return allowed.some(r => pathname === r || pathname.startsWith(r + '/'))
 }

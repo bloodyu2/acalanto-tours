@@ -57,10 +57,10 @@ export default function ReservaViewModal({ booking: b, onClose, canPayPartner }:
   const [syncMsg, setSyncMsg] = useState<string | null>(null)
   const [payResult, setPayResult] = useState<string | null>(null)
 
-  const commissionRate = b.commission_rate ?? 0.30
-  const partnerPct = Math.round((1 - commissionRate) * 100)
-  const acalantoPct = 100 - partnerPct
-  const partnerValueCents = Math.round(b.total_cents * (1 - commissionRate))
+  // commission_rate is stored as integer percentage (e.g. 30 = Acalanto retains 30%).
+  const acalantoPct = Math.round(b.commission_rate ?? 30)
+  const partnerPct = 100 - acalantoPct
+  const partnerValueCents = Math.round(b.total_cents * partnerPct / 100)
   const acalantoValueCents = b.total_cents - partnerValueCents
 
   const pStatus = (b.payment_status ?? 'pending').toLowerCase()

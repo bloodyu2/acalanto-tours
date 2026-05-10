@@ -71,7 +71,7 @@ export default async function AdminReservasPage() {
       adults: b.adults,
       children: b.children,
       total_cents: b.total_cents,
-      commission_rate: b.commission_rate ?? 0.30,
+      commission_rate: b.commission_rate ?? 30,
       customer_name: b.customer_name,
       customer_email: b.customer_email,
       customer_phone: b.customer_phone,

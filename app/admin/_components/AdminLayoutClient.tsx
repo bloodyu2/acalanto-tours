@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { ReactNode } from 'react'
-import { ROLE_NAV, type AdminRole } from '@/lib/admin-auth'
+import { ROLE_NAV, type AdminRole } from '@/lib/admin-roles'
 import WelcomeModal from '@/components/admin/WelcomeModal'
 
 const DashboardIcon = () => (

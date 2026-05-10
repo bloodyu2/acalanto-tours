@@ -48,8 +48,9 @@ export async function POST(
     )
   }
 
-  const commissionRate = booking.commission_rate ?? 0.30
-  const partnerCents = Math.round(booking.total_cents * (1 - commissionRate))
+  // commission_rate is stored as percentage 0-100 (e.g. 30 means Acalanto keeps 30%).
+  const acalantoPct = booking.commission_rate ?? 30
+  const partnerCents = Math.round(booking.total_cents * (100 - acalantoPct) / 100)
   const partnerValue = partnerCents / 100
 
   if (partnerValue <= 0) {

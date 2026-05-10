@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import type { AdminRole } from '@/lib/admin-auth'
+import type { AdminRole } from '@/lib/admin-roles'
 
 const WELCOME_SLIDES: Record<AdminRole, Array<{ icon: string; title: string; desc: string }>> = {
   super_admin: [

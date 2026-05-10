@@ -77,7 +77,8 @@ export async function POST(req: Request) {
     children * (boat.price_child ?? Math.round((boat.price_adult ?? 11000) / 2)) +
     (photographer_addon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0)
   const totalValue = totalCents / 100
-  const commissionRate = boat.commission_rate ?? 0.30
+  // commission_rate stored as integer percentage (e.g. 30 = Acalanto retains 30%).
+  const commissionRate = boat.commission_rate ?? 30
 
   const cpf = onlyDigits(customer_cpf) || '00000000000'
 
