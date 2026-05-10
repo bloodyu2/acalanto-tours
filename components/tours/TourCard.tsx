@@ -120,4 +120,8 @@ export default function TourCard({ boat }: Props) {
           style={{ justifyContent: 'center', fontSize: '0.875rem', borderRadius: '10px' }}
         >
           Ver Passeio e Reservar
-        </Link
+        </Link>
+      </div>
+    </div>
+  )
+}

@@ -22,3 +22,5 @@ export const FEATURE_LABELS: Record<string, string> = {
 
 export const CANCELLATION_POLICY =
   'Cancelamento gratuito até 24h antes do passeio. Em caso de mau tempo, reagendamento sem custo.'
+
+export const BOAT_PHOTOGRAPHER_ADDON_CENTS = 25000 // R$ 250

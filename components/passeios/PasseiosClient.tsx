@@ -150,4 +150,9 @@ function BoatCard({ boat, onReservar }: { boat: Boat; onReservar: () => void }) 
             style={{ fontSize: '0.8rem', color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none', padding: '0.5rem', whiteSpace: 'nowrap' }}
           >
             Ver detalhes →
-       
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
