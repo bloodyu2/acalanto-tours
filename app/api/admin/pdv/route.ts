@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
   const { data: boat, error: boatError } = await supabase
     .from('boats')
-    .select('id, name, price_adult, price_child, commission_rate, partner_id')
+    .select('id, name, price_adult, price_child, commission_pct, partner_id')
     .eq('id', boat_id)
     .maybeSingle()
 
@@ -77,8 +77,10 @@ export async function POST(req: Request) {
     children * (boat.price_child ?? Math.round((boat.price_adult ?? 11000) / 2)) +
     (photographer_addon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0)
   const totalValue = totalCents / 100
-  // commission_rate stored as integer percentage (e.g. 30 = Acalanto retains 30%).
-  const commissionRate = boat.commission_rate ?? 30
+  // boats.commission_pct = % that goes to the partner.
+  // bookings.commission_rate = % that Acalanto retains. Convert: 100 - partnerPct.
+  const partnerPct = boat.commission_pct ?? 70
+  const commissionRate = Math.max(0, Math.min(100, 100 - partnerPct))
 
   const cpf = onlyDigits(customer_cpf) || '00000000000'
 
