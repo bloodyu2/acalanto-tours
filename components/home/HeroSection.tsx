@@ -109,7 +109,7 @@ export default function HeroSection({ slides = [] }: HeroSectionProps) {
             letterSpacing: '-0.035em',
             marginBottom: '1.5rem',
             marginTop: '1.75rem',
-            textShadow: hasSlides ? '0 2px 12px rgba(0,0,0,0.6)' : 'none',
+            textShadow: hasSlides ? '0 3px 18px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.6)' : 'none',
           }}>
             Tudo para seu{' '}
             <span style={{
@@ -122,11 +122,11 @@ export default function HeroSection({ slides = [] }: HeroSectionProps) {
 
           <p style={{
             fontSize: 'clamp(1rem, 1.8vw, 1.125rem)',
-            color: 'rgba(255,255,255,0.65)',
+            color: hasSlides ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.65)',
             lineHeight: 1.7, marginBottom: '2.25rem',
             maxWidth: '520px', fontWeight: 400,
             fontFamily: 'var(--font-jakarta)',
-            textShadow: hasSlides ? '0 1px 8px rgba(0,0,0,0.5)' : 'none',
+            textShadow: hasSlides ? '0 2px 12px rgba(0,0,0,0.75), 0 1px 3px rgba(0,0,0,0.5)' : 'none',
           }}>
             Passeios de escuna, fotografia profissional, hospedagem selecionada e serviços — tudo num só lugar, com quem conhece Paraty de verdade.
           </p>
