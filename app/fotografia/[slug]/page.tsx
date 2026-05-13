@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { PhotographerPackage, PartnerPage, Partner } from '@/lib/types/database'
 import PhotographyBookingWidget from '@/components/photography/PhotographyBookingWidget'
 import type { PhotographyPackageForWidget } from '@/components/photography/PhotographyBookingWidget'
+import GalleryLightbox from '@/components/ui/GalleryLightbox'
 
 export const dynamic = 'force-dynamic'
 
@@ -66,6 +68,14 @@ export default async function FotografiaDetailPage({ params }: Props) {
     .eq('service_id', typedPkg.id)
     .eq('available', false)
   const unavailableDates = (unavailRows ?? []).map((r: { date: string }) => r.date)
+
+  // Fetch this photographer's portfolio (gallery rows linked by photographer_package_id)
+  const { data: galleryRows } = await supabase
+    .from('gallery')
+    .select('id, url, alt_text, display_order')
+    .eq('photographer_package_id', typedPkg.id)
+    .order('display_order', { ascending: true })
+  const portfolio = (galleryRows ?? []) as { id: string; url: string; alt_text: string | null; display_order: number | null }[]
 
   const pkgForWidget: PhotographyPackageForWidget = {
     id: typedPkg.id,
@@ -201,6 +211,19 @@ export default async function FotografiaDetailPage({ params }: Props) {
               </div>
             )}
 
+            {/* Portfolio — gallery linked to this photographer_package_id */}
+            {portfolio.length > 0 && (
+              <div className="card" style={{ padding: '1.75rem' }}>
+                <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, margin: '0 0 1rem', color: 'var(--text-primary)' }}>
+                  Portfolio
+                </h2>
+                <p style={{ margin: '0 0 1.25rem', color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                  Algumas fotos do trabalho{typedPkg.partners?.name ? ` da ${typedPkg.partners.name}` : ''}.
+                </p>
+                <GalleryLightbox images={portfolio} title={typedPkg.name} />
+              </div>
+            )}
+
             {/* Photographer info */}
             {partnerPage?.bio ? (
               <div className="card" style={{ padding: '1.75rem' }}>
@@ -208,12 +231,15 @@ export default async function FotografiaDetailPage({ params }: Props) {
                   Sobre o fotógrafo
                 </h2>
                 {partnerPage.cover_image && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={partnerPage.cover_image}
-                    alt={typedPkg.partners?.name ?? 'Fotografo'}
-                    style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', marginBottom: '1rem' }}
-                  />
+                  <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden', marginBottom: '1rem' }}>
+                    <Image
+                      src={partnerPage.cover_image}
+                      alt={typedPkg.partners?.name ?? 'Fotografo'}
+                      fill
+                      sizes="80px"
+                      style={{ objectFit: 'cover' }}
+                    />
+                  </div>
                 )}
                 <p style={{ margin: 0, color: 'var(--text-muted)', lineHeight: 1.75 }}>
                   {partnerPage.bio}
