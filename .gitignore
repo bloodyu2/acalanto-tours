@@ -44,7 +44,6 @@ next-env.d.ts
 .claude/
 .cursor/
 .cursorrules
-CLAUDE.md
 .env.local
 .git_broken*
 .next_old*
