@@ -237,6 +237,7 @@ export default async function FotografiaDetailPage({ params }: Props) {
                       alt={typedPkg.partners?.name ?? 'Fotografo'}
                       fill
                       sizes="80px"
+                      quality={85}
                       style={{ objectFit: 'cover' }}
                     />
                   </div>

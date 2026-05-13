@@ -77,6 +77,7 @@ export default function GalleryLightbox({ images, title }: Props) {
               alt={img.alt_text ?? (title ? `${title} — foto ${i + 1}` : `Foto ${i + 1}`)}
               fill
               sizes="(max-width: 768px) 50vw, 200px"
+              quality={75}
               style={{ objectFit: 'cover', transition: 'transform 0.25s ease' }}
               onMouseOver={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)' }}
               onMouseOut={e => { (e.currentTarget as HTMLImageElement).style.transform = '' }}

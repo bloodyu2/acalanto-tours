@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
         pathname: '/storage/v1/object/public/**',
       },
     ],
+    // Next.js 16+ requires an explicit allowlist of qualities so attackers can't
+    // multiply transformations by varying ?q= in the URL. 60=thumb, 75=grid,
+    // 85=cover, 90=hero.
+    qualities: [60, 75, 85, 90],
+    // Photos rarely change once uploaded — cache for 31 days to slash repeat
+    // transformations and cache writes on Vercel.
+    minimumCacheTTL: 2678400,
+    // Single format keeps transformations down. AVIF is ~30% smaller than WebP
+    // but doubles the transformation cost (one transform per format). WebP only.
+    formats: ['image/webp'],
   },
   async headers() {
     const csp = [

@@ -143,6 +143,7 @@ function PhotographerPackageCard({ pkg }: { pkg: PackageWithPartner }) {
             alt={pkg.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={85}
             style={{ objectFit: 'cover' }}
           />
         ) : (
