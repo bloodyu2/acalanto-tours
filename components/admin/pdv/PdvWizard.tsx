@@ -2,20 +2,29 @@
 import { useState } from 'react'
 import { formatCents } from '@/lib/booking/pricing'
 import { BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
+import type { AdminRole } from '@/lib/admin-roles'
+import type { EnabledVertical, Vertical } from '@/lib/pdv/role-permissions'
+import StepVertical from './StepVertical'
 
 export interface PdvBoat {
-  id: string
-  name: string
-  price_adult: number
-  price_child: number
-  slug: string
+  id: string; name: string; slug: string; price_adult: number; price_child: number
+}
+export interface PdvPhotographer {
+  id: string; name: string; slug: string; price_cents: number | null; cover_image: string | null
+}
+export interface PdvService {
+  id: string; name: string; slug: string; price_cents: number | null
 }
 
 interface Props {
+  verticals: EnabledVertical[]
   boats: PdvBoat[]
+  photographers: PdvPhotographer[]
+  services: PdvService[]
+  sellerRole: AdminRole
 }
 
-type Step = 'tour' | 'passengers' | 'customer' | 'payment' | 'done'
+type Step = 'vertical' | 'tour' | 'passengers' | 'customer' | 'payment' | 'done'
 
 interface PdvResult {
   bookingId: string
@@ -40,12 +49,17 @@ const labelStyle: React.CSSProperties = {
 }
 
 const stepLabel: Record<Step, string> = {
-  tour: 'Passeio', passengers: 'Pax', customer: 'Cliente', payment: 'Pagamento', done: 'OK',
+  vertical: 'Categoria', tour: 'Passeio', passengers: 'Pax', customer: 'Cliente', payment: 'Pagamento', done: 'OK',
 }
 const stepOrder: Step[] = ['tour', 'passengers', 'customer', 'payment']
 
-export default function PdvWizard({ boats }: Props) {
-  const [step, setStep] = useState<Step>('tour')
+export default function PdvWizard({ verticals, boats, photographers, services, sellerRole }: Props) {
+  // Auto-skip vertical step if only one is enabled
+  const initialStep: Step = verticals.length === 1 ? 'tour' : 'vertical'
+  const [step, setStep] = useState<Step>(initialStep)
+  const [vertical, setVertical] = useState<Vertical | null>(
+    verticals.length === 1 ? verticals[0].vertical : null
+  )
 
   const [boatId, setBoatId] = useState('')
   const [tourDate, setTourDate] = useState('')
@@ -102,7 +116,8 @@ export default function PdvWizard({ boats }: Props) {
   }
 
   function reset() {
-    setStep('tour'); setBoatId(''); setTourDate(''); setAdults(1); setChildren(0)
+    setStep(initialStep); setVertical(verticals.length === 1 ? verticals[0].vertical : null)
+    setBoatId(''); setTourDate(''); setAdults(1); setChildren(0)
     setPhotographerAddon(false); setCustomerName(''); setCustomerEmail('')
     setCustomerPhone(''); setCustomerCpf(''); setBillingType('PIX')
     setResult(null); setError(null)
@@ -141,6 +156,13 @@ export default function PdvWizard({ boats }: Props) {
             </div>
           ))}
         </div>
+      )}
+
+      {step === 'vertical' && (
+        <StepVertical
+          verticals={verticals}
+          onSelect={v => { setVertical(v); setStep('tour') }}
+        />
       )}
 
       {step === 'tour' && (
