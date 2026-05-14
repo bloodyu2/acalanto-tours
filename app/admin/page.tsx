@@ -95,8 +95,8 @@ export default async function AdminDashboard() {
         Bem-vindo ao painel de administração Acalanto Turismo.
       </p>
 
-      {/* KPI cards — 2 cols mobile, 3-5 cols desktop */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(150px, 100%), 1fr))', gap: 'clamp(0.625rem, 2vw, 1.25rem)', marginBottom: 'clamp(1.5rem, 5vw, 2.5rem)' }}>
+      {/* KPI cards — 2 cols mobile (>=288px), 3-5 cols desktop */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 'clamp(0.5rem, 2vw, 1.25rem)', marginBottom: 'clamp(1.5rem, 5vw, 2.5rem)' }}>
         {kpis.map(({ icon, label, value, sub, color }) => (
           <div key={label} style={{ background: 'white', borderRadius: '0.875rem', padding: 'clamp(0.875rem, 3vw, 1.5rem)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <div style={{ marginBottom: '0.375rem', color: color }}>{icon}</div>
@@ -107,7 +107,7 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: 'clamp(1rem, 3vw, 1.5rem)', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'clamp(1rem, 3vw, 1.5rem)', marginBottom: '2rem' }}>
         {/* Recent bookings */}
         <div style={{ background: 'white', borderRadius: '0.875rem', padding: 'clamp(1rem, 3vw, 1.5rem)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
