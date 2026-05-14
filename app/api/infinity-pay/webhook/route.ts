@@ -10,18 +10,18 @@ export async function POST(req: NextRequest) {
 
     // HMAC verification
     const webhookSecret = process.env.INFINITY_PAY_WEBHOOK_SECRET
-    if (webhookSecret) {
-      const signature = req.headers.get('x-infinity-signature') || ''
-      const expected = crypto
-        .createHmac('sha256', webhookSecret)
-        .update(rawBody)
-        .digest('hex')
-      if (signature !== expected) {
-        console.warn('Infinity Pay webhook: invalid signature')
-        return NextResponse.json({ ok: false }, { status: 200 })
-      }
-    } else {
-      console.warn('INFINITY_PAY_WEBHOOK_SECRET not set — skipping HMAC check (dev mode)')
+    if (!webhookSecret) {
+      console.error('[infinity-pay/webhook] INFINITY_PAY_WEBHOOK_SECRET not set — rejecting all requests')
+      return NextResponse.json({ ok: false }, { status: 500 })
+    }
+    const signature = req.headers.get('x-infinity-signature') || ''
+    const expected = crypto
+      .createHmac('sha256', webhookSecret)
+      .update(rawBody)
+      .digest('hex')
+    if (signature !== expected) {
+      console.warn('Infinity Pay webhook: invalid signature')
+      return NextResponse.json({ ok: false }, { status: 200 })
     }
 
     const body = JSON.parse(rawBody)
