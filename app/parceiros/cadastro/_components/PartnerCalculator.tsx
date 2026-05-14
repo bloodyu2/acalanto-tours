@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { BALAIO_TOTAL_PCT } from '@/lib/asaas/split'
 
 const COMMISSION_PCT = 70   // parceiro recebe 70%
-const CALANTO_PCT    = 30   // Calanto fica com 30%
-const BALAIO_OF_CALANTO = 0.06  // Balaio leva 6% da parte da Calanto
+const CALANTO_PCT    = 30   // Acalanto retém 30% (inclui os 6% da Balaio)
 
 function fmt(n: number) {
   return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -18,7 +18,8 @@ export function PartnerCalculator() {
 
   const partnerReceives = raw * (COMMISSION_PCT / 100)
   const calaComission   = raw * (CALANTO_PCT / 100)
-  const balaioShare     = calaComission * BALAIO_OF_CALANTO
+  // Balaio sempre fica com 6% do TOTAL da venda — sai de dentro da fatia da Acalanto.
+  const balaioShare     = raw * (BALAIO_TOTAL_PCT / 100)
   const calaNetShare    = calaComission - balaioShare
 
   const monthlyPartner  = partnerReceives * qty
@@ -93,7 +94,7 @@ export function PartnerCalculator() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingLeft: '1rem' }}>
               <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                · Balaio Digital (plataforma)
+                · Balaio Digital (plataforma — {BALAIO_TOTAL_PCT}% do total)
               </span>
               <span style={{ fontSize: '0.8125rem', color: '#64748b' }}>
                 R$ {fmt(balaioShare)}
@@ -101,7 +102,7 @@ export function PartnerCalculator() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingLeft: '1rem' }}>
               <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                · Acalanto líquido
+                · Acalanto líquido ({CALANTO_PCT - BALAIO_TOTAL_PCT}%)
               </span>
               <span style={{ fontSize: '0.8125rem', color: '#64748b' }}>
                 R$ {fmt(calaNetShare)}

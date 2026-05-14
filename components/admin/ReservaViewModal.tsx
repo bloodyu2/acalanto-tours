@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { formatCents } from '@/lib/booking/pricing'
+import { BALAIO_TOTAL_PCT, computeSplitCents } from '@/lib/asaas/split'
 
 export interface ReservaRow {
   id: string
@@ -57,11 +58,13 @@ export default function ReservaViewModal({ booking: b, onClose, canPayPartner }:
   const [syncMsg, setSyncMsg] = useState<string | null>(null)
   const [payResult, setPayResult] = useState<string | null>(null)
 
-  // commission_rate is stored as integer percentage (e.g. 30 = Acalanto retains 30%).
-  const acalantoPct = Math.round(b.commission_rate ?? 30)
-  const partnerPct = 100 - acalantoPct
-  const partnerValueCents = Math.round(b.total_cents * partnerPct / 100)
-  const acalantoValueCents = b.total_cents - partnerValueCents
+  // commission_rate is stored as integer percentage (e.g. 30 = Acalanto+Balaio retain 30% combined).
+  const acalantoGrossPct = Math.round(b.commission_rate ?? 30)
+  const partnerPct = 100 - acalantoGrossPct
+  const { partnerCents: partnerValueCents, balaioCents: balaioValueCents, acalantoCents: acalantoValueCents } =
+    computeSplitCents(b.total_cents, partnerPct, true)
+  const balaioPct = balaioValueCents > 0 ? BALAIO_TOTAL_PCT : 0
+  const acalantoNetPct = acalantoGrossPct - balaioPct
 
   const pStatus = (b.payment_status ?? 'pending').toLowerCase()
   const isPaid = ['confirmed', 'received'].includes(pStatus)
@@ -185,9 +188,15 @@ export default function ReservaViewModal({ booking: b, onClose, canPayPartner }:
               <span style={{ fontWeight: 600, color: '#38a169' }}>{formatCents(partnerValueCents)}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Acalanto — {acalantoPct}%</span>
+              <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Acalanto — {acalantoNetPct}%</span>
               <span style={{ fontWeight: 600, color: 'var(--ocean-mid)' }}>{formatCents(acalantoValueCents)}</span>
             </div>
+            {balaioValueCents > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Balaio Digital — {balaioPct}%</span>
+                <span style={{ fontWeight: 600, color: '#64748b' }}>{formatCents(balaioValueCents)}</span>
+              </div>
+            )}
           </div>
         </div>
 

@@ -49,7 +49,7 @@ export default async function ReservaDetailPage({ params }: { params: Promise<{ 
     ['Adultos', String(b.adults ?? 0)],
     ['Crianças', String(b.children ?? 0)],
     ['Total', formatCents(b.total_cents)],
-    ['Comissão Acalanto', `${Math.round((b.commission_rate ?? 0) * 100)}%`],
+    ['Comissão Acalanto (bruta, inclui 6% Balaio)', `${Math.round(b.commission_rate ?? 0)}%`],
     ['Cliente', b.customer_name ?? '—'],
     ['E-mail', b.customer_email ?? '—'],
     ['Telefone', b.customer_phone ?? '—'],
