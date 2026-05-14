@@ -9,6 +9,7 @@ import {
 import { getAdminUser } from '@/lib/admin-auth'
 import { BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
 import { getEnabledVerticals, type Vertical } from '@/lib/pdv/role-permissions'
+import { buildSplit, type CartItemWithPartner } from '@/lib/asaas/split'
 
 export const dynamic = 'force-dynamic'
 
@@ -77,7 +78,7 @@ export async function POST(req: Request) {
 
   const { data: boat, error: boatError } = await supabase
     .from('boats')
-    .select('id, name, price_adult, price_child, commission_pct, partner_id')
+    .select('id, name, price_adult, price_child, commission_pct, partner_id, partners(asaas_wallet_id)')
     .eq('id', boat_id)
     .maybeSingle()
 
@@ -104,6 +105,23 @@ export async function POST(req: Request) {
   let pixCopyPaste: string | null = null
   let asaasError: string | null = null
 
+  const partnerWalletId = (boat.partners as { asaas_wallet_id?: string | null } | null)?.asaas_wallet_id ?? undefined
+
+  const splitItems: CartItemWithPartner[] = [{
+    id: boat_id,
+    type: 'passeio',
+    name: boat.name ?? '',
+    date: tour_date,
+    adults,
+    children,
+    priceAdultCents: boat.price_adult ?? 11000,
+    priceChildCents: boat.price_child ?? 0,
+    partnerWalletId,
+    commissionPct: partnerPct,
+  } as CartItemWithPartner]
+
+  const split = buildSplit(splitItems)
+
   try {
     asaasCustomerId = await createOrFindCustomer({
       name: customer_name,
@@ -119,6 +137,7 @@ export async function POST(req: Request) {
       dueDate: tour_date,
       description: `PDV — ${adults}A${children > 0 ? ` ${children}C` : ''} — ${tour_date}`,
       externalReference: `pdv_${Date.now()}`,
+      ...(split ? { split } : {}),
       ...(billing_type === 'CREDIT_CARD' && credit_card && credit_card_holder
         ? { creditCard: credit_card, creditCardHolderInfo: credit_card_holder }
         : {}),
@@ -162,6 +181,8 @@ export async function POST(req: Request) {
       photographer_package_id: photographer_addon ? 'addon' : null,
       notes: `PDV — vendido por ${adminUser.email ?? adminUser.id}${asaasError ? ` (ASAAS off: ${asaasError.slice(0, 80)})` : ''}`,
       paid_at: isCashLike ? new Date().toISOString() : null,
+      sold_by_user_id: adminUser.id,
+      sold_by_role: adminUser.role,
     })
     .select('id')
     .single()
