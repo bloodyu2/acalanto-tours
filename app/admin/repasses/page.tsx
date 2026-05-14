@@ -77,7 +77,9 @@ export default function AdminRepassesPage() {
       <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.15rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
         Pendentes ({pending.length})
       </h2>
-      <div style={{ background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden', marginBottom: '2.5rem' }}>
+
+      {/* Pending — desktop table */}
+      <div className="hidden-mobile" style={{ background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden', marginBottom: '2.5rem' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
             <thead style={{ background: 'var(--sand)' }}>
@@ -124,11 +126,45 @@ export default function AdminRepassesPage() {
         </div>
       </div>
 
+      {/* Pending — mobile cards */}
+      <div className="show-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem', marginBottom: '2.5rem' }}>
+        {pending.map(p => (
+          <div key={p.id} style={{ background: 'white', borderRadius: '0.875rem', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', gap: '0.5rem' }}>
+              <div style={{ fontWeight: 700, color: 'var(--ocean-deep)', fontSize: '0.95rem' }}>
+                {p.partners?.name ?? '—'}
+              </div>
+              <span style={{ background: 'rgba(214,158,46,0.15)', color: '#9c6b14', fontSize: '0.72rem', fontWeight: 700, padding: '0.18rem 0.5rem', borderRadius: '999px', whiteSpace: 'nowrap', alignSelf: 'flex-start' }}>
+                {p.period_month}
+              </span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem 0.75rem', fontSize: '0.8rem', marginBottom: '0.625rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Bruto:</span><span style={{ textAlign: 'right' }}>{formatCents(p.gross_cents)}</span>
+              <span style={{ color: 'var(--text-muted)' }}>Comissão:</span><span style={{ textAlign: 'right' }}>{formatCents(p.commission_cents)}</span>
+              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Líquido:</span><span style={{ textAlign: 'right', fontWeight: 700, color: 'var(--ocean-deep)' }}>{formatCents(p.net_cents)}</span>
+            </div>
+            <button
+              onClick={() => markPaid(p.id)}
+              disabled={!!actionMsg[p.id]}
+              className="btn-primary"
+              style={{ width: '100%', justifyContent: 'center', fontSize: '0.85rem', padding: '0.625rem' }}
+            >
+              {actionMsg[p.id] ?? 'Marcar como pago'}
+            </button>
+          </div>
+        ))}
+        {pending.length === 0 && (
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '1rem' }}>Nenhum repasse pendente</p>
+        )}
+      </div>
+
       {/* Paid */}
       <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.15rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
         Pagos ({paid.length})
       </h2>
-      <div style={{ background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+
+      {/* Paid — desktop table */}
+      <div className="hidden-mobile" style={{ background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
             <thead style={{ background: 'var(--sand)' }}>
@@ -158,6 +194,40 @@ export default function AdminRepassesPage() {
           </table>
         </div>
       </div>
+
+      {/* Paid — mobile cards */}
+      <div className="show-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+        {paid.map(p => (
+          <div key={p.id} style={{ background: 'white', borderRadius: '0.875rem', padding: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', gap: '0.5rem' }}>
+              <div style={{ fontWeight: 700, color: 'var(--ocean-deep)', fontSize: '0.95rem' }}>
+                {p.partners?.name ?? '—'}
+              </div>
+              <span style={{ background: 'rgba(56,161,105,0.15)', color: '#276749', fontSize: '0.72rem', fontWeight: 700, padding: '0.18rem 0.5rem', borderRadius: '999px', whiteSpace: 'nowrap', alignSelf: 'flex-start' }}>
+                {p.period_month}
+              </span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem 0.75rem', fontSize: '0.8rem' }}>
+              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Líquido:</span><span style={{ textAlign: 'right', fontWeight: 700, color: '#38a169' }}>{formatCents(p.net_cents)}</span>
+              <span style={{ color: 'var(--text-muted)' }}>Pago em:</span><span style={{ textAlign: 'right', color: 'var(--text-muted)' }}>{p.paid_at ? new Date(p.paid_at).toLocaleDateString('pt-BR') : '-'}</span>
+            </div>
+          </div>
+        ))}
+        {paid.length === 0 && (
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '1rem' }}>Nenhum repasse pago ainda.</p>
+        )}
+      </div>
+
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .hidden-mobile { display: block !important; }
+          .show-mobile   { display: none  !important; }
+        }
+        @media (max-width: 767px) {
+          .hidden-mobile { display: none  !important; }
+          .show-mobile   { display: flex  !important; }
+        }
+      `}</style>
     </div>
   )
 }

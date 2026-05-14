@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import type { Boat } from '@/lib/types/database'
 import React from 'react'
@@ -118,8 +119,14 @@ export default async function ReservarPage() {
                       background: 'linear-gradient(135deg, var(--ocean-deep) 0%, var(--ocean-mid) 100%)',
                     }}>
                       {boat.cover_image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={boat.cover_image} alt={boat.name} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <Image
+                          src={boat.cover_image}
+                          alt={boat.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 50vw"
+                          quality={75}
+                          style={{ objectFit: 'cover', color: 'transparent' }}
+                        />
                       ) : (
                         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.7)' }}><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20a2 2 0 002 2h16a2 2 0 002-2"/><path d="M4 20l4-12h8l4 12"/><line x1="12" y1="2" x2="12" y2="8"/><path d="M8 8h8"/></svg></div>
                       )}

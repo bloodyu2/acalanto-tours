@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { Suspense } from 'react'
 import { getApprovedListings } from '@/lib/partner-listings'
 import { createClient } from '@/lib/supabase/server'
 import SearchBar from '@/components/hotelaria/SearchBar'
 import HotelariaPageClient from '@/components/hotelaria/HotelariaPageClient'
 import type { SheetListing } from '@/components/hotelaria/HotelSheet'
+import PartnerCTA from '@/components/marketplace/PartnerCTA'
 
 export const dynamic = 'force-dynamic'
 
@@ -88,21 +88,29 @@ export default async function HotelariaPage({ searchParams }: Props) {
       {/* Listings */}
       <section style={{ padding: 'clamp(2rem, 4vw, 3rem) 1.5rem', background: 'var(--sand)' }}>
         <div className="container">
-          <HotelariaPageClient
-            listings={sheetListings}
-            checkin={sp.checkin}
-            checkout={sp.checkout}
-            guests={sp.guests}
-          />
+          {listings.length > 0 && (
+            <HotelariaPageClient
+              listings={sheetListings}
+              checkin={sp.checkin}
+              checkout={sp.checkout}
+              guests={sp.guests}
+            />
+          )}
 
-          <div style={{ marginTop: '3rem', textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '16px', border: '1px solid var(--border)' }}>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '1rem', fontSize: '0.9375rem' }}>
-              Tem uma pousada ou hotel em Paraty?
-            </p>
-            <Link href="/seja-parceiro" className="btn-primary" style={{ display: 'inline-flex', fontSize: '0.9rem', padding: '0.75rem 1.75rem' }}>
-              Cadastre-se como parceiro
-            </Link>
-          </div>
+          {listings.length === 0 ? (
+            <PartnerCTA
+              variant="large"
+              question="Sua pousada pode ser a primeira da plataforma Acalanto."
+              subtitle="Estamos selecionando os melhores anfitriões em Paraty. Quem entrar agora pega o destaque inicial e a melhor faixa de comissão da plataforma."
+              ctaLabel="Quero ser parceiro Acalanto"
+            />
+          ) : (
+            <PartnerCTA
+              question="Tem uma pousada ou hotel em Paraty?"
+              subtitle="Junte-se à plataforma e receba reservas direto dos turistas que já chegam decididos sobre onde ficar."
+              ctaLabel="Cadastre-se como parceiro"
+            />
+          )}
         </div>
       </section>
     </main>

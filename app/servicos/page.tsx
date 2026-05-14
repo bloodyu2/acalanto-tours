@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import ServicosPageClient from '@/components/services/ServicosPageClient'
 import type { ServiceProvider } from '@/lib/types/database'
+import PartnerCTA from '@/components/marketplace/PartnerCTA'
 
 export const dynamic = 'force-dynamic'
 
@@ -70,6 +71,16 @@ export default async function ServicosPage() {
             services={services ?? []}
             unavailableMap={unavailableMap}
             providersMap={providersMap}
+          />
+        </div>
+      </section>
+
+      <section style={{ padding: '0 1.5rem 4rem' }}>
+        <div className="container">
+          <PartnerCTA
+            question="Você oferece serviços turísticos em Paraty?"
+            subtitle="Lancha, transfer, jeep, guia, gastronomia… junte-se à plataforma Acalanto e venda direto pra turistas que já estão decidindo."
+            ctaLabel="Quero oferecer meu serviço"
           />
         </div>
       </section>

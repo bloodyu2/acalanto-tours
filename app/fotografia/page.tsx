@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { PhotographerPackage, Partner } from '@/lib/types/database'
+import PartnerCTA from '@/components/marketplace/PartnerCTA'
 
 export const dynamic = 'force-dynamic'
 
@@ -114,6 +115,16 @@ export default async function FotografiaPage() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      <section style={{ padding: '0 1.5rem 4rem' }}>
+        <div className="container">
+          <PartnerCTA
+            question="Você é fotógrafo em Paraty?"
+            subtitle="Junte-se ao coletivo Acalanto e ofereça seus pacotes pra clientes que já chegam reservando passeios."
+            ctaLabel="Quero ser fotógrafo Acalanto"
+          />
         </div>
       </section>
 
