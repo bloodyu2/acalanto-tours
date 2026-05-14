@@ -147,11 +147,14 @@ export default function AdminLayoutClient({ children, role, userName }: Props) {
     </div>
   )
 
-  // Filter nav by role (super_admin: all; others: ROLE_NAV[role] only)
-  const allowedHrefs = role ? new Set(ROLE_NAV[role] ?? []) : null
-  const visibleNav = role && role !== 'super_admin'
-    ? navItems.filter(item => allowedHrefs?.has(item.href))
-    : navItems
+  // Importante: se role for null (boot do client antes da hidratação),
+  // renderizamos sidebar vazia ao invés de "mostrar tudo". O server layout
+  // já redirecionou pro /admin/login caso não haja sessão, então um null aqui
+  // só dura uma fração de segundo — preferimos sidebar piscando vazia a
+  // vazar Roadmap/Apresentações/IDV pra um pdv/tripulacao/fotografo.
+  const visibleNav = role
+    ? navItems.filter(item => ROLE_NAV[role]?.some(r => item.href === r || item.href.startsWith(r + '/')))
+    : []  // se role for null no boot, esconde tudo até hidratar
 
   const SidebarContent = () => (
     <>
