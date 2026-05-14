@@ -57,6 +57,19 @@ export async function POST(
     return NextResponse.json({ error: 'Valor de repasse inválido' }, { status: 400 })
   }
 
+  // Atomically claim this booking for transfer
+  const { data: claimed } = await supabase
+    .from('bookings')
+    .update({ partner_transfer_id: 'PENDING' })
+    .eq('id', id)
+    .is('partner_transfer_id', null)  // only if not already claimed
+    .select('id')
+    .maybeSingle()
+
+  if (!claimed) {
+    return NextResponse.json({ error: 'Transferência já iniciada ou concluída para esta reserva' }, { status: 409 })
+  }
+
   let transfer
   try {
     transfer = await createTransfer({
@@ -65,6 +78,8 @@ export async function POST(
       description: `Repasse reserva ${id.slice(0, 8)} — ${partner.name}`,
     })
   } catch (e) {
+    // rollback claim so admin can retry
+    await supabase.from('bookings').update({ partner_transfer_id: null }).eq('id', id).eq('partner_transfer_id', 'PENDING')
     return NextResponse.json(
       { error: `Falha ASAAS: ${e instanceof Error ? e.message : String(e)}` },
       { status: 502 }
@@ -76,6 +91,8 @@ export async function POST(
   await supabase
     .from('bookings')
     .update({
+      partner_transfer_id: transfer.id,
+      partner_transferred_at: new Date().toISOString(),
       notes: `[transfer ${transfer.id} status=${transfer.status ?? '?'} valor=${partnerValue.toFixed(2)} parceiro=${partner.name}]`,
     })
     .eq('id', id)
