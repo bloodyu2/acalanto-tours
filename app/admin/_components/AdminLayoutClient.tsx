@@ -106,6 +106,7 @@ const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin/parceiros', label: 'Parceiros', icon: <HandshakeIcon /> },
   { href: '/admin/depoimentos', label: 'Depoimentos', icon: <ChatIcon /> },
   { href: '/admin/blog', label: 'Blog', icon: <BlogIcon /> },
+  { href: '/admin/configuracoes', label: 'Configurações',    icon: <BriefcaseIcon /> },
   { href: '/admin/roadmap',       label: 'Roadmap',          icon: <RoadmapIcon /> },
   { href: '/admin/apresentacoes', label: 'Apresentações',    icon: <SlidesIcon /> },
   { href: '/admin/identidade',    label: 'Identidade Visual', icon: <PaletteIcon /> },
@@ -147,11 +148,14 @@ export default function AdminLayoutClient({ children, role, userName }: Props) {
     </div>
   )
 
-  // Filter nav by role (super_admin: all; others: ROLE_NAV[role] only)
-  const allowedHrefs = role ? new Set(ROLE_NAV[role] ?? []) : null
-  const visibleNav = role && role !== 'super_admin'
-    ? navItems.filter(item => allowedHrefs?.has(item.href))
-    : navItems
+  // Importante: se role for null (boot do client antes da hidratação),
+  // renderizamos sidebar vazia ao invés de "mostrar tudo". O server layout
+  // já redirecionou pro /admin/login caso não haja sessão, então um null aqui
+  // só dura uma fração de segundo — preferimos sidebar piscando vazia a
+  // vazar Roadmap/Apresentações/IDV pra um pdv/tripulacao/fotografo.
+  const visibleNav = role
+    ? navItems.filter(item => ROLE_NAV[role]?.some(r => item.href === r || item.href.startsWith(r + '/')))
+    : []  // se role for null no boot, esconde tudo até hidratar
 
   const SidebarContent = () => (
     <>

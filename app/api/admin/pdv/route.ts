@@ -4,10 +4,13 @@ import { createAdminClient } from '@/lib/supabase/server'
 import {
   createOrFindCustomer,
   createCharge,
+  createCheckout,
   getPixQrCode,
 } from '@/lib/asaas/client'
 import { getAdminUser } from '@/lib/admin-auth'
 import { BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
+import { getEnabledVerticals, type Vertical } from '@/lib/pdv/role-permissions'
+import { buildSplit, type CartItemWithPartner } from '@/lib/asaas/split'
 
 export const dynamic = 'force-dynamic'
 
@@ -37,6 +40,7 @@ const PdvSchema = z.object({
     addressNumber: z.string(),
     phone: z.string(),
   }).optional(),
+  vertical: z.enum(['passeio', 'fotografia', 'servico', 'hospedagem']).optional(),
 })
 
 function onlyDigits(s: string | null | undefined): string {
@@ -45,7 +49,7 @@ function onlyDigits(s: string | null | undefined): string {
 
 export async function POST(req: Request) {
   const adminUser = await getAdminUser()
-  if (!adminUser || !['super_admin', 'pdv'].includes(adminUser.role)) {
+  if (!adminUser || !['super_admin', 'pdv', 'tripulacao', 'fotografo'].includes(adminUser.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -57,14 +61,25 @@ export async function POST(req: Request) {
   const {
     boat_id, tour_date, adults, children, photographer_addon,
     customer_name, customer_email, customer_phone, customer_cpf,
-    billing_type, credit_card, credit_card_holder,
+    billing_type, credit_card, credit_card_holder, vertical,
   } = parsed.data
+
+  // Validate vertical permission before querying database (fail fast)
+  if (vertical) {
+    const enabled = await getEnabledVerticals(adminUser.role)
+    if (!enabled.some(e => e.vertical === vertical)) {
+      return NextResponse.json(
+        { error: `Role ${adminUser.role} não pode vender ${vertical}` },
+        { status: 403 }
+      )
+    }
+  }
 
   const supabase = await createAdminClient()
 
   const { data: boat, error: boatError } = await supabase
     .from('boats')
-    .select('id, name, price_adult, price_child, commission_pct, partner_id')
+    .select('id, name, price_adult, price_child, commission_pct, partner_id, partners(asaas_wallet_id)')
     .eq('id', boat_id)
     .maybeSingle()
 
@@ -82,6 +97,11 @@ export async function POST(req: Request) {
   const partnerPct = boat.commission_pct ?? 70
   const commissionRate = Math.max(0, Math.min(100, 100 - partnerPct))
 
+  // Quando o cliente compra o pacote escuna + fotógrafo a bordo, o R$250 do addon
+  // é receita da Acalanto, não do barqueiro. `buildSplit` paga o parceiro via
+  // fixedValue calculado sobre `totalCents − addonCents`, e a Balaio segue
+  // recebendo 6% percentual do total. Acalanto recebe o resto automaticamente.
+
   const cpf = onlyDigits(customer_cpf) || '00000000000'
 
   let asaasCustomerId: string | null = null
@@ -90,6 +110,25 @@ export async function POST(req: Request) {
   let pixQrCode: string | null = null
   let pixCopyPaste: string | null = null
   let asaasError: string | null = null
+  let cardCheckoutUrl: string | null = null
+
+  const partnerWalletId = (boat.partners as { asaas_wallet_id?: string | null } | null)?.asaas_wallet_id ?? undefined
+
+  const splitItems: CartItemWithPartner[] = [{
+    id: boat_id,
+    type: 'passeio',
+    name: boat.name ?? '',
+    date: tour_date,
+    adults,
+    children,
+    priceAdultCents: boat.price_adult ?? 11000,
+    priceChildCents: boat.price_child ?? 0,
+    partnerWalletId,
+    commissionPct: partnerPct,
+    addonCents: photographer_addon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0,
+  } as CartItemWithPartner]
+
+  const split = buildSplit(splitItems)
 
   try {
     asaasCustomerId = await createOrFindCustomer({
@@ -99,25 +138,40 @@ export async function POST(req: Request) {
       phone: onlyDigits(customer_phone) || undefined,
     })
 
-    const charge = await createCharge({
-      customer: asaasCustomerId,
-      billingType: billing_type,
-      value: totalValue,
-      dueDate: tour_date,
-      description: `PDV — ${adults}A${children > 0 ? ` ${children}C` : ''} — ${tour_date}`,
-      externalReference: `pdv_${Date.now()}`,
-      ...(billing_type === 'CREDIT_CARD' && credit_card && credit_card_holder
-        ? { creditCard: credit_card, creditCardHolderInfo: credit_card_holder }
-        : {}),
-    })
+    if (billing_type === 'CREDIT_CARD') {
+      // Usar ASAAS Checkout para cartão: retorna URL embarcável em iframe (zero PCI scope).
+      // Fallback: se createCheckout falhar, cardCheckoutUrl fica null e o front exibe erro.
+      const co = await createCheckout({
+        name: `Reserva ${customer_name}`,
+        value: totalValue,
+        dueDate: tour_date,
+        billingTypes: ['CREDIT_CARD'],
+        description: `PDV — ${adults}A${children > 0 ? ` ${children}C` : ''} — ${tour_date}`,
+        externalReference: `pdv_${Date.now()}`,
+        notificationEnabled: true,
+      })
+      cardCheckoutUrl = co.url
+      chargeId = co.id
+    } else {
+      // PIX (e futuros billing_types): fluxo original com createCharge + QR code
+      const charge = await createCharge({
+        customer: asaasCustomerId,
+        billingType: billing_type,
+        value: totalValue,
+        dueDate: tour_date,
+        description: `PDV — ${adults}A${children > 0 ? ` ${children}C` : ''} — ${tour_date}`,
+        externalReference: `pdv_${Date.now()}`,
+        ...(split ? { split } : {}),
+      })
 
-    chargeId = charge.id
-    paymentUrl = charge.invoiceUrl ?? null
+      chargeId = charge.id
+      paymentUrl = charge.invoiceUrl ?? null
 
-    if (billing_type === 'PIX') {
-      const qr = await getPixQrCode(charge.id)
-      pixQrCode = qr ? `data:image/png;base64,${qr.encodedImage}` : null
-      pixCopyPaste = qr?.payload ?? null
+      if (billing_type === 'PIX') {
+        const qr = await getPixQrCode(charge.id)
+        pixQrCode = qr ? `data:image/png;base64,${qr.encodedImage}` : null
+        pixCopyPaste = qr?.payload ?? null
+      }
     }
   } catch (e) {
     asaasError = e instanceof Error ? e.message : String(e)
@@ -149,6 +203,8 @@ export async function POST(req: Request) {
       photographer_package_id: photographer_addon ? 'addon' : null,
       notes: `PDV — vendido por ${adminUser.email ?? adminUser.id}${asaasError ? ` (ASAAS off: ${asaasError.slice(0, 80)})` : ''}`,
       paid_at: isCashLike ? new Date().toISOString() : null,
+      sold_by_user_id: adminUser.id,
+      sold_by_role: adminUser.role,
     })
     .select('id')
     .single()
@@ -167,5 +223,6 @@ export async function POST(req: Request) {
     asaasChargeId: chargeId,
     boatPartnerId: boat.partner_id,
     asaasError,
+    cardCheckoutUrl,
   })
 }

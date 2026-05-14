@@ -1,6 +1,13 @@
 import Link from 'next/link'
+import { requireSuperAdmin } from '@/lib/admin-auth'
 
-const VERTICALS = [
+export default async function ApresentacoesPage() {
+  await requireSuperAdmin()
+  return <ApresentacoesContent />
+}
+
+function ApresentacoesContent() {
+  const VERTICALS = [
   {
     vertical: 'escunas',
     label: 'Escunas & Passeios',
@@ -55,7 +62,6 @@ const VERTICALS = [
   },
 ]
 
-export default function ApresentacoesPage() {
   return (
     <div>
       <div style={{ marginBottom: '2rem' }}>

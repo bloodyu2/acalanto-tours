@@ -22,6 +22,12 @@ export interface CartItemWithPartner extends CartItem {
   partnerWalletId?: string
   /** % que o PRESTADOR recebe (ex: 70 → Acalanto + Balaio ficam com 30%). */
   commissionPct?: number
+  /**
+   * Cents que pertencem exclusivamente à Acalanto (não ao parceiro).
+   * Ex: photographer_addon — somado ao item_total mas não dividido com o parceiro.
+   * Quando > 0, o parceiro é pago via fixedValue (não percentualValue).
+   */
+  addonCents?: number
 }
 
 export interface SplitCents {
@@ -82,12 +88,29 @@ export function buildSplit(items: CartItemWithPartner[]): AsaasSplitItem[] | und
     // tudo (94%+), não dá pra fundar a Balaio — abortamos esse item.
     if (partnerPct + BALAIO_TOTAL_PCT > 100) continue
 
-    splits.push({
-      walletId: item.partnerWalletId,
-      percentualValue: partnerPct,
-    })
+    const addonCents = item.addonCents ?? 0
+
+    if (addonCents > 0) {
+      // Quando o item tem um addon exclusivo da Acalanto (ex: fotógrafo a bordo),
+      // o parceiro é pago via fixedValue sobre a base sem o addon.
+      // Assim o addon fica 100% para a Acalanto.
+      const itemBaseCents =
+        item.priceAdultCents * item.adults +
+        (item.priceChildCents ?? 0) * (item.children ?? 0)
+      const partnerFixedCents = Math.round(itemBaseCents * partnerPct / 100)
+      splits.push({
+        walletId: item.partnerWalletId,
+        fixedValue: partnerFixedCents / 100,
+      })
+    } else {
+      splits.push({
+        walletId: item.partnerWalletId,
+        percentualValue: partnerPct,
+      })
+    }
 
     if (balaioWalletId) {
+      // Balaio sempre recebe percentualValue do TOTAL bruto (inclui addon).
       splits.push({
         walletId: balaioWalletId,
         percentualValue: BALAIO_TOTAL_PCT,

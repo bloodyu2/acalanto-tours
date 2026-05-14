@@ -2,20 +2,31 @@
 import { useState } from 'react'
 import { formatCents } from '@/lib/booking/pricing'
 import { BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
+import type { AdminRole } from '@/lib/admin-roles'
+import type { EnabledVertical, Vertical } from '@/lib/pdv/role-permissions'
+import StepVertical from './StepVertical'
+import StepPayment from './StepPayment'
+import StepDone from './StepDone'
 
 export interface PdvBoat {
-  id: string
-  name: string
-  price_adult: number
-  price_child: number
-  slug: string
+  id: string; name: string; slug: string; price_adult: number; price_child: number
+}
+export interface PdvPhotographer {
+  id: string; name: string; slug: string; price_cents: number | null; cover_image: string | null
+}
+export interface PdvService {
+  id: string; name: string; slug: string; price_cents: number | null
 }
 
 interface Props {
+  verticals: EnabledVertical[]
   boats: PdvBoat[]
+  photographers: PdvPhotographer[]
+  services: PdvService[]
+  sellerRole: AdminRole
 }
 
-type Step = 'tour' | 'passengers' | 'customer' | 'payment' | 'done'
+type Step = 'vertical' | 'tour' | 'passengers' | 'customer' | 'payment' | 'done'
 
 interface PdvResult {
   bookingId: string
@@ -23,6 +34,7 @@ interface PdvResult {
   paymentUrl: string | null
   pixQrCode: string | null
   pixCopyPaste: string | null
+  cardCheckoutUrl: string | null
   asaasChargeId: string | null
   asaasError: string | null
 }
@@ -40,12 +52,17 @@ const labelStyle: React.CSSProperties = {
 }
 
 const stepLabel: Record<Step, string> = {
-  tour: 'Passeio', passengers: 'Pax', customer: 'Cliente', payment: 'Pagamento', done: 'OK',
+  vertical: 'Categoria', tour: 'Passeio', passengers: 'Pax', customer: 'Cliente', payment: 'Pagamento', done: 'OK',
 }
 const stepOrder: Step[] = ['tour', 'passengers', 'customer', 'payment']
 
-export default function PdvWizard({ boats }: Props) {
-  const [step, setStep] = useState<Step>('tour')
+export default function PdvWizard({ verticals, boats, photographers, services, sellerRole }: Props) {
+  // Auto-skip vertical step if only one is enabled
+  const initialStep: Step = verticals.length === 1 ? 'tour' : 'vertical'
+  const [step, setStep] = useState<Step>(initialStep)
+  const [vertical, setVertical] = useState<Vertical | null>(
+    verticals.length === 1 ? verticals[0].vertical : null
+  )
 
   const [boatId, setBoatId] = useState('')
   const [tourDate, setTourDate] = useState('')
@@ -88,12 +105,13 @@ export default function PdvWizard({ boats }: Props) {
           customer_phone: customerPhone || null,
           customer_cpf: customerCpf || null,
           billing_type: billingType,
+          vertical: vertical || undefined,
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error))
       setResult(data as PdvResult)
-      setStep('done')
+      // Stay on 'payment' step — StepPayment will render once result is set
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -102,7 +120,8 @@ export default function PdvWizard({ boats }: Props) {
   }
 
   function reset() {
-    setStep('tour'); setBoatId(''); setTourDate(''); setAdults(1); setChildren(0)
+    setStep(initialStep); setVertical(verticals.length === 1 ? verticals[0].vertical : null)
+    setBoatId(''); setTourDate(''); setAdults(1); setChildren(0)
     setPhotographerAddon(false); setCustomerName(''); setCustomerEmail('')
     setCustomerPhone(''); setCustomerCpf(''); setBillingType('PIX')
     setResult(null); setError(null)
@@ -141,6 +160,13 @@ export default function PdvWizard({ boats }: Props) {
             </div>
           ))}
         </div>
+      )}
+
+      {step === 'vertical' && (
+        <StepVertical
+          verticals={verticals}
+          onSelect={v => { setVertical(v); setStep('tour') }}
+        />
       )}
 
       {step === 'tour' && (
@@ -334,7 +360,7 @@ export default function PdvWizard({ boats }: Props) {
         </div>
       )}
 
-      {step === 'payment' && (
+      {step === 'payment' && !result && (
         <div style={cardStyle}>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
             Pagamento
@@ -410,73 +436,19 @@ export default function PdvWizard({ boats }: Props) {
         </div>
       )}
 
+      {step === 'payment' && result && (
+        <StepPayment
+          bookingId={result.bookingId}
+          totalCents={result.totalCents}
+          pixQrCode={result.pixQrCode}
+          pixCopyPaste={result.pixCopyPaste}
+          cardCheckoutUrl={result.cardCheckoutUrl ?? null}
+          onPaid={() => setStep('done')}
+        />
+      )}
+
       {step === 'done' && result && (
-        <div style={{ ...cardStyle, textAlign: 'center' }}>
-          <div style={{ fontSize: '2.75rem', marginBottom: '0.75rem' }}>
-            {result.pixQrCode ? '📱' : result.paymentUrl ? '💳' : '✅'}
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.35rem', color: 'var(--ocean-deep)', marginBottom: '0.5rem' }}>
-            {result.pixQrCode ? 'QR Code PIX gerado!' : result.asaasChargeId ? 'Cobrança criada!' : 'Reserva registrada!'}
-          </h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1.25rem', fontSize: '0.875rem' }}>
-            Reserva #{result.bookingId.slice(0, 8)}… · Total: {formatCents(result.totalCents)}
-          </p>
-
-          {result.asaasError && (
-            <p style={{ background: '#fffaf0', border: '1px solid #fed7aa', borderRadius: '0.5rem', padding: '0.625rem', fontSize: '0.8rem', color: '#9c4221', margin: '0 0 1rem' }}>
-              ASAAS off — reserva registrada como confirmada manualmente. ({result.asaasError.slice(0, 100)})
-            </p>
-          )}
-
-          {result.pixQrCode && (
-            <div style={{ marginBottom: '1.25rem' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={result.pixQrCode}
-                alt="QR Code PIX"
-                style={{ width: '200px', height: '200px', margin: '0 auto 0.75rem', display: 'block', borderRadius: '0.75rem' }}
-              />
-              {result.pixCopyPaste && (
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(result.pixCopyPaste!)}
-                  style={{
-                    padding: '0.5rem 1rem', border: '1.5px solid var(--border)', borderRadius: '0.625rem',
-                    background: 'white', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600,
-                  }}
-                >
-                  📋 Copiar código PIX
-                </button>
-              )}
-            </div>
-          )}
-
-          {result.paymentUrl && (
-            <a
-              href={result.paymentUrl}
-              target="_blank"
-              rel="noreferrer"
-              style={{ display: 'inline-block', marginBottom: '1.25rem', color: 'var(--ocean-mid)', fontWeight: 600, fontSize: '0.875rem' }}
-            >
-              Abrir fatura ASAAS ↗
-            </a>
-          )}
-
-          <div style={{ display: 'flex', gap: '0.625rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a
-              href="/admin/reservas"
-              style={{
-                padding: '0.625rem 1.25rem', border: '1.5px solid var(--border)', borderRadius: '0.75rem',
-                background: 'white', textDecoration: 'none', color: 'var(--ocean-deep)', fontWeight: 600, fontSize: '0.875rem',
-              }}
-            >
-              Ver reservas
-            </a>
-            <button type="button" onClick={reset} className="btn-primary" style={{ justifyContent: 'center' }}>
-              + Nova venda
-            </button>
-          </div>
-        </div>
+        <StepDone bookingId={result.bookingId} onNewSale={() => window.location.reload()} />
       )}
     </div>
   )

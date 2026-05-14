@@ -8,6 +8,7 @@ import { useCart } from '@/components/cart/CartProvider'
 import { createClient } from '@/lib/supabase/client'
 import CapacityBar from './CapacityBar'
 import DatePickerCalendar from '@/components/ui/DatePickerCalendar'
+import { PaymentBadge, ALL_PAYMENT_BRANDS } from '@/components/payments/PaymentBadge'
 
 type DepartureTime = { id: string; time: string; label: string | null }
 
@@ -324,16 +325,8 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
         <p style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
           Pagamento seguro via ASAAS
         </p>
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {[
-            { label: 'Pix', bg: '#f0fdf4', border: '#bbf7d0', color: '#166534' },
-            { label: 'Cartão', bg: '#eff6ff', border: '#bfdbfe', color: '#1e40af' },
-            { label: 'Boleto', bg: '#fefce8', border: '#fef08a', color: '#854d0e' },
-          ].map(({ label, bg, border, color }) => (
-            <div key={label} style={{ padding: '0.25rem 0.75rem', borderRadius: '6px', background: bg, border: `1px solid ${border}`, fontSize: '0.75rem', fontWeight: 600, color, fontFamily: 'var(--font-jakarta)' }}>
-              {label}
-            </div>
-          ))}
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+          {ALL_PAYMENT_BRANDS.map(b => <PaymentBadge key={b} brand={b} size={24} />)}
         </div>
         <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5, fontFamily: 'var(--font-jakarta)' }}>
           {CANCELLATION_POLICY}

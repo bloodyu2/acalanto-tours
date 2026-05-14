@@ -51,3 +51,12 @@ export async function getAdminUser(): Promise<AdminUser | null> {
 
   return null
 }
+
+export async function requireSuperAdmin() {
+  const u = await getAdminUser()
+  if (!u || u.role !== 'super_admin') {
+    const { redirect } = await import('next/navigation')
+    redirect('/admin')
+  }
+  return u
+}

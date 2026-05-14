@@ -6,6 +6,8 @@ import type {
   AsaasSubcontaResponse,
   AsaasTransferRequest,
   AsaasTransfer,
+  AsaasCheckoutRequest,
+  AsaasCheckoutResponse,
 } from './types'
 
 function getBaseUrl(): string {
@@ -88,6 +90,16 @@ export async function disableSubconta(asaasAccountId: string): Promise<void> {
 
 export async function createTransfer(data: AsaasTransferRequest): Promise<AsaasTransfer> {
   return asaasFetch<AsaasTransfer>('/transfers', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+// ASAAS Checkout — retorna URL hospedada pela ASAAS para o formulário de cartão.
+// O campo `url` na resposta pode ser usado como src de um iframe (zero PCI scope).
+// Fallback: se a API não retornar url, o caller usa invoiceUrl de createCharge.
+export async function createCheckout(data: AsaasCheckoutRequest): Promise<AsaasCheckoutResponse> {
+  return asaasFetch<AsaasCheckoutResponse>('/checkouts', {
     method: 'POST',
     body: JSON.stringify(data),
   })
