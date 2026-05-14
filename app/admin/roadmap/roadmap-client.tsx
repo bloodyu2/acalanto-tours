@@ -23,6 +23,33 @@ const PRIORITY_COLORS: Record<string, { bg: string; color: string }> = {
   baixa: { bg: '#f1f5f9', color: '#475569' },
 }
 
+// Seed data migrated from the hardcoded array — only inserted if table is empty
+const SEED_TASKS: RoadmapInsert[] = [
+  { area: 'Infra',       title: 'Deploy inicial no Vercel',                     description: 'Next.js 16 + Supabase + domínio configurado',                                                                                  status: 'done',        priority: 'alta',  sort_order: 0,  notes: null, eta: 'Maio 2026' },
+  { area: 'Passeios',    title: 'Catálogo de escunas + booking widget',          description: 'Página por barco, seletor de adultos/crianças, data, carrinho e checkout Infinity Pay',                                         status: 'done',        priority: 'alta',  sort_order: 1,  notes: null, eta: 'Maio 2026' },
+  { area: 'Hospedagem',  title: 'Catálogo de pousadas + booking widget',         description: 'Página por pousada, seletor de datas (check-in/out), hóspedes, disponibilidade via iCal',                                      status: 'done',        priority: 'alta',  sort_order: 2,  notes: null, eta: 'Maio 2026' },
+  { area: 'Serviços',    title: 'Catálogo de serviços + booking inline',         description: 'Lancha privativa, jeep, fotografia, transfer — seletor de data/pessoas, carrinho',                                             status: 'done',        priority: 'alta',  sort_order: 3,  notes: null, eta: 'Maio 2026' },
+  { area: 'iCal',        title: 'Sincronização de calendário (exportação)',      description: 'Feed .ics por pousada, botões Google Calendar / Apple Calendar na página de hospedagem',                                       status: 'done',        priority: 'média', sort_order: 4,  notes: null, eta: 'Maio 2026' },
+  { area: 'Admin',       title: 'Painel admin base',                             description: 'Dashboard KPIs, reservas, capacidade, repasses, contatos, NPS, parceiros, depoimentos',                                       status: 'done',        priority: 'alta',  sort_order: 5,  notes: null, eta: 'Maio 2026' },
+  { area: 'Segurança',   title: 'Hardening OWASP',                               description: 'CSP, X-Frame, rate limiting, server-side price validation, EVOLUCOES_PASSWORD server-only',                                   status: 'done',        priority: 'alta',  sort_order: 6,  notes: null, eta: 'Maio 2026' },
+  { area: 'Pagamentos',  title: 'Integração ASAAS — PIX, cartão, boleto, débito', description: 'Checkout ASAAS com os 4 métodos de pagamento, CPF obrigatório (hash SHA-256), webhook de confirmação, booking insert automático.', status: 'done',        priority: 'alta',  sort_order: 7,  notes: 'API keys do ASAAS pendentes (Gustavo). Ambiente sandbox configurado. Ativar com ASAAS_ENVIRONMENT=production.', eta: 'Mai 2026' },
+  { area: 'Pagamentos',  title: 'Split de pagamento por parceiro (ASAAS)',        description: 'Repasse automático para cada parceiro via ASAAS split[] no momento do pagamento. Configuração por parceiro: asaas_wallet_id + commission_pct.', status: 'pending',     priority: 'alta',  sort_order: 8,  notes: 'Aguarda KYC aprovado + subcontas criadas no ASAAS. Ativar com ASAAS_SPLIT_ENABLED=true.', eta: 'Jun/Jul 2026' },
+  { area: 'Admin',       title: 'Painel financeiro por parceiro',                description: 'Cada parceiro vê suas vendas, comissões retidas, repasses pendentes e histórico. Admin vê tudo consolidado e por parceiro.',   status: 'pending',     priority: 'alta',  sort_order: 9,  notes: 'Depende da decisão do split.', eta: 'Jun/Jul 2026' },
+  { area: 'Parceiros',   title: 'Portal do parceiro (login próprio)',            description: 'Parceiro acessa /parceiros/dashboard — vê reservas dos seus produtos, agenda, financeiro, uploads de fotos.',                  status: 'pending',     priority: 'alta',  sort_order: 10, notes: null, eta: 'Jul 2026' },
+  { area: 'Pagamentos',  title: 'Definir porcentagens de comissão por categoria', description: 'Passeios próprios: Acalanto 100%. Pousadas parceiras: % a definir. Barcos parceiros: % a definir. Serviços: % a definir.',   status: 'pending',     priority: 'alta',  sort_order: 11, notes: 'Aguardando definição das porcentagens.', eta: 'A definir' },
+  { area: 'iCal',        title: 'iCal bidirecional — importação de reservas externas', description: 'Sincronizar bloqueios de datas de Airbnb/Booking.com via cron que importa iCal de parceiros.',                         status: 'in_progress', priority: 'média', sort_order: 12, notes: 'Endpoint /api/ical/sync/[listingId] já existe. Falta UI no admin para o parceiro cadastrar a URL do calendário externo.', eta: 'Jun 2026' },
+  { area: 'SEO',         title: 'SEO completo + Google Search Console',          description: 'sitemap.xml, robots.txt, JSON-LD por página, meta descriptions, imagens WebP',                                                status: 'pending',     priority: 'média', sort_order: 13, notes: null, eta: 'Jun 2026' },
+  { area: 'Marketing',   title: 'GTM + GA4 + Consent Mode v2',                  description: 'Google Tag Manager configurado, eventos de conversão (reserva iniciada, checkout concluído), funil.',                         status: 'pending',     priority: 'média', sort_order: 14, notes: null, eta: 'Jun 2026' },
+  { area: 'Conteúdo',    title: 'Migração de conteúdo do WordPress',             description: 'Fotos das escunas, textos das páginas, depoimentos reais, galeria por barco.',                                                 status: 'pending',     priority: 'alta',  sort_order: 15, notes: 'Aguarda entrega de assets do cliente.', eta: 'A definir' },
+  { area: 'Infra',       title: 'Domínio definitivo + SSL',                      description: 'Apontar domínio final (acalantoturismo.com.br ou similar) no Vercel.',                                                        status: 'pending',     priority: 'alta',  sort_order: 16, notes: 'Aguarda decisão do cliente sobre nome do domínio.', eta: 'A definir' },
+  { area: 'Fotografia',  title: 'Página de fotografia completa',                 description: 'Portfolio, pacotes de ensaio, galeria, booking inline.',                                                                       status: 'pending',     priority: 'média', sort_order: 17, notes: null, eta: 'Jul 2026' },
+  { area: 'NPS',         title: 'Cron NPS + emails automáticos pós-passeio',     description: 'Cron noturno já existe. Testar em produção e validar emails chegando.',                                                       status: 'in_progress', priority: 'baixa', sort_order: 18, notes: null, eta: 'Jun 2026' },
+  { area: 'Email',       title: 'Configurar SMTP GoDaddy no Vercel',              description: 'Adicionar env vars no Vercel: SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS, SMTP_FROM. Usar contato@acalantoturismo.com. Testar email de confirmação de reserva.', status: 'pending', priority: 'alta',  sort_order: 19, notes: 'GoDaddy: SMTP_HOST=smtpout.secureserver.net, SMTP_PORT=465, SMTP_SECURE=true, SMTP_USER=contato@acalantoturismo.com, SMTP_FROM=contato@acalantoturismo.com', eta: 'Mai 2026' },
+  { area: 'Email',       title: 'Migrar envio de email para Resend',               description: 'Substituir nodemailer/SMTP por Resend API. Verificar domínio acalantoturismo.com no Resend (1 registro DNS TXT). Trocar lib/email/mailer.ts para usar SDK do Resend.', status: 'pending', priority: 'baixa', sort_order: 20, notes: 'Plano: Jun/Jul 2026. Resend gratuito: 3.000 emails/mês.', eta: 'Jul 2026' },
+  { area: 'Pagamentos',  title: 'Cartão de crédito direto via ASAAS',              description: 'Checkout já coleta dados do cartão (número, validade, CVV, CEP, número do endereço). Integrar campos creditCard + creditCardHolderInfo no POST /api/checkout. Testar em sandbox.', status: 'pending', priority: 'alta', sort_order: 21, notes: 'Campos do formulário já implementados. Falta passar os dados para a API do ASAAS e testar aprovação/recusa.', eta: 'Jun 2026' },
+  { area: 'UX',          title: 'Botão "Voltar ao site" na tela de confirmação',   description: 'Na tela pós-pagamento, adicionar CTA secundário "Explorar mais passeios" que leva para /passeios, além do botão já existente.', status: 'done', priority: 'baixa', sort_order: 22, notes: null, eta: 'Mai 2026' },
+]
+
 export function RoadmapClient() {
   const [tasks, setTasks] = useState<RoadmapTask[]>([])
   const [loading, setLoading] = useState(true)
@@ -44,10 +71,17 @@ export function RoadmapClient() {
 
     if (error) { console.error(error); setLoading(false); return }
 
-    if (data) {
-      setTasks(data)
+    if (!data || data.length === 0) {
+      // Seed on first load
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: seeded } = await (supabase as any)
+        .from('roadmap_tasks')
+        .insert(SEED_TASKS)
+        .select('*')
+        .order('sort_order')
+      setTasks((seeded as RoadmapTask[]) ?? [])
     } else {
-      setTasks([])
+      setTasks(data)
     }
     setLoading(false)
   }
@@ -179,7 +213,7 @@ function TaskRow({
       {/* Status dropdown */}
       <select
         value={task.status}
-        onChange={e => onUpdate({ status: e.target.value as any })}
+        onChange={e => onUpdate({ status: e.target.value })}
         style={{
           background: statusStyle.bg, color: statusStyle.color,
           border: 'none', borderRadius: '6px', padding: '0.25rem 0.5rem',
@@ -248,7 +282,7 @@ function TaskRow({
         {/* Priority */}
         <select
           value={task.priority}
-          onChange={e => onUpdate({ priority: e.target.value as any })}
+          onChange={e => onUpdate({ priority: e.target.value })}
           style={{
             background: priorityStyle.bg, color: priorityStyle.color,
             border: 'none', borderRadius: '6px', padding: '0.2rem 0.4rem',
