@@ -178,7 +178,18 @@ export async function POST(req: Request) {
     console.error('[pdv] asaas error:', asaasError)
   }
 
-  const isCashLike = !chargeId
+  if (asaasError) {
+    console.error('[pdv] ASAAS error:', asaasError)
+    return NextResponse.json({
+      error: 'Falha ao criar cobrança no provedor de pagamento. Tente novamente em alguns instantes.',
+    }, { status: 502 })
+  }
+
+  // If ASAAS failed, booking is pending — operator needs to retry or use alternative payment.
+  // Never auto-confirm a booking without verifying payment was actually collected.
+  const insertStatus: 'pending' | 'confirmed' = 'pending'
+  const insertPaymentStatus: 'pending' | 'confirmed' = 'pending'
+
   const { data: newBooking, error: insertError } = await supabase
     .from('bookings')
     .insert({
@@ -190,8 +201,8 @@ export async function POST(req: Request) {
       customer_name,
       customer_email,
       customer_phone: customer_phone ?? null,
-      status: isCashLike ? 'confirmed' : 'pending',
-      payment_status: isCashLike ? 'confirmed' : 'pending',
+      status: insertStatus,
+      payment_status: insertPaymentStatus,
       payment_method: billing_type,
       vertical: 'passeio',
       commission_rate: commissionRate,
@@ -201,8 +212,8 @@ export async function POST(req: Request) {
       pix_qr_code: pixQrCode,
       pix_copy_paste: pixCopyPaste,
       photographer_package_id: photographer_addon ? 'addon' : null,
-      notes: `PDV — vendido por ${adminUser.email ?? adminUser.id}${asaasError ? ` (ASAAS off: ${asaasError.slice(0, 80)})` : ''}`,
-      paid_at: isCashLike ? new Date().toISOString() : null,
+      notes: `PDV — vendido por ${adminUser.email ?? adminUser.id}`,
+      paid_at: null,
       sold_by_user_id: adminUser.id,
       sold_by_role: adminUser.role,
     })
@@ -222,7 +233,6 @@ export async function POST(req: Request) {
     pixCopyPaste,
     asaasChargeId: chargeId,
     boatPartnerId: boat.partner_id,
-    asaasError,
     cardCheckoutUrl,
   })
 }
