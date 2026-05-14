@@ -6,6 +6,7 @@ import type { AdminRole } from '@/lib/admin-roles'
 import type { EnabledVertical, Vertical } from '@/lib/pdv/role-permissions'
 import StepVertical from './StepVertical'
 import StepPayment from './StepPayment'
+import StepDone from './StepDone'
 
 export interface PdvBoat {
   id: string; name: string; slug: string; price_adult: number; price_child: number
@@ -446,72 +447,7 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
       )}
 
       {step === 'done' && result && (
-        <div style={{ ...cardStyle, textAlign: 'center' }}>
-          <div style={{ fontSize: '2.75rem', marginBottom: '0.75rem' }}>
-            {result.pixQrCode ? '📱' : result.paymentUrl ? '💳' : '✅'}
-          </div>
-          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.35rem', color: 'var(--ocean-deep)', marginBottom: '0.5rem' }}>
-            {result.pixQrCode ? 'QR Code PIX gerado!' : result.asaasChargeId ? 'Cobrança criada!' : 'Reserva registrada!'}
-          </h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1.25rem', fontSize: '0.875rem' }}>
-            Reserva #{result.bookingId.slice(0, 8)}… · Total: {formatCents(result.totalCents)}
-          </p>
-
-          {result.asaasError && (
-            <p style={{ background: '#fffaf0', border: '1px solid #fed7aa', borderRadius: '0.5rem', padding: '0.625rem', fontSize: '0.8rem', color: '#9c4221', margin: '0 0 1rem' }}>
-              ASAAS off — reserva registrada como confirmada manualmente. ({result.asaasError.slice(0, 100)})
-            </p>
-          )}
-
-          {result.pixQrCode && (
-            <div style={{ marginBottom: '1.25rem' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={result.pixQrCode}
-                alt="QR Code PIX"
-                style={{ width: '200px', height: '200px', margin: '0 auto 0.75rem', display: 'block', borderRadius: '0.75rem' }}
-              />
-              {result.pixCopyPaste && (
-                <button
-                  type="button"
-                  onClick={() => navigator.clipboard.writeText(result.pixCopyPaste!)}
-                  style={{
-                    padding: '0.5rem 1rem', border: '1.5px solid var(--border)', borderRadius: '0.625rem',
-                    background: 'white', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600,
-                  }}
-                >
-                  📋 Copiar código PIX
-                </button>
-              )}
-            </div>
-          )}
-
-          {result.paymentUrl && (
-            <a
-              href={result.paymentUrl}
-              target="_blank"
-              rel="noreferrer"
-              style={{ display: 'inline-block', marginBottom: '1.25rem', color: 'var(--ocean-mid)', fontWeight: 600, fontSize: '0.875rem' }}
-            >
-              Abrir fatura ASAAS ↗
-            </a>
-          )}
-
-          <div style={{ display: 'flex', gap: '0.625rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a
-              href="/admin/reservas"
-              style={{
-                padding: '0.625rem 1.25rem', border: '1.5px solid var(--border)', borderRadius: '0.75rem',
-                background: 'white', textDecoration: 'none', color: 'var(--ocean-deep)', fontWeight: 600, fontSize: '0.875rem',
-              }}
-            >
-              Ver reservas
-            </a>
-            <button type="button" onClick={reset} className="btn-primary" style={{ justifyContent: 'center' }}>
-              + Nova venda
-            </button>
-          </div>
-        </div>
+        <StepDone bookingId={result.bookingId} onNewSale={() => window.location.reload()} />
       )}
     </div>
   )
