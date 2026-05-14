@@ -4,15 +4,15 @@ import { createAdminClient } from '@/lib/supabase/server'
 export async function POST(req: NextRequest) {
   const supabase = await createAdminClient()
 
-  // Check admin role via session cookie
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) {
+  // Check admin role via verified user
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
-    .eq('auth_user_id', session.user.id)
+    .eq('auth_user_id', user.id)
     .single()
   if (profile?.role !== 'admin') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
