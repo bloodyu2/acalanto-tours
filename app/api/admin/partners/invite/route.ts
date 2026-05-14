@@ -1,7 +1,13 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { getAdminUser } from '@/lib/admin-auth'
 
 export async function POST(req: Request) {
+  const adminUser = await getAdminUser()
+  if (!adminUser || adminUser.role !== 'super_admin') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const supabase = await createAdminClient()
   const body = await req.json() as {
     name: string; type: string; email: string;
