@@ -1,6 +1,6 @@
 // components/admin/pdv/StepDone.tsx
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface Props {
   bookingId: string
@@ -12,8 +12,11 @@ export default function StepDone({ bookingId, onNewSale }: Props) {
   const [whatsappLink, setWhatsappLink] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const sentRef = useRef(false)
 
   useEffect(() => {
+    if (sentRef.current) return
+    sentRef.current = true
     fetch(`/api/admin/pdv/${bookingId}/notify`, { method: 'POST' })
       .then(r => r.json())
       .then(d => {

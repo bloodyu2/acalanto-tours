@@ -105,6 +105,7 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
           customer_phone: customerPhone || null,
           customer_cpf: customerCpf || null,
           billing_type: billingType,
+          vertical: vertical || undefined,
         }),
       })
       const data = await res.json()

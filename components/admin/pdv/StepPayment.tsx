@@ -1,6 +1,6 @@
 // components/admin/pdv/StepPayment.tsx
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { formatCents } from '@/lib/booking/pricing'
 import { PaymentBadge, ALL_PAYMENT_BRANDS } from '@/components/payments/PaymentBadge'
 import { usePaymentStatus } from './usePaymentStatus'
@@ -19,10 +19,11 @@ export default function StepPayment({ bookingId, totalCents, pixQrCode, pixCopyP
   const [copied, setCopied] = useState(false)
   const { status, elapsedSec, canConfirmManually } = usePaymentStatus(bookingId)
 
-  // Trigger onPaid when polling detects paid
-  if (['received', 'confirmed'].includes(status)) {
-    queueMicrotask(onPaid)
-  }
+  useEffect(() => {
+    if (['received', 'confirmed'].includes(status)) {
+      onPaid()
+    }
+  }, [status, onPaid])
 
   async function copyPix() {
     if (!pixCopyPaste) return
