@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 interface GalleryImage {
@@ -102,12 +103,16 @@ export default function GalleryManager({ entityField, entityId, initialImages, l
               border: '1px solid var(--border)',
               background: '#f7f9fc',
             }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={img.url}
-                alt={img.alt_text ?? ''}
-                style={{ width: '100%', height: '90px', objectFit: 'cover', display: 'block' }}
-              />
+              <div style={{ position: 'relative', width: '100%', height: '90px' }}>
+                <Image
+                  src={img.url}
+                  alt={img.alt_text ?? ''}
+                  fill
+                  sizes="140px"
+                  quality={60}
+                  style={{ objectFit: 'cover', display: 'block' }}
+                />
+              </div>
               <div style={{ padding: '0.375rem 0.5rem' }}>
                 <input
                   type="text"

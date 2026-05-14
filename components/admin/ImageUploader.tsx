@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import Image from 'next/image'
 
 interface Props {
   name: string
@@ -48,19 +49,17 @@ export default function ImageUploader({ name, currentUrl, label = 'Imagem de cap
       <input type="hidden" name={name} value={url} />
 
       {url ? (
-        <div style={{ position: 'relative', display: 'inline-block', marginBottom: '0.5rem' }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <div style={{ position: 'relative', width: '100%', maxWidth: '360px', height: '180px', marginBottom: '0.5rem' }}>
+          <Image
             src={url}
             alt="Preview"
+            fill
+            sizes="360px"
+            quality={75}
             style={{
-              width: '100%',
-              maxWidth: '360px',
-              height: '180px',
               objectFit: 'cover',
               borderRadius: '10px',
               border: '1px solid var(--border)',
-              display: 'block',
             }}
           />
           <button
