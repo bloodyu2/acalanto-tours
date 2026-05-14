@@ -41,15 +41,15 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     paidAt: b.paid_at,
   })
 
-  // Upload PDF to Supabase storage
-  const path = `comprovantes/${id}.pdf`
-  const { error: upErr } = await sb.storage.from('images').upload(path, pdf, {
+  // Upload PDF to Supabase storage (private receipts bucket)
+  const path = `${id}.pdf`
+  const { error: upErr } = await sb.storage.from('receipts').upload(path, pdf, {
     contentType: 'application/pdf',
     upsert: true,
     cacheControl: '2678400',
   })
   if (upErr) return NextResponse.json({ error: upErr.message }, { status: 500 })
-  const { data: signed } = await sb.storage.from('images').createSignedUrl(path, 60 * 60 * 24 * 30)
+  const { data: signed } = await sb.storage.from('receipts').createSignedUrl(path, 60 * 60 * 24 * 30)
   const pdfUrl = signed?.signedUrl ?? null
 
   // Email
