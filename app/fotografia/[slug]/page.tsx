@@ -238,7 +238,7 @@ export default async function FotografiaDetailPage({ params }: Props) {
                       fill
                       sizes="80px"
                       quality={85}
-                      style={{ objectFit: 'cover' }}
+                      style={{ objectFit: 'cover', color: 'transparent' }}
                     />
                   </div>
                 )}

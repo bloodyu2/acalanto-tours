@@ -71,7 +71,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
             fill
             priority={i === 0}
             sizes="100vw"
-            style={{ objectFit: 'cover', objectPosition: 'center' }}
+            style={{ objectFit: 'cover', objectPosition: 'center', color: 'transparent' }}
           />
 
           {/* gradient: dark bottom + left side to protect text legibility */}

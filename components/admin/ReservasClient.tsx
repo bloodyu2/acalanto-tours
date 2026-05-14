@@ -111,7 +111,7 @@ export default function ReservasClient({ bookings, canPayPartner }: Props) {
         </div>
       </div>
 
-      <div style={{ background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+      <div className="hidden-mobile" style={{ background: 'white', borderRadius: '1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
             <thead style={{ background: 'var(--sand)' }}>
@@ -186,6 +186,49 @@ export default function ReservasClient({ bookings, canPayPartner }: Props) {
           </table>
         </div>
       </div>
+
+      <div className="show-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+        {bookings.map(b => (
+          <div key={b.id} style={{ background: 'white', borderRadius: '0.875rem', padding: '0.875rem 1rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', cursor: 'pointer' }}
+               onClick={() => setSelected(b)}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.375rem' }}>
+              <div style={{ fontWeight: 700, color: 'var(--ocean-deep)', fontSize: '0.95rem' }}>
+                {b.boat_name || b.vertical || 'Reserva'}
+              </div>
+              {paymentChip(b.payment_status)}
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', flexWrap: 'wrap', gap: '0.5rem 0.875rem', marginBottom: '0.5rem' }}>
+              <span>📅 {b.tour_date ?? '—'}</span>
+              <span>👥 {b.adults}A{b.children > 0 ? ` ${b.children}C` : ''}</span>
+            </div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--ocean-deep)', marginBottom: '0.375rem' }}>
+              {b.customer_name ?? 'Sem nome'}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.95rem', fontWeight: 700, color: 'var(--ocean-deep)' }}>
+                {formatCents(b.total_cents)}
+              </span>
+              <span style={{ background: `${statusColors[b.status] || '#94a3b8'}20`, color: statusColors[b.status] || '#475569', fontSize: '0.72rem', fontWeight: 700, padding: '0.2rem 0.55rem', borderRadius: '999px' }}>
+                {statusLabels[b.status] || b.status}
+              </span>
+            </div>
+          </div>
+        ))}
+        {bookings.length === 0 && (
+          <p style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--text-muted)' }}>Nenhuma reserva ainda.</p>
+        )}
+      </div>
+
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .hidden-mobile { display: block !important; }
+          .show-mobile   { display: none  !important; }
+        }
+        @media (max-width: 767px) {
+          .hidden-mobile { display: none  !important; }
+          .show-mobile   { display: flex  !important; }
+        }
+      `}</style>
 
       {selected && (
         <ReservaViewModal

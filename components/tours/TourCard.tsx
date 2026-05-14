@@ -29,7 +29,7 @@ export default function TourCard({ boat }: Props) {
             alt={boat.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: 'cover', color: 'transparent' }}
           />
         ) : (
           <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

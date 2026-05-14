@@ -78,7 +78,7 @@ export default function GalleryLightbox({ images, title }: Props) {
               fill
               sizes="(max-width: 768px) 50vw, 200px"
               quality={75}
-              style={{ objectFit: 'cover', transition: 'transform 0.25s ease' }}
+              style={{ objectFit: 'cover', transition: 'transform 0.25s ease', color: 'transparent' }}
               onMouseOver={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)' }}
               onMouseOut={e => { (e.currentTarget as HTMLImageElement).style.transform = '' }}
               onError={() => markFailed(img.id)}

@@ -31,7 +31,7 @@ export default function PermissionsTable({ rows: initialRows }: Props) {
 
   return (
     <div>
-      <div style={{ background: 'white', borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+      <div className="hidden-mobile" style={{ background: 'white', borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead style={{ background: 'var(--sand)' }}>
             <tr>
@@ -74,9 +74,56 @@ export default function PermissionsTable({ rows: initialRows }: Props) {
           </tbody>
         </table>
       </div>
+
+      <div className="show-mobile" style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
+        {ROLES.map(role => (
+          <div key={role} style={{ background: 'white', borderRadius: '0.875rem', padding: '1rem 1.125rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontWeight: 700, color: 'var(--ocean-deep)', marginBottom: '0.625rem', fontSize: '0.95rem' }}>{role}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {VERTICALS.map(v => {
+                const p = get(role, v)
+                return (
+                  <div key={v} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, cursor: 'pointer', textTransform: 'capitalize', fontSize: '0.85rem' }}>
+                      <input
+                        type="checkbox"
+                        checked={p.enabled}
+                        onChange={e => update(role, v, { enabled: e.target.checked })}
+                        disabled={pending}
+                      />
+                      {v}
+                    </label>
+                    <input
+                      type="number"
+                      min={0} max={999}
+                      value={p.priority}
+                      onChange={e => update(role, v, { priority: Number(e.target.value) })}
+                      disabled={pending || !p.enabled}
+                      aria-label={`Prioridade ${role} ${v}`}
+                      style={{ width: '60px', padding: '0.3rem 0.4rem', border: '1px solid var(--border)', borderRadius: '0.375rem', fontSize: '0.8rem', textAlign: 'center' }}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
       <p style={{ marginTop: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
         {pending ? 'Salvando…' : savedAt ? `Salvo às ${savedAt}` : 'Mudanças são salvas automaticamente.'}
       </p>
+
+      <style jsx>{`
+        @media (min-width: 768px) {
+          .hidden-mobile { display: block !important; }
+          .show-mobile   { display: none  !important; }
+        }
+        @media (max-width: 767px) {
+          .hidden-mobile { display: none  !important; }
+          .show-mobile   { display: flex  !important; }
+        }
+      `}</style>
     </div>
   )
 }

@@ -110,7 +110,7 @@ export default function GalleryManager({ entityField, entityId, initialImages, l
                   fill
                   sizes="140px"
                   quality={60}
-                  style={{ objectFit: 'cover', display: 'block' }}
+                  style={{ objectFit: 'cover', display: 'block', color: 'transparent' }}
                 />
               </div>
               <div style={{ padding: '0.375rem 0.5rem' }}>

@@ -60,6 +60,7 @@ export default function ImageUploader({ name, currentUrl, label = 'Imagem de cap
               objectFit: 'cover',
               borderRadius: '10px',
               border: '1px solid var(--border)',
+              color: 'transparent',
             }}
           />
           <button
