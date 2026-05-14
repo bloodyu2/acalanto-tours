@@ -8,6 +8,7 @@ vi.mock('@/lib/asaas/client', () => ({
     encodedImage: 'iVBORw0KGgoAAAANSUhEUgAA' + 'A'.repeat(1500),
     payload: '00020126580014BR.GOV.BCB.PIX0136...',
   })),
+  createCheckout: vi.fn(async () => ({ id: 'co1', url: 'https://checkout.asaas.com/co1', status: 'PENDING' })),
 }))
 
 vi.mock('@/lib/asaas/split', () => ({

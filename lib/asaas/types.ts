@@ -95,3 +95,26 @@ export interface AsaasWebhookPayload {
     billingType: AsaasBillingType
   }
 }
+
+// ASAAS Checkout API — POST /v3/checkouts
+// Docs: https://docs.asaas.com/reference/checkout
+// The response includes a `url` field with an embeddable link
+// (ASAAS hosted card form — zero PCI scope for the merchant).
+// If the API is unavailable or returns no URL, the caller falls back to
+// invoiceUrl from a regular createCharge response.
+export interface AsaasCheckoutRequest {
+  name: string
+  value: number
+  dueDate: string
+  billingTypes: Array<'CREDIT_CARD' | 'BOLETO' | 'PIX'>
+  description?: string
+  externalReference?: string
+  successUrl?: string
+  notificationEnabled?: boolean
+}
+
+export interface AsaasCheckoutResponse {
+  id: string
+  url: string           // URL embarcável em iframe (campo retornado pela API ASAAS)
+  status: string
+}

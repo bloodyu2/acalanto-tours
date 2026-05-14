@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/server'
 import {
   createOrFindCustomer,
   createCharge,
+  createCheckout,
   getPixQrCode,
 } from '@/lib/asaas/client'
 import { getAdminUser } from '@/lib/admin-auth'
@@ -116,6 +117,7 @@ export async function POST(req: Request) {
   let pixQrCode: string | null = null
   let pixCopyPaste: string | null = null
   let asaasError: string | null = null
+  let cardCheckoutUrl: string | null = null
 
   const partnerWalletId = (boat.partners as { asaas_wallet_id?: string | null } | null)?.asaas_wallet_id ?? undefined
 
@@ -142,26 +144,40 @@ export async function POST(req: Request) {
       phone: onlyDigits(customer_phone) || undefined,
     })
 
-    const charge = await createCharge({
-      customer: asaasCustomerId,
-      billingType: billing_type,
-      value: totalValue,
-      dueDate: tour_date,
-      description: `PDV — ${adults}A${children > 0 ? ` ${children}C` : ''} — ${tour_date}`,
-      externalReference: `pdv_${Date.now()}`,
-      ...(split ? { split } : {}),
-      ...(billing_type === 'CREDIT_CARD' && credit_card && credit_card_holder
-        ? { creditCard: credit_card, creditCardHolderInfo: credit_card_holder }
-        : {}),
-    })
+    if (billing_type === 'CREDIT_CARD') {
+      // Usar ASAAS Checkout para cartão: retorna URL embarcável em iframe (zero PCI scope).
+      // Fallback: se createCheckout falhar, cardCheckoutUrl fica null e o front exibe erro.
+      const co = await createCheckout({
+        name: `Reserva ${customer_name}`,
+        value: totalValue,
+        dueDate: tour_date,
+        billingTypes: ['CREDIT_CARD'],
+        description: `PDV — ${adults}A${children > 0 ? ` ${children}C` : ''} — ${tour_date}`,
+        externalReference: `pdv_${Date.now()}`,
+        notificationEnabled: true,
+      })
+      cardCheckoutUrl = co.url
+      chargeId = co.id
+    } else {
+      // PIX (e futuros billing_types): fluxo original com createCharge + QR code
+      const charge = await createCharge({
+        customer: asaasCustomerId,
+        billingType: billing_type,
+        value: totalValue,
+        dueDate: tour_date,
+        description: `PDV — ${adults}A${children > 0 ? ` ${children}C` : ''} — ${tour_date}`,
+        externalReference: `pdv_${Date.now()}`,
+        ...(split ? { split } : {}),
+      })
 
-    chargeId = charge.id
-    paymentUrl = charge.invoiceUrl ?? null
+      chargeId = charge.id
+      paymentUrl = charge.invoiceUrl ?? null
 
-    if (billing_type === 'PIX') {
-      const qr = await getPixQrCode(charge.id)
-      pixQrCode = qr ? `data:image/png;base64,${qr.encodedImage}` : null
-      pixCopyPaste = qr?.payload ?? null
+      if (billing_type === 'PIX') {
+        const qr = await getPixQrCode(charge.id)
+        pixQrCode = qr ? `data:image/png;base64,${qr.encodedImage}` : null
+        pixCopyPaste = qr?.payload ?? null
+      }
     }
   } catch (e) {
     asaasError = e instanceof Error ? e.message : String(e)
@@ -213,5 +229,6 @@ export async function POST(req: Request) {
     asaasChargeId: chargeId,
     boatPartnerId: boat.partner_id,
     asaasError,
+    cardCheckoutUrl,
   })
 }

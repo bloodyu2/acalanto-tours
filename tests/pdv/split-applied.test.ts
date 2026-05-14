@@ -1,16 +1,18 @@
 // tests/pdv/split-applied.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-const { createChargeMock, createOrFindCustomerMock, getPixQrCodeMock } = vi.hoisted(() => ({
+const { createChargeMock, createOrFindCustomerMock, getPixQrCodeMock, createCheckoutMock } = vi.hoisted(() => ({
   createChargeMock: vi.fn(),
   createOrFindCustomerMock: vi.fn().mockResolvedValue('cust_123'),
   getPixQrCodeMock: vi.fn().mockResolvedValue({ encodedImage: 'AAAA', payload: '0002...' }),
+  createCheckoutMock: vi.fn().mockResolvedValue({ id: 'co1', url: 'https://checkout.asaas.com/co1', status: 'PENDING' }),
 }))
 
 vi.mock('@/lib/asaas/client', () => ({
   createOrFindCustomer: createOrFindCustomerMock,
   createCharge: createChargeMock,
   getPixQrCode: getPixQrCodeMock,
+  createCheckout: createCheckoutMock,
 }))
 
 vi.mock('@/lib/admin-auth', () => ({
