@@ -1,15 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
 import { Playfair_Display, Plus_Jakarta_Sans } from 'next/font/google'
-import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
-import WhatsAppFloat from '@/components/layout/WhatsAppFloat'
-import CookieBanner from '@/components/layout/CookieBanner'
 import ServiceWorkerRegister from '@/components/layout/ServiceWorkerRegister'
 import CartProvider from '@/components/cart/CartProvider'
-import CartDrawer from '@/components/cart/CartDrawer'
-import PwaInstallBanner from '@/components/layout/PwaInstallBanner'
-import BackToTop from '@/components/layout/BackToTop'
+import PublicChrome from '@/components/layout/PublicChrome'
 import './globals.css'
 
 const playfair = Playfair_Display({
@@ -123,17 +117,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </noscript>
         )}
         <CartProvider>
-          <Header />
-          <CartDrawer />
-          <main style={{ flex: 1, paddingTop: '70px' }}>
-            {children}
-          </main>
-          <Footer />
-          <WhatsAppFloat />
-          <CookieBanner />
+          <PublicChrome>{children}</PublicChrome>
           <ServiceWorkerRegister />
-          <PwaInstallBanner />
-          <BackToTop />
         </CartProvider>
       </body>
     </html>

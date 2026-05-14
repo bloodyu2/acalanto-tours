@@ -1,4 +1,9 @@
-const CACHE_NAME = 'acalanto-v1'
+// Acalanto Tours service worker.
+//
+// Cache name bumped on every release to force eviction of stale pages
+// (the old homepage didn't show the "Painel Admin" button — bumping the
+// cache makes returning users get the fresh shell on their next open).
+const CACHE_NAME = 'acalanto-v3'
 const STATIC_ASSETS = ['/', '/passeios', '/fotografia']
 
 self.addEventListener('install', (e) => {
@@ -19,6 +24,18 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return
+
+  const url = new URL(e.request.url)
+
+  // Skip auth-sensitive paths entirely — never cache, always network.
+  // The admin panel + auth callbacks must always reflect server state.
+  const NO_CACHE_PREFIXES = ['/admin', '/api/', '/auth/', '/parceiros/dashboard', '/conta']
+  if (NO_CACHE_PREFIXES.some(p => url.pathname === p || url.pathname.startsWith(p + '/') || url.pathname.startsWith(p))) {
+    e.respondWith(fetch(e.request))
+    return
+  }
+
+  // Public pages: network-first with cache fallback (so offline reopens work).
   e.respondWith(
     fetch(e.request)
       .then(response => {

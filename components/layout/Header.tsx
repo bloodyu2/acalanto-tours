@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import CartIcon from '@/components/cart/CartIcon'
+import { createClient } from '@/lib/supabase/client'
 
 const nav = [
   { href: '/passeios',   label: 'Passeios' },
@@ -31,11 +32,27 @@ function AcalantoIcon({ size = 32 }: { size?: number }) {
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [isAuthed, setIsAuthed] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Detect Supabase session client-side so we can show a "Painel Admin"
+  // shortcut. Any auth'd user gets the link — the page itself will redirect
+  // to /admin/login if they're not actually an admin role.
+  useEffect(() => {
+    const supabase = createClient()
+    let mounted = true
+    supabase.auth.getUser().then(({ data }) => {
+      if (mounted) setIsAuthed(!!data.user)
+    })
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) setIsAuthed(!!session?.user)
+    })
+    return () => { mounted = false; sub.subscription.unsubscribe() }
   }, [])
 
   return (
@@ -138,6 +155,26 @@ export default function Header() {
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'flex-end' }}
         >
           <CartIcon />
+          {isAuthed && (
+            <Link
+              href="/admin"
+              title="Painel Admin"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                padding: '0.45rem 0.75rem', borderRadius: '10px',
+                background: 'var(--ocean-pale, #e8f0f4)',
+                color: 'var(--ocean-deep)',
+                fontSize: '0.8rem', fontWeight: 600,
+                textDecoration: 'none', border: '1px solid var(--border)',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+              Painel
+            </Link>
+          )}
           <Link
             href="/reservar"
             className="btn-primary"
@@ -202,6 +239,27 @@ export default function Header() {
               {label}
             </Link>
           ))}
+          {isAuthed && (
+            <Link
+              href="/admin"
+              onClick={() => setOpen(false)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                marginTop: '1rem', width: '100%', justifyContent: 'center',
+                padding: '0.75rem', borderRadius: '12px',
+                background: 'var(--ocean-pale, #e8f0f4)',
+                color: 'var(--ocean-deep)', fontWeight: 600,
+                textDecoration: 'none', border: '1px solid var(--border)',
+                fontSize: '0.9375rem',
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+              Painel Admin
+            </Link>
+          )}
           <Link
             href="/reservar"
             className="btn-primary"
