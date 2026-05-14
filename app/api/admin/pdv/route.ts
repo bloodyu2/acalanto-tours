@@ -8,6 +8,7 @@ import {
 } from '@/lib/asaas/client'
 import { getAdminUser } from '@/lib/admin-auth'
 import { BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
+import { getEnabledVerticals, type Vertical } from '@/lib/pdv/role-permissions'
 
 export const dynamic = 'force-dynamic'
 
@@ -37,6 +38,7 @@ const PdvSchema = z.object({
     addressNumber: z.string(),
     phone: z.string(),
   }).optional(),
+  vertical: z.enum(['passeio', 'fotografia', 'servico', 'hospedagem']).optional(),
 })
 
 function onlyDigits(s: string | null | undefined): string {
@@ -45,7 +47,7 @@ function onlyDigits(s: string | null | undefined): string {
 
 export async function POST(req: Request) {
   const adminUser = await getAdminUser()
-  if (!adminUser || !['super_admin', 'pdv'].includes(adminUser.role)) {
+  if (!adminUser || !['super_admin', 'pdv', 'tripulacao', 'fotografo'].includes(adminUser.role)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -57,8 +59,19 @@ export async function POST(req: Request) {
   const {
     boat_id, tour_date, adults, children, photographer_addon,
     customer_name, customer_email, customer_phone, customer_cpf,
-    billing_type, credit_card, credit_card_holder,
+    billing_type, credit_card, credit_card_holder, vertical,
   } = parsed.data
+
+  // Validate vertical permission before querying database (fail fast)
+  if (vertical) {
+    const enabled = await getEnabledVerticals(adminUser.role)
+    if (!enabled.some(e => e.vertical === vertical)) {
+      return NextResponse.json(
+        { error: `Role ${adminUser.role} não pode vender ${vertical}` },
+        { status: 403 }
+      )
+    }
+  }
 
   const supabase = await createAdminClient()
 
