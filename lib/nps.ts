@@ -1,10 +1,16 @@
 import crypto from 'crypto'
 
-const SECRET = process.env.REVIEW_HMAC_SECRET ?? 'dev-secret'
+function getSecret(): string {
+  const s = process.env.REVIEW_HMAC_SECRET
+  if (!s || s === 'dev-secret') {
+    throw new Error('REVIEW_HMAC_SECRET environment variable is required and must not be the default placeholder.')
+  }
+  return s
+}
 
 export function generateNpsToken(bookingId: string, expiresAt: Date): string {
   const payload = `${bookingId}:${expiresAt.getTime()}`
-  return crypto.createHmac('sha256', SECRET).update(payload).digest('hex')
+  return crypto.createHmac('sha256', getSecret()).update(payload).digest('hex')
 }
 
 export function verifyNpsToken(token: string, bookingId: string, expiresAt: Date): boolean {

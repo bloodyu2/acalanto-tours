@@ -247,7 +247,6 @@ export interface Database {
         Row: {
           id: string
           booking_id: string | null
-          infinity_pay_id: string | null
           amount_cents: number
           status: 'pending' | 'paid' | 'failed' | 'refunded'
           pix_code: string | null

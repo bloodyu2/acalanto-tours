@@ -13,8 +13,8 @@ export const dynamic = 'force-dynamic'
 // UTM attribution: when a client arrives via /parceiros/[slug] or via the photographer's
 // Instagram bio link (?utm_source=instagram&utm_medium=bio&utm_campaign=[slug]),
 // the UTM is stored in sessionStorage by the utm tracker (Plan 08).
-// At checkout, /api/infinity-pay/create reads utm_campaign from the booking
-// and applies 15% commission instead of 30%.
+// At checkout, /api/checkout reads utm_campaign from the booking and applies
+// the partner's commission rate accordingly (via boats.commission_pct).
 
 type PackageWithPartner = PhotographerPackage & { partners: Pick<Partner, 'name' | 'id'> | null }
 
