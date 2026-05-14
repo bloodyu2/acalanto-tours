@@ -238,7 +238,7 @@ export default function AdminLayoutClient({ children, role, userName }: Props) {
           <SidebarContent />
         </aside>
 
-        <main className="admin-main" style={{ flex: 1, background: '#f7f9fc', overflow: 'auto', padding: '2rem' }}>
+        <main className="admin-main" style={{ flex: 1, background: '#f7f9fc', overflow: 'auto', padding: 'clamp(0.25rem, 1.5vw, 1.5rem)' }}>
           {children}
         </main>
       </div>

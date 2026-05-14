@@ -87,29 +87,29 @@ export default async function AdminDashboard() {
   ]
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', color: 'var(--ocean-deep)', marginBottom: '0.25rem' }}>
+    <div style={{ padding: 'clamp(1rem, 4vw, 2rem)' }}>
+      <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: 'clamp(1.35rem, 5vw, 1.75rem)', color: 'var(--ocean-deep)', marginBottom: '0.25rem' }}>
         Dashboard
       </h1>
-      <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem' }}>
-        Bem-vindo ao painel de administracao Acalanto Turismo.
+      <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: 'clamp(1.25rem, 4vw, 2rem)' }}>
+        Bem-vindo ao painel de administração Acalanto Turismo.
       </p>
 
-      {/* KPI cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2.5rem' }}>
+      {/* KPI cards — 2 cols mobile, 3-5 cols desktop */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(150px, 100%), 1fr))', gap: 'clamp(0.625rem, 2vw, 1.25rem)', marginBottom: 'clamp(1.5rem, 5vw, 2.5rem)' }}>
         {kpis.map(({ icon, label, value, sub, color }) => (
-          <div key={label} style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <div style={{ marginBottom: '0.5rem', color: color }}>{icon}</div>
-            <div style={{ fontSize: '1.75rem', fontWeight: 800, color, marginBottom: '0.2rem' }}>{value}</div>
-            <div style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--ocean-deep)', marginBottom: '0.15rem' }}>{label}</div>
-            {sub && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{sub}</div>}
+          <div key={label} style={{ background: 'white', borderRadius: '0.875rem', padding: 'clamp(0.875rem, 3vw, 1.5rem)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ marginBottom: '0.375rem', color: color }}>{icon}</div>
+            <div style={{ fontSize: 'clamp(1.25rem, 5vw, 1.75rem)', fontWeight: 800, color, marginBottom: '0.2rem', lineHeight: 1.1, wordBreak: 'break-word' }}>{value}</div>
+            <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--ocean-deep)', marginBottom: '0.15rem' }}>{label}</div>
+            {sub && <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.35 }}>{sub}</div>}
           </div>
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: 'clamp(1rem, 3vw, 1.5rem)', marginBottom: '2rem' }}>
         {/* Recent bookings */}
-        <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        <div style={{ background: 'white', borderRadius: '0.875rem', padding: 'clamp(1rem, 3vw, 1.5rem)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
             Ultimas reservas
           </h2>
@@ -138,7 +138,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Recent contacts */}
-        <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+        <div style={{ background: 'white', borderRadius: '0.875rem', padding: 'clamp(1rem, 3vw, 1.5rem)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.1rem', color: 'var(--ocean-deep)', marginBottom: '1rem' }}>
             Ultimas mensagens
           </h2>
