@@ -42,11 +42,9 @@ export async function getAdminUser(): Promise<AdminUser | null> {
     }
   }
 
-  // Fallback: when SUPER_ADMIN_EMAILS is not yet configured, any authenticated
-  // admin user gets super_admin to preserve the legacy "any auth = full access"
-  // behaviour. Set SUPER_ADMIN_EMAILS in Vercel to tighten this.
   if (superAdminEmails.length === 0) {
-    return { id: user.id, email: user.email ?? null, role: 'super_admin', display_name: null }
+    console.error('[admin-auth] SUPER_ADMIN_EMAILS is not configured — access denied as a security precaution')
+    return null
   }
 
   return null
