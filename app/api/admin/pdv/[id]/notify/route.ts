@@ -16,11 +16,15 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const sb = await createAdminClient()
   const { data: b } = await sb
     .from('bookings')
-    .select('id, customer_name, customer_email, customer_phone, tour_date, total_cents, adults, children, payment_method, paid_at, boats(name)')
+    .select('id, customer_name, customer_email, customer_phone, tour_date, total_cents, adults, children, payment_method, paid_at, sold_by_user_id, boats(name)')
     .eq('id', id)
     .maybeSingle()
 
   if (!b) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  if (adminUser.role !== 'super_admin' && b.sold_by_user_id !== adminUser.id) {
+    return NextResponse.json({ error: 'Forbidden — esta venda foi feita por outro usuário' }, { status: 403 })
+  }
 
   const boatName = Array.isArray(b.boats) ? (b.boats[0] as { name: string } | undefined)?.name ?? null : (b.boats as { name: string } | null)?.name ?? null
 

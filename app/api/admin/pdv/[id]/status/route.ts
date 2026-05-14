@@ -14,11 +14,15 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   const sb = await createAdminClient()
   const { data: booking } = await sb
     .from('bookings')
-    .select('id, payment_status, asaas_payment_id, paid_at')
+    .select('id, payment_status, asaas_payment_id, paid_at, sold_by_user_id')
     .eq('id', id)
     .maybeSingle()
 
   if (!booking) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+  if (adminUser.role !== 'super_admin' && booking.sold_by_user_id !== adminUser.id) {
+    return NextResponse.json({ error: 'Forbidden — esta venda foi feita por outro usuário' }, { status: 403 })
+  }
 
   let paymentStatus = (booking.payment_status ?? 'pending').toLowerCase()
 
