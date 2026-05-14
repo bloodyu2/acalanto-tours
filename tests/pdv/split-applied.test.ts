@@ -72,4 +72,35 @@ describe('POST /api/admin/pdv — splits', () => {
       ])
     )
   })
+
+  it('with photographer_addon=true, partner gets fixedValue excluding addon, Balaio gets percentage of total', async () => {
+    const req = new Request('http://test', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        boat_id: 'b1b1b1b1-0000-0000-0000-000000000001', tour_date: '2026-06-01', adults: 2, children: 0,
+        photographer_addon: true,   // ← addon R$250 (25000 cents)
+        customer_name: 'Foo', customer_email: 'foo@b.com',
+        billing_type: 'PIX',
+      }),
+    })
+    await POST(req)
+    const call = createChargeMock.mock.calls[0][0]
+    const split = call.split
+    expect(split).toBeDefined()
+
+    // Adults×price_adult = 2 × 10000 = 20000 cents = R$200 boat base.
+    // Addon = BOAT_PHOTOGRAPHER_ADDON_CENTS = 25000 cents = R$250.
+    // Total to ASAAS = R$450.
+    // Partner gets 70% × R$200 = R$140 (fixedValue, NOT percentage).
+    // Balaio gets 6% of R$450 total (percentualValue 6).
+    const partnerEntry = split.find((s: any) => s.walletId === 'wallet_partner')
+    expect(partnerEntry).toBeDefined()
+    expect(partnerEntry.fixedValue).toBe(140)
+    expect(partnerEntry.percentualValue).toBeUndefined()
+
+    const balaioEntry = split.find((s: any) => s.walletId === '00000000-0000-0000-0000-000000000001')
+    expect(balaioEntry).toBeDefined()
+    expect(balaioEntry.percentualValue).toBe(6)
+  })
 })

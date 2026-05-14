@@ -97,17 +97,10 @@ export async function POST(req: Request) {
   const partnerPct = boat.commission_pct ?? 70
   const commissionRate = Math.max(0, Math.min(100, 100 - partnerPct))
 
-  // TODO(photographer-addon-split): hoje o `photographer_addon` é somado ao
-  // `totalCents` e o split via `buildSplit()` paga o parceiro de barco com
-  // `partnerPct%` do total. Resultado: o parceiro do barco recebe 70% do
-  // R$250 do addon — provavelmente incorreto (a fotografia é serviço da
-  // Acalanto, não do barco). Resolver com uma das opções:
-  //   (a) usar `fixedValue` em vez de `percentualValue` na linha do parceiro,
-  //       calculado sobre `totalCents − addonCents`.
-  //   (b) reduzir `commissionPct` efetivo enviado a buildSplit para
-  //       `partnerPct × (totalCents − addonCents) / totalCents`.
-  //   (c) política: aceitar que o barqueiro fica com tudo (atual).
-  // Marca como bug de policy até alinhar com cliente.
+  // Quando o cliente compra o pacote escuna + fotógrafo a bordo, o R$250 do addon
+  // é receita da Acalanto, não do barqueiro. `buildSplit` paga o parceiro via
+  // fixedValue calculado sobre `totalCents − addonCents`, e a Balaio segue
+  // recebendo 6% percentual do total. Acalanto recebe o resto automaticamente.
 
   const cpf = onlyDigits(customer_cpf) || '00000000000'
 
@@ -132,6 +125,7 @@ export async function POST(req: Request) {
     priceChildCents: boat.price_child ?? 0,
     partnerWalletId,
     commissionPct: partnerPct,
+    addonCents: photographer_addon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0,
   } as CartItemWithPartner]
 
   const split = buildSplit(splitItems)
