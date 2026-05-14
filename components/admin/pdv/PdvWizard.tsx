@@ -5,6 +5,7 @@ import { BOAT_PHOTOGRAPHER_ADDON_CENTS } from '@/lib/constants'
 import type { AdminRole } from '@/lib/admin-roles'
 import type { EnabledVertical, Vertical } from '@/lib/pdv/role-permissions'
 import StepVertical from './StepVertical'
+import StepPayment from './StepPayment'
 
 export interface PdvBoat {
   id: string; name: string; slug: string; price_adult: number; price_child: number
@@ -32,6 +33,7 @@ interface PdvResult {
   paymentUrl: string | null
   pixQrCode: string | null
   pixCopyPaste: string | null
+  cardCheckoutUrl: string | null
   asaasChargeId: string | null
   asaasError: string | null
 }
@@ -107,7 +109,7 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
       const data = await res.json()
       if (!res.ok) throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error))
       setResult(data as PdvResult)
-      setStep('done')
+      // Stay on 'payment' step — StepPayment will render once result is set
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -356,7 +358,7 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
         </div>
       )}
 
-      {step === 'payment' && (
+      {step === 'payment' && !result && (
         <div style={cardStyle}>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
             Pagamento
@@ -430,6 +432,17 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
             </button>
           </div>
         </div>
+      )}
+
+      {step === 'payment' && result && (
+        <StepPayment
+          bookingId={result.bookingId}
+          totalCents={result.totalCents}
+          pixQrCode={result.pixQrCode}
+          pixCopyPaste={result.pixCopyPaste}
+          cardCheckoutUrl={result.cardCheckoutUrl ?? null}
+          onPaid={() => setStep('done')}
+        />
       )}
 
       {step === 'done' && result && (
