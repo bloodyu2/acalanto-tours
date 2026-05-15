@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import PwaInstallBanner from './_components/PwaInstallBanner'
 
 export const metadata: Metadata = {
   title: 'Seja Parceiro — Acalanto Turismo',
@@ -192,6 +193,9 @@ export default function SejaParceiroPage() {
               </div>
             ))}
           </div>
+        </div>
+        <div className="container" style={{ marginTop: '3rem' }}>
+          <PwaInstallBanner />
         </div>
       </section>
 
