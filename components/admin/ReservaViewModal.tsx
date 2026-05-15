@@ -69,6 +69,10 @@ export default function ReservaViewModal({ booking: b, onClose, canPayPartner }:
   const pStatus = (b.payment_status ?? 'pending').toLowerCase()
   const isPaid = ['confirmed', 'received'].includes(pStatus)
 
+  // Date gate: disable pay-partner until tour has passed
+  const tourDate = b.tour_date ? new Date(b.tour_date) : null
+  const tourNotYetDone = tourDate ? tourDate > new Date() : false
+
   async function handleSync() {
     setSyncing(true)
     setSyncMsg(null)
@@ -229,11 +233,12 @@ export default function ReservaViewModal({ booking: b, onClose, canPayPartner }:
                 )}
                 <button
                   onClick={handlePayPartner}
-                  disabled={paying}
+                  disabled={paying || tourNotYetDone}
                   className="btn-primary"
-                  style={{ justifyContent: 'center', opacity: paying ? 0.6 : 1, cursor: paying ? 'not-allowed' : 'pointer' }}
+                  title={tourNotYetDone ? 'Passeio ainda não realizado' : ''}
+                  style={{ justifyContent: 'center', opacity: paying || tourNotYetDone ? 0.5 : 1, cursor: paying || tourNotYetDone ? 'not-allowed' : 'pointer' }}
                 >
-                  {paying ? 'Processando…' : `💸 Pagar parceiro — ${formatCents(partnerValueCents)}`}
+                  {tourNotYetDone ? '⏳ Aguardando data' : paying ? 'Processando…' : `💸 Pagar parceiro — ${formatCents(partnerValueCents)}`}
                 </button>
               </>
             )}
