@@ -105,6 +105,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             })(window,document,'script','dataLayer','${GTM_ID}');
           `}</Script>
         )}
+        {/* GA4 direct — G-TSTXTM5YBT */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-TSTXTM5YBT"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-TSTXTM5YBT');
+        `}</Script>
       </head>
       <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-jakarta)' }}>
         {/* GTM noscript */}
