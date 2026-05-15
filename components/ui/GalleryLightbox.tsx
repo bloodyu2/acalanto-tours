@@ -18,6 +18,7 @@ export default function GalleryLightbox({ images, title }: Props) {
   const [open, setOpen] = useState(false)
   const [idx, setIdx] = useState(0)
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set())
+  const [imgLoaded, setImgLoaded] = useState(false)
   const markFailed = (id: string) => setFailedIds(prev => new Set(prev).add(id))
 
   const close = useCallback(() => setOpen(false), [])
@@ -39,6 +40,11 @@ export default function GalleryLightbox({ images, title }: Props) {
       document.body.style.overflow = ''
     }
   }, [open, close, prev, next])
+
+  // Reset imgLoaded when idx changes to trigger fade-in animation
+  useEffect(() => {
+    setImgLoaded(false)
+  }, [idx])
 
   if (!images.length) return null
 
@@ -124,10 +130,23 @@ export default function GalleryLightbox({ images, title }: Props) {
               justifyContent: 'center',
             }}
           >
+            {/* Loading skeleton placeholder */}
+            {!imgLoaded && (
+              <div style={{
+                position: 'absolute',
+                width: '200px',
+                height: '150px',
+                background: 'rgba(255,255,255,0.08)',
+                borderRadius: '0.75rem',
+              }} />
+            )}
+
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              key={images[idx].url}
               src={images[idx].url}
               alt={images[idx].alt_text ?? `Foto ${idx + 1}`}
+              onLoad={() => setImgLoaded(true)}
               style={{
                 maxWidth: '90vw',
                 maxHeight: '82vh',
@@ -135,6 +154,8 @@ export default function GalleryLightbox({ images, title }: Props) {
                 objectFit: 'contain',
                 display: 'block',
                 boxShadow: '0 8px 48px rgba(0,0,0,0.6)',
+                opacity: imgLoaded ? 1 : 0,
+                transition: 'opacity 0.25s ease',
               }}
               onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
             />
