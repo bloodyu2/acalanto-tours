@@ -120,7 +120,7 @@ const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin/depoimentos', label: 'Depoimentos', icon: <ChatIcon /> },
   { href: '/admin/blog', label: 'Blog', icon: <BlogIcon /> },
   { href: '/admin/configuracoes', label: 'Configurações',    icon: <BriefcaseIcon /> },
-  { href: '/admin/roadmap',       label: 'Roadmap',          icon: <RoadmapIcon /> },
+  { href: '/admin/releases',      label: 'Releases',         icon: <RoadmapIcon /> },
   { href: '/admin/apresentacoes', label: 'Apresentações',    icon: <SlidesIcon /> },
   { href: '/admin/identidade',    label: 'Identidade Visual', icon: <PaletteIcon /> },
   { href: '/admin/calculadora',   label: 'Calculadora',        icon: <CalculatorIcon /> },

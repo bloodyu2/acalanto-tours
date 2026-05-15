@@ -18,7 +18,7 @@ export const ROLE_NAV: Record<AdminRole, string[]> = {
     '/admin/depoimentos',
     '/admin/blog',
     '/admin/configuracoes',
-    '/admin/roadmap',
+    '/admin/releases',
     '/admin/apresentacoes',
     '/admin/identidade',
     '/admin/calculadora',

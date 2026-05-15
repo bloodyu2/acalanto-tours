@@ -1,7 +1,5 @@
-import { requireSuperAdmin } from '@/lib/admin-auth'
-import { RoadmapClient } from './roadmap-client'
+import { redirect } from 'next/navigation'
 
-export default async function RoadmapPage() {
-  await requireSuperAdmin()
-  return <RoadmapClient />
+export default function RoadmapPage() {
+  redirect('/admin/releases')
 }
