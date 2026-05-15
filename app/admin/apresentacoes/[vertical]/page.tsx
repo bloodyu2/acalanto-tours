@@ -394,10 +394,13 @@ function SlideHowItWorks({ p, middleStepLabel }: { p: Presentation; middleStepLa
 function SlideAdvantages({ p, extras }: { p: Presentation; extras: string[] }) {
   const ia = getInnerAccent(p.accentColor)
   const bullets = [
-    'Sem taxa de adesão',
-    'Você decide sua disponibilidade',
-    'Suporte direto via WhatsApp',
-    'Visibilidade para turistas do Brasil inteiro',
+    'Gestão completa de vendas e recebimentos pela plataforma',
+    'Conta bancária ASAAS — saques do cartão sem taxa extra',
+    'Banco de fotos e vídeos profissionais do seu negócio incluso',
+    'Campanhas de marketing para sua embarcação nas nossas redes',
+    'Assessoria com base nas avaliações reais dos seus clientes',
+    'Suporte especializado via Balaio Digital (agência de marketing)',
+    'Sem taxa de adesão — você decide sua disponibilidade',
     ...extras,
   ]
   return (

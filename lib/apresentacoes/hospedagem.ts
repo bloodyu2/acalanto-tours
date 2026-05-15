@@ -11,7 +11,7 @@ const presentation: Presentation = {
     { type: 'cover' },
     { type: 'who-we-are' },
     { type: 'how-it-works', middleStepLabel: 'Você hospeda com qualidade' },
-    { type: 'advantages', extras: ['Ensaio fotográfico do seu negócio incluso ao fechar parceria', 'Sincronização de calendário com Airbnb e Booking', 'Sem comissão de plataformas terceiras'] },
+    { type: 'advantages', extras: ['Sincronização de calendário com Airbnb e Booking', 'Sem comissão de plataformas terceiras', 'Visibilidade para turistas do Brasil inteiro'] },
     { type: 'platform' },
     { type: 'repasses' },
     { type: 'agreements', extraItem: 'Check-in confirmado no dia anterior' },

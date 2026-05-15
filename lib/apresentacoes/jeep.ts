@@ -11,7 +11,7 @@ const presentation: Presentation = {
     { type: 'cover' },
     { type: 'who-we-are' },
     { type: 'how-it-works', middleStepLabel: 'Você realiza o traslado' },
-    { type: 'advantages', extras: ['Ensaio fotográfico do seu negócio incluso ao fechar parceria', 'Roteiros para trilhas e cachoeiras', 'Veículo adaptado para estradas de terra'] },
+    { type: 'advantages', extras: ['Roteiros para trilhas e cachoeiras inclusos no catálogo', 'Veículo adaptado para estradas de terra', 'Visibilidade para turistas do Brasil inteiro'] },
     { type: 'platform' },
     { type: 'repasses' },
     { type: 'agreements', extraItem: 'Veículo em boas condições e documentado' },
