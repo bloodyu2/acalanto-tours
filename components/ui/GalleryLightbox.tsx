@@ -18,6 +18,8 @@ export default function GalleryLightbox({ images, title }: Props) {
   const [open, setOpen] = useState(false)
   const [idx, setIdx] = useState(0)
   const [failedIds, setFailedIds] = useState<Set<string>>(new Set())
+  const [imgLoaded, setImgLoaded] = useState(false)
+  const [imgError, setImgError] = useState(false)
   const markFailed = (id: string) => setFailedIds(prev => new Set(prev).add(id))
 
   const close = useCallback(() => setOpen(false), [])
@@ -39,6 +41,12 @@ export default function GalleryLightbox({ images, title }: Props) {
       document.body.style.overflow = ''
     }
   }, [open, close, prev, next])
+
+  // Reset imgLoaded/imgError when idx changes
+  useEffect(() => {
+    setImgLoaded(false)
+    setImgError(false)
+  }, [idx])
 
   if (!images.length) return null
 
@@ -124,10 +132,44 @@ export default function GalleryLightbox({ images, title }: Props) {
               justifyContent: 'center',
             }}
           >
+            {/* Loading skeleton / error placeholder */}
+            {!imgLoaded && !imgError && (
+              <div style={{
+                position: 'absolute',
+                width: '200px',
+                height: '150px',
+                background: 'rgba(255,255,255,0.08)',
+                borderRadius: '0.75rem',
+              }} />
+            )}
+            {imgError && (
+              <div style={{
+                position: 'absolute',
+                width: '200px',
+                height: '150px',
+                background: 'rgba(255,255,255,0.06)',
+                borderRadius: '0.75rem',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                color: 'rgba(255,255,255,0.3)',
+              }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <span style={{ fontSize: '0.7rem', fontFamily: 'var(--font-mono)' }}>Imagem indisponível</span>
+              </div>
+            )}
+
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              key={images[idx].url}
               src={images[idx].url}
               alt={images[idx].alt_text ?? `Foto ${idx + 1}`}
+              onLoad={() => setImgLoaded(true)}
               style={{
                 maxWidth: '90vw',
                 maxHeight: '82vh',
@@ -135,8 +177,10 @@ export default function GalleryLightbox({ images, title }: Props) {
                 objectFit: 'contain',
                 display: 'block',
                 boxShadow: '0 8px 48px rgba(0,0,0,0.6)',
+                opacity: imgLoaded ? 1 : 0,
+                transition: 'opacity 0.25s ease',
               }}
-              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+              onError={() => { setImgError(true) }}
             />
 
             {/* Counter */}

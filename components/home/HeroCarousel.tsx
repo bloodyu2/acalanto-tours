@@ -32,7 +32,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
     if (n <= 1) return
     timerRef.current = setInterval(() => {
       setCurrent(i => (i + 1) % n)
-    }, 7000)
+    }, 4000)
   }
 
   useEffect(() => {
@@ -86,8 +86,38 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
         </div>
       ))}
 
-      {/* Carrossel auto-rotativo (7s/slide). Setas e dots foram removidos a pedido
-          do cliente — slides avançam apenas pelo timer interno. */}
+      {/* Navigation dots */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '1rem',
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '0.375rem',
+          zIndex: 10,
+        }}
+        aria-label="Navegação do carrossel"
+      >
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => go(i)}
+            aria-label={`Ir para slide ${i + 1}`}
+            style={{
+              height: '0.5rem',
+              width: i === current ? '1.5rem' : '0.5rem',
+              borderRadius: '9999px',
+              background: i === current ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              transition: 'width 0.3s ease, background 0.3s ease',
+            }}
+          />
+        ))}
+      </div>
     </div>
   )
 }
