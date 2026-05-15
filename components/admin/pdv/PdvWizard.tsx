@@ -51,8 +51,8 @@ const labelStyle: React.CSSProperties = {
   display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'var(--ocean-deep)', marginBottom: '0.375rem',
 }
 
-const stepLabel: Record<Step, string> = {
-  vertical: 'Categoria', tour: 'Passeio', passengers: 'Pax', customer: 'Cliente', payment: 'Pagamento', done: 'OK',
+const tourStepLabel: Record<string, string> = {
+  passeio: 'Passeio', fotografia: 'Pacote', servico: 'Serviço', hospedagem: 'Quarto',
 }
 const stepOrder: Step[] = ['tour', 'passengers', 'customer', 'payment']
 
@@ -64,7 +64,18 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
     verticals.length === 1 ? verticals[0].vertical : null
   )
 
+  const stepLabel: Record<Step, string> = {
+    vertical: 'Categoria',
+    tour: (vertical && tourStepLabel[vertical]) || 'Passeio',
+    passengers: 'Pax',
+    customer: 'Cliente',
+    payment: 'Pagamento',
+    done: 'OK',
+  }
+
   const [boatId, setBoatId] = useState('')
+  const [photographerId, setPhotographerId] = useState('')
+  const [serviceId, setServiceId] = useState('')
   const [tourDate, setTourDate] = useState('')
   const [adults, setAdults] = useState(1)
   const [children, setChildren] = useState(0)
@@ -81,11 +92,24 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
   const [error, setError] = useState<string | null>(null)
 
   const selectedBoat = boats.find(b => b.id === boatId)
-  const totalCents = selectedBoat
-    ? adults * selectedBoat.price_adult +
-      children * (selectedBoat.price_child || Math.round(selectedBoat.price_adult / 2)) +
-      (photographerAddon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0)
-    : 0
+  const selectedPhotographer = photographers.find(p => p.id === photographerId)
+  const selectedService = services.find(s => s.id === serviceId)
+
+  const totalCents = (() => {
+    const addonCents = photographerAddon ? BOAT_PHOTOGRAPHER_ADDON_CENTS : 0
+    if (vertical === 'passeio' && selectedBoat) {
+      return adults * selectedBoat.price_adult +
+        children * (selectedBoat.price_child || Math.round(selectedBoat.price_adult / 2)) +
+        addonCents
+    }
+    if (vertical === 'fotografia' && selectedPhotographer) {
+      return (selectedPhotographer.price_cents ?? 0) + addonCents
+    }
+    if (vertical === 'servico' && selectedService) {
+      return (selectedService.price_cents ?? 0) * adults + addonCents
+    }
+    return 0
+  })()
 
   async function handleSubmit() {
     setLoading(true)
@@ -95,7 +119,9 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          boat_id: boatId,
+          boat_id: boatId || undefined,
+          photographer_id: photographerId || undefined,
+          service_id: serviceId || undefined,
           tour_date: tourDate,
           adults,
           children,
@@ -121,7 +147,7 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
 
   function reset() {
     setStep(initialStep); setVertical(verticals.length === 1 ? verticals[0].vertical : null)
-    setBoatId(''); setTourDate(''); setAdults(1); setChildren(0)
+    setBoatId(''); setPhotographerId(''); setServiceId(''); setTourDate(''); setAdults(1); setChildren(0)
     setPhotographerAddon(false); setCustomerName(''); setCustomerEmail('')
     setCustomerPhone(''); setCustomerCpf(''); setBillingType('PIX')
     setResult(null); setError(null)
@@ -169,7 +195,7 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
         />
       )}
 
-      {step === 'tour' && (
+      {step === 'tour' && vertical === 'passeio' && (
         <div style={cardStyle}>
           <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
             Selecione o passeio
@@ -217,6 +243,86 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
           >
             Próximo →
           </button>
+        </div>
+      )}
+
+      {step === 'tour' && vertical === 'fotografia' && (
+        <div style={cardStyle}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
+            Selecione o pacote fotográfico
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+            {photographers.map(pkg => (
+              <button
+                key={pkg.id}
+                type="button"
+                onClick={() => { setPhotographerId(pkg.id); setStep('passengers') }}
+                style={{
+                  padding: '0.875rem 1rem',
+                  border: `2px solid ${photographerId === pkg.id ? 'var(--ocean-mid)' : 'var(--border)'}`,
+                  borderRadius: '0.75rem',
+                  background: photographerId === pkg.id ? 'rgba(26,107,138,0.06)' : 'white',
+                  cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
+                }}
+              >
+                <p style={{ fontWeight: 700, color: 'var(--ocean-deep)', margin: '0 0 0.2rem' }}>{pkg.name}</p>
+                {pkg.price_cents != null && (
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0 }}>
+                    {formatCents(pkg.price_cents)}
+                  </p>
+                )}
+              </button>
+            ))}
+            {photographers.length === 0 && (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Nenhum pacote fotográfico cadastrado.</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {step === 'tour' && vertical === 'servico' && (
+        <div style={cardStyle}>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '1.25rem' }}>
+            Selecione o serviço
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
+            {services.map(svc => (
+              <button
+                key={svc.id}
+                type="button"
+                onClick={() => { setServiceId(svc.id); setStep('passengers') }}
+                style={{
+                  padding: '0.875rem 1rem',
+                  border: `2px solid ${serviceId === svc.id ? 'var(--ocean-mid)' : 'var(--border)'}`,
+                  borderRadius: '0.75rem',
+                  background: serviceId === svc.id ? 'rgba(26,107,138,0.06)' : 'white',
+                  cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
+                }}
+              >
+                <p style={{ fontWeight: 700, color: 'var(--ocean-deep)', margin: '0 0 0.2rem' }}>{svc.name}</p>
+                {svc.price_cents != null && (
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0 }}>
+                    {formatCents(svc.price_cents)}/pessoa
+                  </p>
+                )}
+              </button>
+            ))}
+            {services.length === 0 && (
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Nenhum serviço ativo cadastrado.</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {step === 'tour' && vertical === 'hospedagem' && (
+        <div style={{ ...cardStyle, textAlign: 'center', padding: '2.5rem 1.75rem' }}>
+          <p style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🏨</p>
+          <h2 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.2rem', color: 'var(--ocean-deep)', marginTop: 0, marginBottom: '0.5rem' }}>
+            Hospedagem em breve
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', margin: 0 }}>
+            Esta vertical está sendo integrada.
+          </p>
         </div>
       )}
 
@@ -366,19 +472,28 @@ export default function PdvWizard({ verticals, boats, photographers, services, s
             Pagamento
           </h2>
 
-          <div style={{ background: 'var(--sand, #fdf8f0)', borderRadius: '0.75rem', padding: '0.875rem 1rem', marginBottom: '1.25rem' }}>
-            <p style={{ fontWeight: 600, margin: '0 0 0.25rem', color: 'var(--ocean-deep)' }}>
-              {selectedBoat?.name} — {tourDate}
-            </p>
-            <p style={{ margin: '0 0 0.2rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              {adults}A{children > 0 ? ` ${children}C` : ''}{photographerAddon ? ' · Fotógrafo' : ''}
-              {' · '}
-              {customerName}
-            </p>
-            <p style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--ocean-deep)', margin: 0 }}>
-              {formatCents(totalCents)}
-            </p>
-          </div>
+          {(() => {
+            const productLabel =
+              vertical === 'passeio' ? selectedBoat?.name :
+              vertical === 'fotografia' ? selectedPhotographer?.name :
+              vertical === 'servico' ? selectedService?.name :
+              'Hospedagem'
+            return (
+              <div style={{ background: 'var(--sand, #fdf8f0)', borderRadius: '0.75rem', padding: '0.875rem 1rem', marginBottom: '1.25rem' }}>
+                <p style={{ fontWeight: 600, margin: '0 0 0.25rem', color: 'var(--ocean-deep)' }}>
+                  {productLabel} — {tourDate}
+                </p>
+                <p style={{ margin: '0 0 0.2rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                  {adults}A{children > 0 ? ` ${children}C` : ''}{photographerAddon ? ' · Fotógrafo' : ''}
+                  {' · '}
+                  {customerName}
+                </p>
+                <p style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--ocean-deep)', margin: 0 }}>
+                  {formatCents(totalCents)}
+                </p>
+              </div>
+            )
+          })()}
 
           <p style={labelStyle}>Forma de pagamento</p>
           <div style={{ display: 'flex', gap: '0.625rem', marginBottom: '1.25rem' }}>
