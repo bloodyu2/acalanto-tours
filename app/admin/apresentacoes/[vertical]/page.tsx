@@ -261,6 +261,7 @@ function SlideCover({ p }: { p: Presentation }) {
             textAlign: 'center',
             lineHeight: 1.1,
             marginBottom: '1.25rem',
+            color: 'white',
             ...fu(0.15),
           }}
         >
@@ -699,6 +700,7 @@ function SlideCta({ p }: { p: Presentation }) {
             lineHeight: 1.05,
             textAlign: 'center',
             marginBottom: '0.75rem',
+            color: 'white',
             ...fu(0.12),
           }}
         >
