@@ -5,8 +5,8 @@ const presentation: Presentation = {
   title: 'Hospedagem',
   tagline: 'Aumente sua ocupação com turistas que já chegam reservados',
   accentColor: '#F4A623',
-  repasse: '70%',
-  repasseLabel: 'do valor por reserva, via PIX',
+  repasse: 'Consulte',
+  repasseLabel: 'condições personalizadas por tipo de parceiro',
   slides: [
     { type: 'cover' },
     { type: 'who-we-are' },

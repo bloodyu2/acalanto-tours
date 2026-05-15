@@ -5,8 +5,8 @@ const presentation: Presentation = {
   title: 'Escunas & Passeios',
   tagline: 'Leve turistas para os lugares mais bonitos de Paraty',
   accentColor: '#0A3D5C',
-  repasse: '60% a 75%',
-  repasseLabel: 'do valor por reserva, via PIX',
+  repasse: 'Consulte',
+  repasseLabel: 'condições personalizadas por tipo de parceiro',
   slides: [
     { type: 'cover' },
     { type: 'who-we-are' },
