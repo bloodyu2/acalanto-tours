@@ -1,4 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/server'
+import DespesaButtonWrapper from './_components/DespesaButtonWrapper'
 
 export const dynamic = 'force-dynamic'
 
@@ -168,6 +169,7 @@ export default async function AdminDashboard() {
           Acoes rapidas
         </h2>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <DespesaButtonWrapper />
           {[
             { href: '/admin/reservas', label: 'Ver reservas' },
             { href: '/admin/capacidade', label: 'Gerenciar capacidade' },
