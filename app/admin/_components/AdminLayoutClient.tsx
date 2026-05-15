@@ -260,6 +260,7 @@ function roleLabel(role: AdminRole): string {
     case 'pdv':         return 'Ponto de Venda'
     case 'tripulacao':  return 'Tripulação'
     case 'fotografo':   return 'Fotógrafo'
+    case 'captador':    return 'Captador'
     default:            return 'Painel'
   }
 }

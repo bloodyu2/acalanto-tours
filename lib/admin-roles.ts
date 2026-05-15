@@ -2,7 +2,7 @@
 // Keep this file separate from lib/admin-auth.ts because admin-auth.ts uses
 // next/headers (Server Component only) and Client Components cannot import it.
 
-export type AdminRole = 'super_admin' | 'pdv' | 'tripulacao' | 'fotografo'
+export type AdminRole = 'super_admin' | 'pdv' | 'tripulacao' | 'fotografo' | 'captador'
 
 export const ROLE_NAV: Record<AdminRole, string[]> = {
   super_admin: [
@@ -25,6 +25,7 @@ export const ROLE_NAV: Record<AdminRole, string[]> = {
   pdv: ['/admin/vendas'],
   tripulacao: ['/admin/capacidade', '/admin/reservas'],
   fotografo: ['/admin/capacidade'],
+  captador: ['/admin/parceiros', '/admin/vendas', '/admin/calculadora'],
 }
 
 export function canAccessRoute(role: AdminRole, pathname: string): boolean {
