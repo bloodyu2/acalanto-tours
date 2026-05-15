@@ -10,6 +10,7 @@ export default function DespesaModal({ onClose }: Props) {
   const [valueReais, setValueReais] = useState('')
   const [recipient, setRecipient] = useState('')
   const [pixKey, setPixKey] = useState('')
+  const [pixKeyType, setPixKeyType] = useState<'CPF' | 'CNPJ' | 'EMAIL' | 'PHONE' | 'EVP'>('EVP')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -32,6 +33,7 @@ export default function DespesaModal({ onClose }: Props) {
           description: recipient ? `${description} — ${recipient}` : description,
           valueCents: Math.round(parseFloat(valueReais) * 100),
           pixKey,
+          pixKeyType,
         }),
       })
       const data = await res.json()
@@ -173,6 +175,32 @@ export default function DespesaModal({ onClose }: Props) {
                     boxSizing: 'border-box',
                   }}
                 />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--ocean-deep)', marginBottom: '0.3rem' }}>
+                  Tipo de chave PIX *
+                </label>
+                <select
+                  value={pixKeyType}
+                  onChange={e => setPixKeyType(e.target.value as typeof pixKeyType)}
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.6rem 0.75rem',
+                    borderRadius: '0.5rem',
+                    border: '1px solid var(--border)',
+                    fontSize: '0.875rem',
+                    boxSizing: 'border-box',
+                    background: 'white',
+                  }}
+                >
+                  <option value="CPF">CPF</option>
+                  <option value="CNPJ">CNPJ</option>
+                  <option value="EMAIL">E-mail</option>
+                  <option value="PHONE">Celular</option>
+                  <option value="EVP">Chave aleatória</option>
+                </select>
               </div>
 
               <div>

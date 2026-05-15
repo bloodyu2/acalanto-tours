@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
-  const { description, valueCents, pixKey } = await req.json()
+  const { description, valueCents, pixKey, pixKeyType } = await req.json()
 
   if (!description || !valueCents || !pixKey) {
     return NextResponse.json({ error: 'description, valueCents, pixKey são obrigatórios' }, { status: 400 })
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({
       value: valueCents / 100,
       pixAddressKey: pixKey,
-      pixAddressKeyType: 'EVP',
+      pixAddressKeyType: pixKeyType || 'EVP',
       description,
       scheduleDate: new Date().toISOString().split('T')[0],
     }),

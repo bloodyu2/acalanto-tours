@@ -113,8 +113,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="ga4-init" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            wait_for_update: 2000
+          });
           gtag('js', new Date());
-          gtag('config', 'G-TSTXTM5YBT');
+          gtag('config', 'G-TSTXTM5YBT', { send_page_view: false });
         `}</Script>
       </head>
       <body style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: 'var(--font-jakarta)' }}>
