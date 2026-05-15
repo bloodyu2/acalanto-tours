@@ -21,13 +21,13 @@ export default async function AdminNegocioPage() {
     { href: '/admin/negocio/escunas', label: 'Escunas', count: boatsCount ?? 0, desc: 'Passeios de barco', color: 'var(--ocean-mid)' },
     { href: '/admin/negocio/servicos', label: 'Serviços', count: servicesCount ?? 0, desc: 'Jeep, transfer, guia, etc.', color: '#D97706' },
     { href: '/admin/negocio/fotografia', label: 'Fotografia', count: pkgsCount ?? 0, desc: 'Pacotes fotográficos', color: '#8B5CF6' },
-    { href: '/admin/parceiros', label: 'Parceiros', count: partnersCount ?? 0, desc: 'Negócios cadastrados', color: '#059669' },
+    { href: '/admin/parceiros', label: 'Parceiros', count: partnersCount ?? 0, desc: 'Estabelecimentos cadastrados', color: '#059669' },
   ]
 
   return (
     <div style={{ padding: '2rem' }}>
       <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', color: 'var(--ocean-deep)', marginBottom: '0.5rem' }}>
-        Negócios
+        Estabelecimentos
       </h1>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem' }}>
         Gerencie todos os produtos e parceiros da plataforma.

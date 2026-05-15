@@ -96,7 +96,7 @@ const CartIcon = () => (
 
 const navItems: Array<{ href: string; label: string; icon: ReactNode }> = [
   { href: '/admin', label: 'Dashboard', icon: <DashboardIcon /> },
-  { href: '/admin/negocio', label: 'Negócios', icon: <BriefcaseIcon /> },
+  { href: '/admin/negocio', label: 'Estabelecimentos', icon: <BriefcaseIcon /> },
   { href: '/admin/reservas', label: 'Reservas', icon: <CalendarIcon /> },
   { href: '/admin/vendas', label: 'PDV — Vendas', icon: <CartIcon /> },
   { href: '/admin/capacidade', label: 'Capacidade', icon: <AnchorNavIcon /> },
