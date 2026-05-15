@@ -39,6 +39,7 @@ const jsonLd = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://acalantotours.com.br'),
   title: {
     default: 'Acalanto Turismo | Turismo em Paraty',
     template: '%s | Acalanto Turismo',
