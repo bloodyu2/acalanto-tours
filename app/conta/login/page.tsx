@@ -1,10 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-export default function ContaLoginPage() {
+function ContaLoginForm() {
+  const searchParams = useSearchParams()
+  const urlError = searchParams.get('error')
+
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
@@ -44,6 +48,12 @@ export default function ContaLoginPage() {
             Acesse suas reservas e histórico de passeios
           </p>
         </div>
+
+        {urlError === 'link_expirado' && (
+          <div style={{ background: '#fef3c7', border: '1px solid #f59e0b', borderRadius: '0.75rem', padding: '0.75rem 1rem', color: '#92400e', fontSize: '0.875rem', marginBottom: '1.25rem' }}>
+            Este link expirou ou já foi usado. Solicite um novo link abaixo.
+          </div>
+        )}
 
         {sent ? (
           <div style={{ textAlign: 'center', padding: '1.5rem 0' }}>
@@ -117,7 +127,7 @@ export default function ContaLoginPage() {
 
         <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
           É parceiro?{' '}
-          <Link href="/auth/login" style={{ color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
+          <Link href="/parceiros/login" style={{ color: 'var(--ocean-mid)', fontWeight: 600, textDecoration: 'none' }}>
             Acessar painel de parceiro
           </Link>
         </p>
@@ -130,5 +140,13 @@ export default function ContaLoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ContaLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <ContaLoginForm />
+    </Suspense>
   )
 }
