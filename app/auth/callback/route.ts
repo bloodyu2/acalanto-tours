@@ -4,14 +4,31 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const url = new URL(request.url)
   const code = url.searchParams.get('code')
+  const error = url.searchParams.get('error')
   const rawNext = url.searchParams.get('next') ?? '/conta'
   const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/conta'
+  const type = url.searchParams.get('type')
+
+  // Supabase redirects here with ?error=... when token is expired or invalid
+  if (error) {
+    const errorCode = url.searchParams.get('error_code') ?? ''
+    if (type === 'invite' || errorCode === 'otp_expired') {
+      return NextResponse.redirect(new URL('/auth/invite?expired=1', request.url))
+    }
+    return NextResponse.redirect(new URL('/conta/login?error=link_expirado', request.url))
+  }
 
   if (code) {
     const supabase = await createClient()
-    const { data: { session } } = await supabase.auth.exchangeCodeForSession(code)
+    const { data: { session }, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
 
-    const type = url.searchParams.get('type')
+    if (exchangeError) {
+      if (type === 'invite') {
+        return NextResponse.redirect(new URL('/auth/invite?expired=1', request.url))
+      }
+      return NextResponse.redirect(new URL('/conta/login?error=link_expirado', request.url))
+    }
+
     if (type === 'recovery') {
       return NextResponse.redirect(new URL('/auth/reset-password', request.url))
     }

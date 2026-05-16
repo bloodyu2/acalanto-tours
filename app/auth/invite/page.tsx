@@ -12,24 +12,37 @@ function InviteAcceptForm() {
   const supabase = createClient()
 
   useEffect(() => {
-    // Supabase invite sends access_token in hash
+    const searchParams = new URLSearchParams(window.location.search)
+    const expired = searchParams.get('expired')
+
+    if (expired) {
+      setStatus('error')
+      setMessage('Este link de convite expirou. Peça ao administrador para reenviar o convite.')
+      return
+    }
+
+    // Implicit flow: Supabase sends tokens in URL hash
     const hashParams = new URLSearchParams(window.location.hash.slice(1))
-    const type = hashParams.get('type')
+    const hashType = hashParams.get('type')
     const accessToken = hashParams.get('access_token')
     const refreshToken = hashParams.get('refresh_token')
 
-    if (type === 'invite' && accessToken) {
+    if ((hashType === 'invite' || hashType === 'recovery') && accessToken) {
       supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
         .then(() => setStatus('set-password'))
         .catch(() => { setStatus('error'); setMessage('Link de convite inválido ou expirado.') })
-    } else if (type === 'recovery' && accessToken) {
-      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
-        .then(() => setStatus('set-password'))
-        .catch(() => { setStatus('error'); setMessage('Link inválido ou expirado.') })
-    } else {
-      setStatus('error')
-      setMessage('Link de convite inválido. Solicite um novo convite.')
+      return
     }
+
+    // PKCE flow: session already exchanged by /auth/callback — just check if logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setStatus('set-password')
+      } else {
+        setStatus('error')
+        setMessage('Link de convite inválido. Solicite um novo convite ao administrador.')
+      }
+    })
   }, [supabase])
 
   const handleSetPassword = async (e: React.FormEvent) => {

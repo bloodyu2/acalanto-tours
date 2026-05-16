@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
   const { error: inviteError } = await supabase.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${siteUrl}/auth/callback?next=/parceiros/dashboard`,
+    redirectTo: `${siteUrl}/auth/callback?next=/parceiros/dashboard&type=invite`,
   })
 
   if (inviteError) {
