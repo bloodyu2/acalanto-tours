@@ -3,7 +3,6 @@
 import { Suspense, useState, type FormEvent } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
 import { WizardSteps } from './_components/WizardSteps'
 
 function CadastroForm() {
@@ -22,57 +21,21 @@ function CadastroForm() {
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
-
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password: senha,
+    const res = await fetch('/api/parceiros/setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, email, senha }),
     })
 
-    if (signUpError) {
-      setError(signUpError.message)
+    const data = await res.json()
+
+    if (!res.ok) {
+      setError(data.error ?? 'Erro ao criar conta. Tente novamente.')
       setLoading(false)
       return
     }
 
-    if (!authData.user) {
-      setError('Erro ao criar conta. Tente novamente.')
-      setLoading(false)
-      return
-    }
-
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .upsert({
-        auth_user_id: authData.user.id,
-        role: 'partner',
-      }, { onConflict: 'auth_user_id' })
-
-    if (profileError) {
-      setError('Erro ao criar perfil. Tente novamente.')
-      setLoading(false)
-      return
-    }
-
-    const { data: partner, error: partnerError } = await supabase
-      .from('partners')
-      .insert({
-        name: nome,
-        auth_user_id: authData.user.id,
-        status: 'pending',
-        submitted_at: new Date().toISOString(),
-        active: false,
-      })
-      .select('id')
-      .single()
-
-    if (partnerError || !partner) {
-      setError('Erro ao registrar parceiro. Tente novamente.')
-      setLoading(false)
-      return
-    }
-
-    sessionStorage.setItem('onboarding_partner_id', partner.id)
+    sessionStorage.setItem('onboarding_partner_id', data.partnerId)
     if (claimSlug) sessionStorage.setItem('onboarding_claim_slug', claimSlug)
 
     router.push('/parceiros/cadastro/tipo')
