@@ -46,6 +46,10 @@ export default function CadastroAnuncioPage() {
   // barco-specific state
   const [availableBoats, setAvailableBoats] = useState<AvailableBoat[]>([])
   const [selectedBoatId, setSelectedBoatId] = useState<string>('')
+  const [isNewBoat, setIsNewBoat] = useState(false)
+  const [newBoatName, setNewBoatName] = useState('')
+  const [newBoatType, setNewBoatType] = useState('lancha')
+  const [newBoatCapacity, setNewBoatCapacity] = useState('')
 
   useEffect(() => {
     const t = sessionStorage.getItem('onboarding_type') as ListingType | null
@@ -77,10 +81,16 @@ export default function CadastroAnuncioPage() {
     e.preventDefault()
     if (!type || !partnerId) return
 
-    // Barco: require boat selection
-    if (type === 'barco' && !selectedBoatId) {
-      setError('Selecione a embarcação que você deseja reivindicar.')
-      return
+    // Barco: validate selection or new boat fields
+    if (type === 'barco') {
+      if (!isNewBoat && !selectedBoatId) {
+        setError('Selecione a embarcação que você deseja reivindicar.')
+        return
+      }
+      if (isNewBoat && (!newBoatName.trim() || !newBoatCapacity)) {
+        setError('Preencha o nome e a capacidade da embarcação.')
+        return
+      }
     }
 
     setLoading(true)
@@ -92,25 +102,53 @@ export default function CadastroAnuncioPage() {
     const db = supabase as any
 
     if (type === 'barco') {
-      // For boat claims: create a pending listing linked to the selected boat
-      const selectedBoat = availableBoats.find(b => b.id === selectedBoatId)
-      const { error: listingError } = await db
-        .from('partner_listings')
-        .insert({
-          partner_id: partnerId,
-          type: 'barco',
-          title: selectedBoat?.name ?? 'Embarcação',
-          slug: slugify((selectedBoat?.name ?? 'barco') + '-' + partnerId.slice(0, 8)),
-          description: null,
-          price_label: null,
-          metadata: { whatsapp },
-          boat_id: selectedBoatId,
-          status: 'pending',
-        })
-      if (listingError) {
-        setError('Erro ao enviar reivindicação. Tente novamente.')
-        setLoading(false)
-        return
+      if (isNewBoat) {
+        // New boat registration: no boat_id yet — admin will create it
+        const { error: listingError } = await db
+          .from('partner_listings')
+          .insert({
+            partner_id: partnerId,
+            type: 'barco',
+            title: newBoatName.trim(),
+            slug: slugify(newBoatName.trim() + '-' + partnerId.slice(0, 8)),
+            description: null,
+            price_label: null,
+            metadata: {
+              whatsapp,
+              new_boat: {
+                name: newBoatName.trim(),
+                type: newBoatType,
+                capacity: parseInt(newBoatCapacity),
+              },
+            },
+            status: 'pending',
+          })
+        if (listingError) {
+          setError('Erro ao enviar cadastro. Tente novamente.')
+          setLoading(false)
+          return
+        }
+      } else {
+        // Existing boat claim
+        const selectedBoat = availableBoats.find(b => b.id === selectedBoatId)
+        const { error: listingError } = await db
+          .from('partner_listings')
+          .insert({
+            partner_id: partnerId,
+            type: 'barco',
+            title: selectedBoat?.name ?? 'Embarcação',
+            slug: slugify((selectedBoat?.name ?? 'barco') + '-' + partnerId.slice(0, 8)),
+            description: null,
+            price_label: null,
+            metadata: { whatsapp },
+            boat_id: selectedBoatId,
+            status: 'pending',
+          })
+        if (listingError) {
+          setError('Erro ao enviar reivindicação. Tente novamente.')
+          setLoading(false)
+          return
+        }
       }
       router.push('/parceiros/cadastro/aguardando')
       return
@@ -197,43 +235,97 @@ export default function CadastroAnuncioPage() {
             {type === 'barco' && (
               <div>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-                  Selecione a embarcação que você é proprietário. Após aprovação, você receberá os repasses automaticamente pelo Asaas.
+                  Após aprovação, você receberá os repasses automaticamente pelo Asaas.
                 </p>
-                {availableBoats.length === 0 ? (
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', background: 'var(--sand)', padding: '1rem', borderRadius: '8px', textAlign: 'center' }}>
-                    Nenhuma embarcação disponível para reivindicação no momento.
-                  </p>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    {availableBoats.map(boat => (
-                      <label
-                        key={boat.id}
+
+                {/* Toggle claim / new */}
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
+                  {(['Vincular existente', 'Cadastrar nova'] as const).map((label, idx) => {
+                    const active = isNewBoat === (idx === 1)
+                    return (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => setIsNewBoat(idx === 1)}
                         style={{
-                          display: 'flex', alignItems: 'center', gap: '1rem',
-                          padding: '1rem 1.125rem', borderRadius: '12px', cursor: 'pointer',
-                          border: `1.5px solid ${selectedBoatId === boat.id ? 'var(--ocean-mid)' : 'var(--border)'}`,
-                          background: selectedBoatId === boat.id ? 'rgba(14,116,144,0.06)' : 'white',
-                          transition: 'border-color 0.15s, background 0.15s',
+                          flex: 1, padding: '0.625rem', borderRadius: '8px', fontSize: '0.875rem',
+                          fontWeight: 600, cursor: 'pointer',
+                          border: `1.5px solid ${active ? 'var(--ocean-mid)' : 'var(--border)'}`,
+                          background: active ? 'rgba(14,116,144,0.08)' : 'white',
+                          color: active ? 'var(--ocean-mid)' : 'var(--text-muted)',
+                          transition: 'all 0.15s',
                         }}
-                      >
-                        <input
-                          type="radio"
-                          name="boat"
-                          value={boat.id}
-                          checked={selectedBoatId === boat.id}
-                          onChange={() => setSelectedBoatId(boat.id)}
-                          style={{ accentColor: 'var(--ocean-mid)', width: '18px', height: '18px', flexShrink: 0 }}
-                        />
-                        <div>
-                          <p style={{ fontWeight: 700, fontSize: '0.9375rem', marginBottom: '0.2rem' }}>{boat.name}</p>
-                          {boat.tagline && <p style={{ color: 'var(--text-muted)', fontSize: '0.825rem' }}>{boat.tagline}</p>}
-                          <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.2rem' }}>Capacidade: {boat.capacity_max} pessoas</p>
-                        </div>
-                      </label>
-                    ))}
+                      >{label}</button>
+                    )
+                  })}
+                </div>
+
+                {/* Claim existing */}
+                {!isNewBoat && (
+                  availableBoats.length === 0 ? (
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', background: 'var(--sand)', padding: '1rem', borderRadius: '8px', textAlign: 'center' }}>
+                      Nenhuma embarcação disponível para reivindicação no momento.
+                    </p>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {availableBoats.map(boat => (
+                        <label
+                          key={boat.id}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '1rem',
+                            padding: '1rem 1.125rem', borderRadius: '12px', cursor: 'pointer',
+                            border: `1.5px solid ${selectedBoatId === boat.id ? 'var(--ocean-mid)' : 'var(--border)'}`,
+                            background: selectedBoatId === boat.id ? 'rgba(14,116,144,0.06)' : 'white',
+                            transition: 'border-color 0.15s, background 0.15s',
+                          }}
+                        >
+                          <input
+                            type="radio"
+                            name="boat"
+                            value={boat.id}
+                            checked={selectedBoatId === boat.id}
+                            onChange={() => setSelectedBoatId(boat.id)}
+                            style={{ accentColor: 'var(--ocean-mid)', width: '18px', height: '18px', flexShrink: 0 }}
+                          />
+                          <div>
+                            <p style={{ fontWeight: 700, fontSize: '0.9375rem', marginBottom: '0.2rem' }}>{boat.name}</p>
+                            {boat.tagline && <p style={{ color: 'var(--text-muted)', fontSize: '0.825rem' }}>{boat.tagline}</p>}
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.2rem' }}>Capacidade: {boat.capacity_max} pessoas</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  )
+                )}
+
+                {/* Register new boat */}
+                {isNewBoat && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div>
+                      <label style={labelStyle}>Nome da embarcação *</label>
+                      <input type="text" value={newBoatName} onChange={e => setNewBoatName(e.target.value)} placeholder="Ex: Lancha Estrela do Mar" style={inputStyle} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Tipo</label>
+                      <select value={newBoatType} onChange={e => setNewBoatType(e.target.value)} style={inputStyle}>
+                        <option value="lancha">Lancha</option>
+                        <option value="escuna">Escuna</option>
+                        <option value="catamara">Catamarã</option>
+                        <option value="veleiro">Veleiro</option>
+                        <option value="outro">Outro</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Capacidade máxima (pessoas) *</label>
+                      <input type="number" value={newBoatCapacity} onChange={e => setNewBoatCapacity(e.target.value)} placeholder="Ex: 10" style={inputStyle} />
+                    </div>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', background: 'var(--sand)', padding: '0.75rem 1rem', borderRadius: '8px', lineHeight: 1.6, margin: 0 }}>
+                      Após o envio, a Acalanto revisará os dados e criará o perfil da embarcação. Você receberá confirmação por e-mail.
+                    </p>
                   </div>
                 )}
-                <div style={{ marginTop: '1rem' }}>
+
+                <div style={{ marginTop: '1.25rem' }}>
                   <label style={labelStyle}>Seu WhatsApp</label>
                   <input type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)} placeholder="5524999XXXXXX" style={inputStyle}/>
                 </div>
@@ -349,7 +441,7 @@ export default function CadastroAnuncioPage() {
               disabled={loading}
               style={{ padding: '1rem', fontSize: '1rem', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
             >
-              {loading ? 'Enviando...' : type === 'barco' ? 'Reivindicar embarcação' : 'Enviar para análise'}
+              {loading ? 'Enviando...' : type === 'barco' ? (isNewBoat ? 'Cadastrar embarcação' : 'Reivindicar embarcação') : 'Enviar para análise'}
             </button>
           </form>
         </div>

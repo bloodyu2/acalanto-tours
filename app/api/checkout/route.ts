@@ -25,6 +25,7 @@ const CheckoutSchema = z.object({
     date:                     z.string().optional(),
     adults:                   z.number().int().min(0).default(0),
     children:                 z.number().int().min(0).default(0),
+    infants:                  z.number().int().min(0).default(0),
     priceAdultCents:          z.number().int().min(0),
     priceChildCents:          z.number().int().min(0).default(0),
     boatId:                   z.string().optional(),
@@ -231,11 +232,12 @@ export async function POST(request: NextRequest) {
     const tourDate = primaryItem.date ?? primaryItem.checkIn ?? new Date().toISOString().split('T')[0]
 
     // 8. Insert booking
-    const bookingPayload: BookingInsert = {
+    const bookingPayload: BookingInsert & { infants?: number } = {
       boat_id:                  boatId,
       tour_date:                tourDate,
       adults:                   items.reduce((s, i) => s + (i.adults ?? 0), 0),
       children:                 items.reduce((s, i) => s + (i.children ?? 0), 0),
+      infants:                  items.reduce((s, i) => s + (i.infants ?? 0), 0),
       total_cents:              totalCents,
       customer_name:            customerName,
       customer_email:           customerEmail,

@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { ItineraryStop } from '@/lib/types/database'
 import { FEATURE_LABELS, CANCELLATION_POLICY } from '@/lib/constants'
 import BookingWidget from '@/components/booking/BookingWidget'
+import GalleryLightbox from '@/components/ui/GalleryLightbox'
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -35,13 +35,13 @@ export default async function PasseioDetailPage({ params }: Props) {
   // Dates where this boat is fully booked (sum of passengers >= capacity_max)
   const { data: photos } = await supabase
     .from('gallery')
-    .select('url, alt_text')
+    .select('id, url, alt_text')
     .eq('boat_id', boat.id)
     .order('display_order', { ascending: true })
 
   const { data: bookingCounts } = await supabase
     .from('bookings')
-    .select('tour_date, adults, children')
+    .select('tour_date, adults, children, infants')
     .eq('boat_id', boat.id)
     .in('status', ['confirmed', 'whatsapp_initiated'])
     .gte('tour_date', new Date().toISOString().split('T')[0])
@@ -49,7 +49,7 @@ export default async function PasseioDetailPage({ params }: Props) {
   const dateTotals: Record<string, number> = {}
   for (const b of bookingCounts ?? []) {
     if (!b.tour_date) continue
-    dateTotals[b.tour_date] = (dateTotals[b.tour_date] ?? 0) + (b.adults ?? 0) + (b.children ?? 0)
+    dateTotals[b.tour_date] = (dateTotals[b.tour_date] ?? 0) + (b.adults ?? 0) + (b.children ?? 0) + ((b as any).infants ?? 0)
   }
   const soldOutDates = Object.entries(dateTotals)
     .filter(([, total]) => total >= boat.capacity_max)
@@ -80,30 +80,7 @@ export default async function PasseioDetailPage({ params }: Props) {
       {photos && photos.length > 0 && (
         <section style={{ padding: '2rem 0 3rem', background: 'white' }}>
           <div className="container">
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: photos.length === 1 ? '1fr' : photos.length === 2 ? '1fr 1fr' : 'repeat(3, 1fr)',
-              gap: '0.75rem',
-            }}>
-              {photos.map((p, i) => (
-                <div key={i} style={{
-                  position: 'relative',
-                  aspectRatio: photos.length === 1 ? '16/7' : '4/3',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  background: 'var(--sand)',
-                  gridColumn: photos.length >= 4 && i === 0 ? 'span 2' : undefined,
-                }}>
-                  <Image
-                    src={p.url}
-                    alt={p.alt_text ?? boat.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    style={{ objectFit: 'cover' }}
-                  />
-                </div>
-              ))}
-            </div>
+            <GalleryLightbox images={photos as { id: string; url: string; alt_text?: string | null }[]} title={boat.name} />
           </div>
         </section>
       )}

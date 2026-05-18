@@ -122,6 +122,7 @@ export default function BookingWidget({ boat, unavailableDates = [] }: Props) {
       date,
       adults,
       children,
+      infants,
       priceAdultCents: boat.price_adult,
       priceChildCents: boat.price_child,
       boatId: boat.id,

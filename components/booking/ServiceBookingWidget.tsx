@@ -4,6 +4,8 @@ import { useCart } from '@/components/cart/CartProvider'
 import { createClient } from '@/lib/supabase/client'
 import DatePickerCalendar from '@/components/ui/DatePickerCalendar'
 
+type PriceTier = { min_pax: number; max_pax: number; price_cents: number }
+
 export type ServiceForWidget = {
   id: string
   slug: string
@@ -12,6 +14,12 @@ export type ServiceForWidget = {
   price_cents_per_person: number | null
   price_cents_group: number | null
   capacity_max: number | null
+  price_tiers?: PriceTier[] | null
+}
+
+function getTieredPrice(tiers: PriceTier[], count: number): number {
+  const tier = tiers.find(t => count >= t.min_pax && count <= t.max_pax)
+  return tier?.price_cents ?? tiers[tiers.length - 1]?.price_cents ?? 0
 }
 
 type DepartureTime = { id: string; time: string; label: string | null }
@@ -60,10 +68,13 @@ export default function ServiceBookingWidget({ service, unavailableDates = [] }:
   const selectedTime = departureTimes.find(t => t.id === selectedTimeId)
 
   const isPerGroup = service.pricing_type === 'per_group'
-  const price = isPerGroup ? (service.price_cents_group ?? 0) : (service.price_cents_per_person ?? 0)
-  const maxCount = isPerGroup ? (service.capacity_max ?? 20) : 20
+  const hasTiers = !!(service.price_tiers?.length)
+  const basePrice = isPerGroup ? (service.price_cents_group ?? 0) : (service.price_cents_per_person ?? 0)
+  const tieredPrice = hasTiers ? getTieredPrice(service.price_tiers!, count) : 0
+  const price = hasTiers ? tieredPrice : basePrice
+  const maxCount = (isPerGroup || hasTiers) ? (service.capacity_max ?? 20) : 20
   const isUnavailable = unavailableDates.includes(date)
-  const totalCents = isPerGroup ? price : price * count
+  const totalCents = hasTiers ? tieredPrice : (isPerGroup ? basePrice : basePrice * count)
 
   function handleAdd() {
     if (isUnavailable || !date) return
@@ -99,12 +110,12 @@ export default function ServiceBookingWidget({ service, unavailableDates = [] }:
       {/* Price header */}
       <div style={{ marginBottom: '1.5rem' }}>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '0.25rem' }}>
-          {isPerGroup ? 'Valor por grupo' : 'Valor por pessoa'}
+          {hasTiers ? `Para ${count} pessoa${count !== 1 ? 's' : ''}` : isPerGroup ? 'Valor por grupo' : 'Valor por pessoa'}
         </p>
         <p style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em', margin: 0 }}>
           {fmtCents(price)}
         </p>
-        {isPerGroup && service.capacity_max && (
+        {isPerGroup && !hasTiers && service.capacity_max && (
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
             Até {service.capacity_max} pessoas
           </p>
@@ -154,20 +165,23 @@ export default function ServiceBookingWidget({ service, unavailableDates = [] }:
       {/* Count */}
       <div style={{ marginBottom: '1.5rem' }}>
         <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
-          {isPerGroup ? 'Pessoas no grupo' : 'Número de pessoas'}
+          {(isPerGroup || hasTiers) ? 'Pessoas no grupo' : 'Número de pessoas'}
         </label>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <button onClick={() => setCount(c => Math.max(1, c - 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid var(--border)', background: 'white', cursor: 'pointer', fontSize: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>−</button>
           <span style={{ fontFamily: 'var(--font-playfair)', fontSize: '1.25rem', fontWeight: 700, minWidth: '2rem', textAlign: 'center' }}>{count}</span>
           <button onClick={() => setCount(c => Math.min(maxCount, c + 1))} style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid var(--border)', background: 'white', cursor: 'pointer', fontSize: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>+</button>
         </div>
-        {isPerGroup && (
+        {isPerGroup && !hasTiers && (
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '0.375rem' }}>Preço fixo para o grupo inteiro</p>
+        )}
+        {hasTiers && (
+          <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: '0.375rem' }}>Preço varia conforme o número de pessoas</p>
         )}
       </div>
 
       {/* Total */}
-      {!isPerGroup && count > 1 && (
+      {(!isPerGroup || hasTiers) && count > 1 && (
         <div style={{ background: 'var(--sand)', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Total ({count} pessoas)</span>
           <span style={{ fontWeight: 700, color: 'var(--ocean-deep)' }}>{fmtCents(totalCents)}</span>

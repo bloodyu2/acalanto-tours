@@ -1,5 +1,6 @@
 'use client'
 import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 
 const CART_KEY = 'acalanto_cart'
 
@@ -10,6 +11,7 @@ export type CartItem = {
   date: string // ISO date string
   adults: number
   children: number
+  infants?: number
   priceAdultCents: number
   priceChildCents: number
   boatId?: string
@@ -71,6 +73,7 @@ function itemTotal(item: CartItem): number {
 }
 
 export default function CartProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname()
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return []
     try {
@@ -88,6 +91,11 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(CART_KEY, JSON.stringify(items))
     } catch {}
   }, [items])
+
+  // Auto-close cart on route change
+  useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
 
   const addItem = useCallback((item: CartItem) => {
     setItems(prev => {

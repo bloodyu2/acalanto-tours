@@ -54,7 +54,7 @@ export default async function ServicoPage({ params }: Props) {
   const supabase = await createClient()
   const { data: svc } = await supabase
     .from('services')
-    .select('id, slug, name, description, price_label, active, pricing_type, price_cents_per_person, price_cents_group, capacity_max')
+    .select('id, slug, name, description, price_label, active, pricing_type, price_cents_per_person, price_cents_group, capacity_max, price_tiers')
     .eq('slug', slug)
     .eq('active', true)
     .single()
@@ -165,6 +165,7 @@ export default async function ServicoPage({ params }: Props) {
                     price_cents_per_person: svc.price_cents_per_person ?? null,
                     price_cents_group: svc.price_cents_group ?? null,
                     capacity_max: svc.capacity_max ?? null,
+                    price_tiers: (svc as any).price_tiers ?? null,
                   }}
                   unavailableDates={unavailableDates}
                 />

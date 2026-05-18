@@ -21,7 +21,7 @@ export default function CapacityBar({ boatId, capacityMax, selectedDate, departu
 
     let bookingsQuery = supabase
       .from('bookings')
-      .select('adults, children', { count: 'exact' })
+      .select('adults, children, infants', { count: 'exact' })
       .eq('boat_id', boatId)
       .eq('tour_date', selectedDate)
       .in('status', ['pending', 'confirmed', 'paid'])
@@ -41,7 +41,7 @@ export default function CapacityBar({ boatId, capacityMax, selectedDate, departu
     ]).then(([overrideRes, bookingsRes]) => {
       const total = overrideRes.data ? overrideRes.data.capacity : Math.floor(capacityMax * 0.5)
       setSpotsTotal(total)
-      const booked = (bookingsRes.data ?? []).reduce((sum, b) => sum + (b.adults ?? 0) + (b.children ?? 0), 0)
+      const booked = (bookingsRes.data ?? []).reduce((sum, b) => sum + (b.adults ?? 0) + (b.children ?? 0) + ((b as any).infants ?? 0), 0)
       setSpotsBooked(booked)
       setLoading(false)
     })
