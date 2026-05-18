@@ -172,7 +172,7 @@ export default function GalleryLightbox({ images, title }: Props) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               key={current.url}
-              src={current.url}
+              src={`/_next/image?url=${encodeURIComponent(current.url)}&w=1920&q=85`}
               alt={current.alt_text ?? `Foto ${idx + 1}`}
               onLoad={() => setImgLoaded(true)}
               style={{
