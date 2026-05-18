@@ -22,10 +22,14 @@ export default function GalleryLightbox({ images, title }: Props) {
   const [imgError, setImgError] = useState(false)
   const markFailed = (id: string) => setFailedIds(prev => new Set(prev).add(id))
 
-  const close = useCallback(() => setOpen(false), [])
+  // Derived: only images whose thumbnails loaded successfully.
+  // Both the grid AND the lightbox use this array so indices always match.
+  const displayImages = images.filter(img => !failedIds.has(img.id))
+  const current = displayImages[idx]
 
-  const prev = useCallback(() => setIdx(i => (i - 1 + images.length) % images.length), [images.length])
-  const next = useCallback(() => setIdx(i => (i + 1) % images.length), [images.length])
+  const close = useCallback(() => setOpen(false), [])
+  const prev = useCallback(() => setIdx(i => (i - 1 + displayImages.length) % displayImages.length), [displayImages.length])
+  const next = useCallback(() => setIdx(i => (i + 1) % displayImages.length), [displayImages.length])
 
   useEffect(() => {
     if (!open) return
@@ -42,11 +46,11 @@ export default function GalleryLightbox({ images, title }: Props) {
     }
   }, [open, close, prev, next])
 
-  // Reset imgLoaded/imgError when idx changes
+  // Reset imgLoaded/imgError when idx or open state changes
   useEffect(() => {
     setImgLoaded(false)
     setImgError(false)
-  }, [idx])
+  }, [idx, open])
 
   if (!images.length) return null
 
@@ -57,13 +61,13 @@ export default function GalleryLightbox({ images, title }: Props) {
 
   return (
     <>
-      {/* Grid */}
+      {/* Grid — maps displayImages so openAt(i) and lightbox idx stay in sync */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
         gap: '0.625rem',
       }}>
-        {images.filter(img => !failedIds.has(img.id)).map((img, i) => (
+        {displayImages.map((img, i) => (
           <button
             key={img.id}
             onClick={() => openAt(i)}
@@ -110,7 +114,7 @@ export default function GalleryLightbox({ images, title }: Props) {
       </div>
 
       {/* Lightbox overlay */}
-      {open && (
+      {open && current && (
         <div
           onClick={close}
           style={{
@@ -132,7 +136,7 @@ export default function GalleryLightbox({ images, title }: Props) {
               justifyContent: 'center',
             }}
           >
-            {/* Loading skeleton / error placeholder */}
+            {/* Loading skeleton */}
             {!imgLoaded && !imgError && (
               <div style={{
                 position: 'absolute',
@@ -142,6 +146,7 @@ export default function GalleryLightbox({ images, title }: Props) {
                 borderRadius: '0.75rem',
               }} />
             )}
+            {/* Error placeholder */}
             {imgError && (
               <div style={{
                 position: 'absolute',
@@ -166,9 +171,9 @@ export default function GalleryLightbox({ images, title }: Props) {
 
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              key={images[idx].url}
-              src={images[idx].url}
-              alt={images[idx].alt_text ?? `Foto ${idx + 1}`}
+              key={current.url}
+              src={current.url}
+              alt={current.alt_text ?? `Foto ${idx + 1}`}
               onLoad={() => setImgLoaded(true)}
               style={{
                 maxWidth: '90vw',
@@ -180,7 +185,7 @@ export default function GalleryLightbox({ images, title }: Props) {
                 opacity: imgLoaded ? 1 : 0,
                 transition: 'opacity 0.25s ease',
               }}
-              onError={() => { setImgError(true) }}
+              onError={() => setImgError(true)}
             />
 
             {/* Counter */}
@@ -191,10 +196,10 @@ export default function GalleryLightbox({ images, title }: Props) {
               color: 'rgba(255,255,255,0.5)', letterSpacing: '0.1em',
               whiteSpace: 'nowrap',
             }}>
-              {idx + 1} / {images.length}
-              {images[idx].alt_text && (
+              {idx + 1} / {displayImages.length}
+              {current.alt_text && (
                 <span style={{ marginLeft: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>
-                  {images[idx].alt_text}
+                  {current.alt_text}
                 </span>
               )}
             </div>
@@ -218,7 +223,7 @@ export default function GalleryLightbox({ images, title }: Props) {
           </button>
 
           {/* Prev / Next */}
-          {images.length > 1 && (
+          {displayImages.length > 1 && (
             <>
               <button
                 onClick={e => { e.stopPropagation(); prev() }}
